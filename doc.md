@@ -31,6 +31,8 @@ GameSpace array of arrays of length n above would be printed out like so:
 
 ### Notes
 
+return player location whenver they use a move or teleport instr. location is returned when spawning players
+
 make a teleport instruction. moves the player to a random location, high mana cost
 
 make the mana Regen take an input but the player will keep doing that same thing depending on how high the number is. eg every 5 mana Regen takes one game cycle.
