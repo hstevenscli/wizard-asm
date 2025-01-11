@@ -1,6 +1,7 @@
 # Translations for the numbers in gameSpace
 
 
+## Number Translations In GameSpace 
 | Number | Meaning |
 | 0 | Empty Space |
 | 1 | Player 1 |
@@ -18,3 +19,5 @@
 | 13 | x |
 | 14 | x |
 | 15 | x |
+
+## 
