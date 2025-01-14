@@ -28,7 +28,7 @@ func main() {
     // Pretty print gameSpace
     // pretty_print(g.Arena)
     pretty_print(g.Arena)
-    asm_cast_fireball(&g, 2, "se", 8)
+    asm_cast_fireball(&g, 2, "nw", 2)
     pretty_print(g.Arena)
 }
 
@@ -109,6 +109,7 @@ func asm_cast_fireball( g *gameSpace, player int, direction string, distance int
     fmt.Println("PCOL:", d_col)
 
 
+    // DIRECTION LOGIC
     if direction == "n" {
         for i := 0; i < distance; i++ {
             d_row -= 1
@@ -205,16 +206,45 @@ func asm_cast_fireball( g *gameSpace, player int, direction string, distance int
             }
         }
     }
+    // END DIRECTION LOGIC
 
-    fmt.Println("drow:", d_row)
 
-    // d_row = nlt_zero( d_row )
-    // d_col = nlt_zero( d_col )
-    // d_row = ngt_size( d_row, g.Size )
-    // d_col = ngt_size( d_col, g.Size )
-    // fmt.Println("After translations:", d_row, "", d_col)
+
     g.Arena[d_row][d_col] = 3
+
+    // Affect all spaces adjacent to where the fireball lands
+
+    fmt.Printf("Fireball landed: [%v, %v]\n", d_row, d_col)
+    for row := -1; row < 2; row++ {
+        for col := -1; col < 2; col++ {
+            t_row := d_row + row
+            t_col := d_col + col
+            var valid bool = is_valid_loc(t_row, t_col, g.Size)
+            fmt.Printf("Burning loc: [%v, %v]| Valid loc: %v\n", t_row, t_col, valid)
+            if valid {
+                g.Arena[t_row][t_col] = 3
+            }
+        }
+    }
 
 }
 
+func check_player( r int, c int, g *gameSpace )bool {
+    if is_valid_loc( r, c, g.Size ) {
+        var loc int = g.Arena[r][c]
+        if loc == 1 || loc == 2 {
+            return true
+        }
+        return false
+    } else {
+        fmt.Println("ERROR CHECK PLAYER: INVALID LOC ")
+        return false
+    }
+}
 
+func is_valid_loc( r int, c int, size int)bool {
+    if r < 0 || r > size - 1 || c < 0 || c > size - 1 {
+        return false
+    }
+    return true
+}
