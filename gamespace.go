@@ -1,0 +1,72 @@
+package main
+
+import "fmt"
+import "math/rand"
+
+
+// Define gameSpace structure
+type gameSpace struct {
+    Size int
+    Arena [][]int
+    P1_loc [2]int
+    P2_loc [2]int
+}
+
+// Print out gameSpace in a human-viewable format
+func pretty_print( slice [][]int ) {
+    for i := range slice {
+            fmt.Println(slice[i])
+    }
+}
+
+// Init and fill the gamespace and gamespace.arena
+func init_gamespace( size int ) gameSpace {
+    var g gameSpace = gameSpace { Size: size, Arena: make([][]int, size) }
+    for i := range g.Arena {
+        g.Arena[i] = make([]int, size)
+    }
+    return g
+}
+
+// Spawn some players into the gamespace
+func spawn_players( g *gameSpace ) {
+    var p1_row int = rand.Intn(g.Size)
+    var p1_col int = rand.Intn(g.Size)
+    var p2_row int = rand.Intn(g.Size)
+    var p2_col int = rand.Intn(g.Size)
+
+    // Place Player 1
+    g.Arena[p1_row][p1_col] = 1
+
+    // Prevent deleting player 1
+    if p1_row == p2_row && p1_col == p2_col {
+        p2_row = (p2_row + 1) % g.Size
+    }
+    // Place Player 2
+    g.Arena[p2_row][p2_col] = 2
+
+    // Record player positions in struct
+    g.P1_loc[0] = p1_row
+    g.P1_loc[1] = p1_col
+    g.P2_loc[0] = p2_row
+    g.P2_loc[1] = p2_col
+
+    fmt.Println("Spawned some players")
+}
+
+// Make sure the location is valid first
+func check_player( r int, c int, g *gameSpace ) (int, bool) {
+	var loc int = g.Arena[r][c]
+	if loc == 1 || loc == 2 {
+		return loc, true
+	}
+	return 0, false
+}
+
+func is_valid_loc( r int, c int, size int)bool {
+    if r < 0 || r > size - 1 || c < 0 || c > size - 1 {
+        return false
+    }
+    return true
+}
+
