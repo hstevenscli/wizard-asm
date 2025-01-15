@@ -7,7 +7,7 @@ import "fmt"
 func main() {
 
     // Initialize size 
-    var size int = 16
+    var size int = 3
 
     // Initialize the gamespace to size = 10
     var g gameSpace = init_gamespace(size)
@@ -20,7 +20,7 @@ func main() {
     // Pretty print gameSpace
     // pretty_print(g.Arena)
     pretty_print(g.Arena)
-    asm_cast_fireball(&g, 2, "nw", 2)
+    asm_summon_magma(&g, 2, 1, 1)
     pretty_print(g.Arena)
 }
 
