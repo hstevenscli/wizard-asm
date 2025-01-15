@@ -47,3 +47,12 @@ a shield instruction
 a decoy instruction 
 lightning/beam instruction
 a spreading fire instruction
+
+
+#### Update 01/14/25
+
+change fireball to magma eruption
+let the spell take in two numbers, row and col, to allow for better strategies around that spell
+let most spells work in this way, these will mesh better with the divination/find enemy spell
+
+divination returns a row,col somwhere in an area around the enemy with accuracy increasing as more time and mana is spent on the spell

@@ -7,7 +7,7 @@ import "fmt"
 func main() {
 
     // Initialize size 
-    var size int = 3
+    var size int = 16
 
     // Initialize the gamespace to size = 10
     var g gameSpace = init_gamespace(size)
