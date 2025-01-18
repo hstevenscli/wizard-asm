@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+// import "errors"
 
 
 // Shoot a fireball in the indicated direction
@@ -13,7 +14,6 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
     fmt.Println("PCOL:", d_col)
 
     // Changing to coords instead of direction
-
 
     //TODO MAYBE
     // An arr to track where the magma pops up, depending on final implementation, may or may not need this
@@ -39,6 +39,47 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
     }
 }
 
+
+
 func move( g *gameSpace, player int, direction string ) {
+
+    // Using player int to make a pointer to easily access g.PX_loc
+    var p_loc *[2]int
+    if player == 1 {
+        p_loc = &g.P1_loc
+    } else {
+        p_loc = &g.P2_loc
+    }
+
+    var d_row int
+    var d_col int
+
+    switch direction {
+    case "n":
+        d_row = p_loc[0] - 1
+        d_col = p_loc[1]
+    case "s":
+        d_row = p_loc[0] + 1
+        d_col = p_loc[1]
+    case "w":
+        d_row = p_loc[0]
+        d_col = p_loc[1] - 1
+    case "e":
+        d_row = p_loc[0]
+        d_col = p_loc[1] + 1
+    }
+    // Keep destination within valid index
+    d_row = within_valid_range( d_row, g.Size )
+    d_col = within_valid_range( d_col, g.Size )
+
+    // If space is clear move the player there
+    // In this case a space is clear if there is not a player there
+    if g.Arena[d_row][d_col] != 1 && g.Arena[d_row][d_col] != 2 {
+        if g.Arena[d_row][d_col] != 0 {
+            fmt.Println("You stepped in Acid!! (I think). Player stepped in:", g.Arena[d_row][d_col])
+            game_over(player)
+        }
+        easy_move_wrapper(g, player, d_row, d_col)
+    }
 }
 

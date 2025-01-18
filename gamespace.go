@@ -70,3 +70,50 @@ func is_valid_loc( r int, c int, size int)bool {
     return true
 }
 
+// Remove the player symbol from the arena
+func erase_player( g *gameSpace, player int ){
+    var p_row int
+    var p_col int
+    if player == 1 {
+        p_row = g.P1_loc[0]
+        p_col = g.P1_loc[1]
+    } else {
+        p_row = g.P2_loc[0]
+        p_col = g.P2_loc[1]
+    }
+    g.Arena[p_row][p_col] = 0
+}
+
+// Update the player location data in gamespace
+func update_player_location_data( g *gameSpace, player int, row int, col int ) {
+    if player == 1 {
+        g.P1_loc[0] = row
+        g.P1_loc[1] = col
+    } else {
+        g.P2_loc[0] = row
+        g.P2_loc[1] = col
+    }
+}
+
+// Redraw the player in the arena using location data in gamespace
+func draw_player( g *gameSpace, player int ){
+    var p_row int
+    var p_col int
+    if player == 1 {
+        p_row = g.P1_loc[0]
+        p_col = g.P1_loc[1]
+    } else {
+        p_row = g.P2_loc[0]
+        p_col = g.P2_loc[1]
+    }
+    g.Arena[p_row][p_col] = player
+
+}
+
+
+// Packages erase_player, update_player_location_data, and draw_player into one function call
+func easy_move_wrapper( g *gameSpace, player int, row int, col int ) {
+    erase_player(g, player)
+    update_player_location_data(g, player, row, col)
+    draw_player(g, player)
+}

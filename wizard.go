@@ -7,7 +7,7 @@ import "fmt"
 func main() {
 
     // Initialize size 
-    var size int = 3
+    var size int = 4
 
     // Initialize the gamespace to size = 10
     var g gameSpace = init_gamespace(size)
@@ -20,20 +20,17 @@ func main() {
     // Pretty print gameSpace
     // pretty_print(g.Arena)
     pretty_print(g.Arena)
-    asm_summon_magma(&g, 2, 1, 1)
+    // asm_summon_magma(&g, 2, 1, 1)
+    fmt.Println()
+    move(&g, 2, "n")
     pretty_print(g.Arena)
 }
 
-// No less than zero, return zero if n is less than zero
-func nlt_zero( n int ) int {
+// Make sure n is between 0 inclusive and size exclusive
+func within_valid_range( n int, size int ) int {
     if n < 0 {
         return 0
     }
-    return n
-}
-
-// No greater than size, return size if n is greater than size
-func ngt_size( n int, size int ) int {
     if n >= size {
         return size - 1
     }
