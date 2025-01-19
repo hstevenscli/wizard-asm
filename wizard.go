@@ -22,8 +22,9 @@ func main() {
     pretty_print(g.Arena)
     // asm_summon_magma(&g, 2, 1, 1)
     fmt.Println()
-    move(&g, 2, "n")
+    asm_move(&g, 2, "n")
     pretty_print(g.Arena)
+	asm_summon_acid(&g, 2, 0, 0)
 }
 
 // Make sure n is between 0 inclusive and size exclusive

@@ -33,15 +33,30 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 				if p_hit {
 					game_over(player_val)
 				}
+				// FOR DEBUGGING, ERASE LATER
                 g.Arena[t_row][t_col] = 3
             }
         }
     }
 }
 
+// Summon an acid puddle on target location
+func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
+    var d_row int = row
+    var d_col int = col
+	fmt.Println("Called summon acid, player:", player)
+    fmt.Println("PROW:", d_row)
+    fmt.Println("PCOL:", d_col)
+	fmt.Println(g)
+	var valid bool = is_valid_loc(d_row, d_col, g.Size)
+	if valid {
+		
+	}
+}
 
 
-func move( g *gameSpace, player int, direction string ) {
+
+func asm_move( g *gameSpace, player int, direction string ) {
 
     // Using player int to make a pointer to easily access g.PX_loc
     var p_loc *[2]int
