@@ -10,6 +10,15 @@ type gameSpace struct {
     Arena [][]int
     P1_loc [2]int
     P2_loc [2]int
+    P1_prot int
+    P2_prot int
+    P1_mana int
+    P2_mana int
+}
+
+type gameOver struct {
+    p1 bool
+    p2 bool
 }
 
 // Print out gameSpace in a human-viewable format
@@ -25,6 +34,8 @@ func init_gamespace( size int ) gameSpace {
     for i := range g.Arena {
         g.Arena[i] = make([]int, size)
     }
+    g.P1_mana = 100
+    g.P2_mana = 100
     return g
 }
 

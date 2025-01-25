@@ -1,8 +1,9 @@
 package main
 
 import "fmt"
-// import "errors"
+import "math/rand"
 
+var gameover bool
 
 // Shoot a fireball in the indicated direction
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
@@ -31,7 +32,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
             if valid {
 				player_val, p_hit := check_player(t_row, t_col, g)
 				if p_hit {
-					game_over(player_val)
+					game_over(player_val, "Burned in magma")
 				}
 				// FOR DEBUGGING, ERASE LATER
                 g.Arena[t_row][t_col] = 3
@@ -44,20 +45,20 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
     var d_row int = row
     var d_col int = col
-	fmt.Println("Called summon acid, player:", player)
-    fmt.Println("PROW:", d_row)
-    fmt.Println("PCOL:", d_col)
-	fmt.Println(g)
 	var valid bool = is_valid_loc(d_row, d_col, g.Size)
 	if valid {
-		
+        player_val, p_hit := check_player(d_row, d_col, g)
+        if p_hit {
+            game_over(player_val, "Burned in acid")
+        }
+        // Turn the space into acid
+        g.Arena[d_row][d_col] = 3
 	}
 }
 
 
 
 func asm_move( g *gameSpace, player int, direction string ) {
-
     // Using player int to make a pointer to easily access g.PX_loc
     var p_loc *[2]int
     if player == 1 {
@@ -90,11 +91,138 @@ func asm_move( g *gameSpace, player int, direction string ) {
     // If space is clear move the player there
     // In this case a space is clear if there is not a player there
     if g.Arena[d_row][d_col] != 1 && g.Arena[d_row][d_col] != 2 {
-        if g.Arena[d_row][d_col] != 0 {
+        if g.Arena[d_row][d_col] == 3 {
             fmt.Println("You stepped in Acid!! (I think). Player stepped in:", g.Arena[d_row][d_col])
-            game_over(player)
+            game_over(player, "Stepped in acid")
         }
         easy_move_wrapper(g, player, d_row, d_col)
     }
 }
 
+// Teleport to target location; Random location if row,int are -1
+func asm_teleport( g *gameSpace, player int, row int, col int ) {
+    // Random teleport
+    if row <= -1 || col <= -1 {
+        row = rand.Intn(g.Size)
+        col = rand.Intn(g.Size)
+
+    // Teleport to specified location
+    } else {
+        row = within_valid_range( row, g.Size )
+        col = within_valid_range( col, g.Size )
+    }
+    // Check for a player collision
+    player_val, p_hit := check_player(row, col, g) 
+    if p_hit && player_val != player {
+        fmt.Println("Teleport double death")
+        game_over(player + player_val, "Teleportation death")
+    }
+    // Draw changes to g.Arena
+    easy_move_wrapper(g, player, row, col)
+}
+
+// Apply a protection to g.PX_prot, valid values: 1 fire, 2 lightning, 3 acid
+// @TODO Need to implement checks in necessary places for protections
+// At minimum in asm_summon_magma/acid/lightning asm_move/teleport
+func asm_shield( g *gameSpace, player int, d_type int ) {
+    var p_prot *int
+    if player == 1 {
+        p_prot = &g.P1_prot
+    } else {
+        p_prot = &g.P2_prot
+    }
+    *p_prot = d_type
+}
+
+func asm_wait( player int ) {
+    fmt.Println("Player waiting:", player)
+}
+
+func asm_recharge( g *gameSpace, player int, amount int ) {
+    var p_mana *int
+    if player == 1 {
+        p_mana = &g.P1_mana
+    } else {
+        p_mana = &g.P2_mana
+    }
+    *p_mana += amount
+    if *p_mana > 200 {
+        game_over(player, "Mana Overcharge")
+    }
+}
+
+// Hone in on location of enemy, player = player who cast it,
+// intensity range 1-10 inclusive
+func asm_divination( g *gameSpace, player int, intensity int ) {
+
+    var p_loc *[2]int
+
+    // if player=1 p_loc should be for player 2, the one they are
+    // looking for
+    if player == 1 {
+        p_loc = &g.P2_loc
+    } else {
+        p_loc = &g.P1_loc
+    }
+
+    num := 11 - intensity
+
+    num = rand.Intn(num)
+    fmt.Println("Num:", num)
+
+
+    fmt.Println("divining for player at: ", p_loc)
+}
+
+
+func asm_lightning_bolt( g *gameSpace, player int, direction string ) {
+
+    var p_loc *[2]int
+    if player == 1 {
+        p_loc = &g.P1_loc
+    } else {
+        p_loc = &g.P2_loc
+    }
+    var s_row int = p_loc[0]
+    var s_col int = p_loc[1]
+    var row_mod int = 0
+    var col_mod int = 0
+
+    switch direction {
+    case "n":
+        row_mod = -1
+    case "s":
+        row_mod = 1
+    case "e":
+        col_mod = 1
+    case "w":
+        col_mod = -1
+    case "ne":
+        row_mod = -1
+        col_mod = 1
+    case "nw":
+        row_mod = -1
+        col_mod = -1
+    case "se":
+        row_mod = 1
+        col_mod = 1
+    case "sw":
+        row_mod = 1
+        col_mod = -1
+    }
+
+    for i:= 0; i < g.Size-1; i++ {
+        s_row = s_row + row_mod
+        s_col = s_col + col_mod
+        if !is_valid_loc(s_row, s_col, g.Size ) {
+            break
+        }
+        player_val, p_hit := check_player(s_row, s_col, g)
+        if p_hit {
+            game_over(player_val, "Struck by lightning")
+
+        }
+        // For debugging, remove later
+        g.Arena[s_row][s_col] = 7
+    }
+}

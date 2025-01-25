@@ -3,10 +3,11 @@
 
 ## Number Translations In GameSpace 
 | Number | Meaning |
+| - | - |
 | 0 | Empty Space |
 | 1 | Player 1 |
 | 2 | Player 2 |
-| 3 | x |
+| 3 | Acid Puddle |
 | 4 | x |
 | 5 | x |
 | 6 | x |
@@ -20,4 +21,13 @@
 | 14 | x |
 | 15 | x |
 
-## 
+## Number Translations for player protection
+
+| Number | Meaning |
+| - | - |
+| 0 | Nothing |
+| 1 | Magma |
+| 2 | Lightning |
+| 3 | Acid |
+
+

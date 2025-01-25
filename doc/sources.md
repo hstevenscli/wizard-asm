@@ -176,5 +176,7 @@ These instructions can open up more creative strategies and make the programming
 [Learn GO Fast: Full Tutorial](https://www.youtube.com/watch?v=8uiZC0l4Ajw&t=1624s)
 
 ## Go Maps in Action
-
 [From go.dev](https://go.dev/blog/maps)
+
+## Go Randomness
+[Go Docs](https://pkg.go.dev/math/rand)
