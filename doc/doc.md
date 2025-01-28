@@ -35,3 +35,7 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
     8. Conditional Jump 
     11. Loop (Start/EndLoop)
     12. Invisibility
+
+## NEXT ON LIST
+
+Make a JSON object and read from it, turn the json data into a battle program and run it

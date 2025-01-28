@@ -169,8 +169,6 @@ func asm_divination( g *gameSpace, player int, intensity int ) {
 
     num = rand.Intn(num)
     fmt.Println("Num:", num)
-
-
     fmt.Println("divining for player at: ", p_loc)
 }
 
