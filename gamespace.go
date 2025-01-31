@@ -16,6 +16,12 @@ type gameSpace struct {
     P2_mana int
 }
 
+type pInfo struct {
+	ploc [2]int
+	prot int
+	mana int
+}
+
 type gameOver struct {
     p1 bool
     p2 bool

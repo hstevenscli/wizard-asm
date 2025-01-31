@@ -6,7 +6,7 @@ import "fmt"
 func main() {
 
     // Initialize size 
-    var size int = 3
+    var size int = 10
 
     // Initialize the gamespace to size = 10
     var g gameSpace = init_gamespace(size)
@@ -27,8 +27,15 @@ func main() {
     asm_divination(&g, 1, 10)
     pretty_print(g.Arena)
 
-    program := read_json("battleprogram.json")
+    program := read_json("./program.json")
     fmt.Println("program:", program)
+	loop_through_battleProgram( &g, program )
+    pretty_print(g.Arena)
+	
+	// for i, instruction := range program.Instructions {
+	// 	fmt.Println(i)
+	// 	fmt.Println("Spell Name:", instruction.Instruction, "Args:", instruction.Args)
+	// }
 
 
 
