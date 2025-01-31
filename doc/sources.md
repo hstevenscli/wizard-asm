@@ -180,3 +180,7 @@ These instructions can open up more creative strategies and make the programming
 
 ## Go Randomness
 [Go Docs](https://pkg.go.dev/math/rand)
+
+## Interfaces
+[This](https://research.swtch.com/interfaces)
+[And this](https://gobyexample.com/interfaces)
