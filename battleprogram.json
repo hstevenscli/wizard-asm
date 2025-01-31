@@ -1,0 +1,8 @@
+{
+    "user": "Hunter",
+    "instructions": [
+        {"command": "WAIT"},
+        {"command": "MOVE", "args": ["N"]},
+        {"command": "FIREBALL", "args": [0, 4]}
+    ]
+}

@@ -26,6 +26,12 @@ func main() {
     // asm_lightning_bolt(&g, 1, "s")
     asm_divination(&g, 1, 10)
     pretty_print(g.Arena)
+
+    program := read_json("battleprogram.json")
+    fmt.Println("program:", program)
+
+
+
 }
 
 // Make sure n is between 0 inclusive and size exclusive
