@@ -2,8 +2,9 @@
     "user": "Hunter",
     "instructions": [
         {"instruction": "WAIT"},
-        {"instruction": "FIREBALL", "args": [0, 0]},
+        {"instruction": "MAGMA", "args": [0, 0]},
         {"instruction": "TELEPORT", "args": [0, 0]},
-        {"instruction": "MOVE", "args": ["N"]}
+        {"instruction": "MOVE", "args": ["N"]},
+        {"instruction": "P", "args": ["N"]}
     ]
 }

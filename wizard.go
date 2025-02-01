@@ -24,13 +24,11 @@ func main() {
 	// asm_summon_acid(&g, 2, 0, 0)
     // asm_shield(&g, 2, 1)
     // asm_lightning_bolt(&g, 1, "s")
-    asm_divination(&g, 1, 10)
-    pretty_print(g.Arena)
-
-    program := read_json("./program.json")
-    fmt.Println("program:", program)
+    // asm_divination(&g, 1, 10)
+    program := read_json_to_bp("./program.json")
 	loop_through_battleProgram( &g, program )
     pretty_print(g.Arena)
+
 	
 	// for i, instruction := range program.Instructions {
 	// 	fmt.Println(i)

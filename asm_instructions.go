@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
-import "math/rand"
+import (
+    "fmt"
+    "math/rand"
+    "strings"
+
+)
 
 var gameover bool
 
@@ -70,7 +74,8 @@ func asm_move( g *gameSpace, player int, direction string ) {
     var d_row int
     var d_col int
 
-    switch direction {
+    dir := strings.ToLower(direction)
+    switch dir {
     case "n":
         d_row = p_loc[0] - 1
         d_col = p_loc[1]
@@ -83,10 +88,15 @@ func asm_move( g *gameSpace, player int, direction string ) {
     case "e":
         d_row = p_loc[0]
         d_col = p_loc[1] + 1
+    default:
+        d_row = p_loc[0]
+        d_col = p_loc[1]
     }
     // Keep destination within valid index
     d_row = within_valid_range( d_row, g.Size )
     d_col = within_valid_range( d_col, g.Size )
+    fmt.Println("DRow:", d_row)
+    fmt.Println("Dcol:", d_col)
 
     // If space is clear move the player there
     // In this case a space is clear if there is not a player there
