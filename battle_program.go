@@ -17,6 +17,8 @@ type battleProgram struct {
     Instructions []instruction `json:"instructions"`
 	Ptr int
 	Player int
+	Lstart int
+	Niterations int
 }
 
 // Read some json and put it into a battleProgram struct
@@ -58,7 +60,7 @@ func extractIntArg( arg interface{} ) int {
 	}
 }
 
-func execute_instruction( g *gameSpace, bp *battleProgram, loop_started *int, n_iterations *int ) {
+func execute_instruction( g *gameSpace, bp *battleProgram ) {
 
 	c_args := bp.Instructions[bp.Ptr].Args
 
@@ -131,13 +133,13 @@ func execute_instruction( g *gameSpace, bp *battleProgram, loop_started *int, n_
 	// GAME MODIFYING INSTRUCTIONS END
 	// INSTRUCTIONS MODIFYING BATTLEPROGRAM START
 	case "SLOOP":
-		*n_iterations = extractIntArg( c_args[0]) - 1
-		*loop_started = bp.Ptr + 1
+		bp.Niterations= extractIntArg( c_args[0]) - 1
+		bp.Lstart= bp.Ptr + 1
 		fmt.Println("SLOOP Happened")
 	case "ELOOP":
-		if *n_iterations > 0 {
-			*n_iterations -= 1
-			bp.Ptr = *loop_started - 1
+		if bp.Niterations> 0 {
+			bp.Niterations -= 1
+			bp.Ptr = bp.Lstart- 1
 		}
 		fmt.Println("ELOOP Happened")
 	case "JUMP":
@@ -165,12 +167,10 @@ func execute_instruction( g *gameSpace, bp *battleProgram, loop_started *int, n_
 func loop_through_battleProgram( g *gameSpace, bp battleProgram ) {
 	// For marking where a sloop instruction happens
 	bp.Player = 2
-	var loop_started int
-	var n_iterations int
 	var timeout int
 	for bp.Ptr < len(bp.Instructions) {
 		// fmt.Printf("Executing instr %v: %v\n", bp.Ptr, bp.Instructions[bp.Pointer])
-		execute_instruction( g, &bp, &loop_started, &n_iterations)
+		execute_instruction( g, &bp)
 		bp.Ptr++
 		timeout++
 		fmt.Println("Timeout: ", timeout)
@@ -181,4 +181,60 @@ func loop_through_battleProgram( g *gameSpace, bp battleProgram ) {
 		}
 	}
 	fmt.Println("Loop ended. Game over")
+}
+
+func check_gameover() bool {
+	if gameover.Player[1] || gameover.Player[2] {
+		return true
+	}
+	return false
+}
+
+func get_winner_loser_info() {
+	if !check_gameover() {
+		fmt.Println("Nobody has lost. No winner or loser to identify")
+	} else {
+		var winner int
+		var loser int
+		if gameover.Player[1] {
+			winner = 2
+			loser = 1
+		} else {
+			winner = 1
+			loser = 2
+		}
+		
+		fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
+	}
+
+}
+
+func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
+	bp1.Player = 1
+	bp2.Player = 2
+	var count int
+	fmt.Println("1")
+	// If a player builds a program wrong the program crashes, fix it so that the 
+	// player loses if their bp.Ptr leaves the scope of their program
+	for i := 0; i <= 1000; i++ {
+		//P1 Chunk
+		execute_instruction( g, &bp1 )
+		bp1.Ptr++
+
+		fmt.Println("2")
+		//P2 Chunk
+		execute_instruction( g, &bp2 )
+		bp2.Ptr++
+		fmt.Println("3")
+
+		if check_gameover() {
+			break
+		}
+		count++
+		pretty_print(g.Arena)
+	}
+	if count >= 1000 {
+		fmt.Println("Game Timed Out")
+	}
+	get_winner_loser_info()
 }

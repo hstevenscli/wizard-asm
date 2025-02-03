@@ -26,7 +26,9 @@ func main() {
     // asm_lightning(&g, 1, "s")
     // asm_divination(&g, 1, 10)
     program := read_json_to_bp("./program.json")
-	loop_through_battleProgram( &g, program )
+	program1 := read_json_to_bp("./program1.json")
+	// loop_through_battleProgram( &g, program )
+	game_loop_temp( &g, program, program1)
     pretty_print(g.Arena)
 
 	
@@ -53,5 +55,6 @@ func within_valid_range( n int, size int ) int {
 func game_over(player int, message string) {
 	fmt.Printf("Player %v Hit. Player %v Loses\n", player, player)
     fmt.Println("Message:", message)
-    gameover = true
+    gameover.Player[player] = true
+	gameover.Message[player] = message
 }

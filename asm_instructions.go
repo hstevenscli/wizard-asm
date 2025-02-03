@@ -7,7 +7,7 @@ import (
 
 )
 
-var gameover bool
+var gameover gameOver
 
 // Shoot a fireball in the indicated direction
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) {

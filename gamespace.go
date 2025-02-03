@@ -23,8 +23,9 @@ type pInfo struct {
 }
 
 type gameOver struct {
-    p1 bool
-    p2 bool
+	// Player = []
+	Player [3]bool
+	Message [3]string
 }
 
 // Print out gameSpace in a human-viewable format

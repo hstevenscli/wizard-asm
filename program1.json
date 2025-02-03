@@ -1,0 +1,8 @@
+{
+    "user": "Hunter",
+    "instructions": [
+        {"instruction": "WAIT"},
+        {"instruction": "WAIT"},
+        {"instruction": "JUMP", "args": [-2]}
+    ]
+}

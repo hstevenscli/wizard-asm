@@ -34,6 +34,7 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
     8. Conditional Jump 
     11. Loop (Start/EndLoop)
     12. Invisibility
+    13. Fix game_loop_temp and make it the real gameloop
 
 ## NEXT ON LIST
 
@@ -65,3 +66,9 @@ func asm_divination( g *gameSpace, player int, intensity int )
 func asm_lightning_bolt( g *gameSpace, player int, direction string
 ```
 
+## Struct Info
+
+
+__battleProgram:__
+* Lstart -> marking the start of a loop for SLoop instruction
+* Niterations -> used by ELoop to track how long the loop has been going
