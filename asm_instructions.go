@@ -14,9 +14,9 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 
     var d_row int = row
     var d_col int = col
-    fmt.Println("Testing for player", player)
-    fmt.Println("PROW:", d_row)
-    fmt.Println("PCOL:", d_col)
+    // fmt.Println("Testing for player", player)
+    // fmt.Println("PROW:", d_row)
+    // fmt.Println("PCOL:", d_col)
 
     // Changing to coords instead of direction
 
@@ -32,7 +32,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
             t_row := d_row + row
             t_col := d_col + col
             var valid bool = is_valid_loc(t_row, t_col, g.Size)
-            fmt.Printf("Burning loc: [%v, %v]| Valid loc: %v\n", t_row, t_col, valid)
+            // fmt.Printf("Burning loc: [%v, %v]| Valid loc: %v\n", t_row, t_col, valid)
             if valid {
 				player_val, p_hit := check_player(t_row, t_col, g)
 				if p_hit {
@@ -95,14 +95,14 @@ func asm_move( g *gameSpace, player int, direction string ) {
     // Keep destination within valid index
     d_row = within_valid_range( d_row, g.Size )
     d_col = within_valid_range( d_col, g.Size )
-    fmt.Println("DRow:", d_row)
-    fmt.Println("Dcol:", d_col)
+    // fmt.Println("DRow:", d_row)
+    // fmt.Println("Dcol:", d_col)
 
     // If space is clear move the player there
     // In this case a space is clear if there is not a player there
     if g.Arena[d_row][d_col] != 1 && g.Arena[d_row][d_col] != 2 {
         if g.Arena[d_row][d_col] == 3 {
-            fmt.Println("You stepped in Acid!! (I think). Player stepped in:", g.Arena[d_row][d_col])
+            fmt.Printf("You stepped in Acid!! (I think). Player %v stepped in: %v\n", player, g.Arena[d_row][d_col])
             game_over(player, "Stepped in acid")
         }
         easy_move_wrapper(g, player, d_row, d_col)
@@ -145,7 +145,6 @@ func asm_shield( g *gameSpace, player int, d_type int ) {
 }
 
 func asm_wait( player int ) {
-    fmt.Println("Player waiting:", player)
 }
 
 func asm_recharge( g *gameSpace, player int, amount int ) {
@@ -183,8 +182,9 @@ func asm_divination( g *gameSpace, player int, intensity int ) {
 }
 
 
-func asm_lightning_bolt( g *gameSpace, player int, direction string ) {
+func asm_lightning( g *gameSpace, player int, direction string ) {
 
+    dir := strings.ToLower(direction)
     var p_loc *[2]int
     if player == 1 {
         p_loc = &g.P1_loc
@@ -196,7 +196,7 @@ func asm_lightning_bolt( g *gameSpace, player int, direction string ) {
     var row_mod int = 0
     var col_mod int = 0
 
-    switch direction {
+    switch dir {
     case "n":
         row_mod = -1
     case "s":

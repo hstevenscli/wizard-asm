@@ -1,10 +1,12 @@
 {
     "user": "Hunter",
     "instructions": [
-        {"instruction": "WAIT"},
         {"instruction": "MAGMA", "args": [0, 0]},
         {"instruction": "TELEPORT", "args": [0, 0]},
-        {"instruction": "MOVE", "args": ["N"]},
-        {"instruction": "P", "args": ["N"]}
+        {"instruction": "LIGHTNING", "args": ["E"]},
+        {"instruction": "SLOOP", "args": [10]},
+        {"instruction": "LIGHTNING", "args": ["S"]},
+        {"instruction": "MOVE", "args": ["E"]},
+        {"instruction": "ELOOP"}
     ]
 }

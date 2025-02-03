@@ -31,7 +31,6 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
 
 ### Checklist Delete when Complete
     6. X Divination (Find where other player is)
-    7. Time Jump (Jump asm)
     8. Conditional Jump 
     11. Loop (Start/EndLoop)
     12. Invisibility
@@ -39,3 +38,30 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
 ## NEXT ON LIST
 
 Make a JSON object and read from it, turn the json data into a battle program and run it
+
+```
+loop_through_battle_program
+```
+need to change the main loop to a for loop that lasts for 1000 game ticks for example:
+
+loop 1000 {
+    p1 program chunk
+    p2 program chunk
+}
+and have two main chunks inside the loop, so every iteration of the loop will call each players program once. each chunk will track where each battle program is and if needed not move on if a sloop or eloop instruction is called. this way each battle program gets an instruction called every game tick
+
+
+## ASM INSTRUCTIONS
+
+```go
+func asm_summon_magma( g *gameSpace, player int, row int, col int ) 
+func asm_summon_acid ( g *gameSpace, player int, row int, col int ) 
+func asm_move( g *gameSpace, player int, direction string ) 
+func asm_teleport( g *gameSpace, player int, row int, col int ) 
+func asm_shield( g *gameSpace, player int, d_type int ) 
+func asm_wait( player int ) 
+func asm_recharge( g *gameSpace, player int, amount int ) 
+func asm_divination( g *gameSpace, player int, intensity int ) 
+func asm_lightning_bolt( g *gameSpace, player int, direction string
+```
+
