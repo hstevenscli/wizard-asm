@@ -37,24 +37,6 @@ func main() {
 	// 	fmt.Println("Spell Name:", instruction.Instruction, "Args:", instruction.Args)
 	// }
 
-
-
 }
 
-// Make sure n is between 0 inclusive and size exclusive
-func within_valid_range( n int, size int ) int {
-    if n < 0 {
-        return 0
-    }
-    if n >= size {
-        return size - 1
-    }
-    return n
-}
 
-func game_over(player int, message string) {
-	fmt.Printf("Player %v Hit. Player %v Loses\n", player, player)
-    fmt.Println("Message:", message)
-    gameover.Player[player] = true
-	gameover.Message[player] = message
-}

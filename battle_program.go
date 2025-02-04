@@ -60,12 +60,20 @@ func extractIntArg( arg interface{} ) int {
 	}
 }
 
+
 func execute_instruction( g *gameSpace, bp *battleProgram ) {
+    fmt.Println("PLAYER", bp.Player, "TAKING AN ACTION")
+    var c_args []interface{}
+    var instr string
+    if bp.Ptr < 0 || bp.Ptr >= len(bp.Instructions) {
+        instr = "PTRDEATH"
+    } else {
+        c_args = bp.Instructions[bp.Ptr].Args
+        instr = bp.Instructions[bp.Ptr].Instruction
+    }
+    fmt.Println(instr)
 
-	c_args := bp.Instructions[bp.Ptr].Args
-
-
-	switch bp.Instructions[bp.Ptr].Instruction {
+	switch instr {
 		// GAME MODIFYING INSTRUCTIONS START
 	case "WAIT":
 		asm_wait(bp.Player)
@@ -149,10 +157,13 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 			// Need logic to see if value passed is valid and it will kill player
 			// when executing
 			bp.Ptr += arg1
+            bp.Ptr--
 		} else {
 			log.Println("Int not found as argument for Jump")
 		}
 	case "CJUMP":
+    case "PTRDEATH":
+        game_over(bp.Player, "Died due to Pointer Death")
 	default:
 		log.Printf("INSTRUCTION NOT RECOGNIZED: %v", bp.Instructions[bp.Ptr].Instruction)
 	}
@@ -213,7 +224,6 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 	bp1.Player = 1
 	bp2.Player = 2
 	var count int
-	fmt.Println("1")
 	// If a player builds a program wrong the program crashes, fix it so that the 
 	// player loses if their bp.Ptr leaves the scope of their program
 	for i := 0; i <= 1000; i++ {
@@ -221,11 +231,9 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		execute_instruction( g, &bp1 )
 		bp1.Ptr++
 
-		fmt.Println("2")
 		//P2 Chunk
 		execute_instruction( g, &bp2 )
 		bp2.Ptr++
-		fmt.Println("3")
 
 		if check_gameover() {
 			break

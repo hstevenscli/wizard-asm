@@ -1,8 +1,8 @@
 {
     "user": "Hunter",
     "instructions": [
-        {"instruction": "WAIT"},
-        {"instruction": "WAIT"},
-        {"instruction": "JUMP", "args": [-2]}
+        {"instruction": "MOVE", "args": ["S"]},
+        {"instruction": "MOVE", "args": ["S"]},
+        {"instruction": "JUMP", "args": [-1]}
     ]
 }

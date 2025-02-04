@@ -14,6 +14,12 @@ type gameSpace struct {
     P2_prot int
     P1_mana int
     P2_mana int
+    // Array is 3 long, players come in values 1 & 2, so [0] should
+    // stay empty and not accessed, this makes for easier accessing
+    // of player array
+    // now that im typing this maybe i should just make a map to store
+    // this info
+    PI [3]pInfo
 }
 
 type pInfo struct {
@@ -68,6 +74,10 @@ func spawn_players( g *gameSpace ) {
     g.P1_loc[1] = p1_col
     g.P2_loc[0] = p2_row
     g.P2_loc[1] = p2_col
+    g.PI[0].ploc[0] = p1_row
+    g.PI[0].ploc[1] = p1_col
+    g.PI[1].ploc[0] = p2_row
+    g.PI[1].ploc[1] = p2_col
 
     fmt.Println("Spawned some players")
 }
@@ -99,6 +109,8 @@ func erase_player( g *gameSpace, player int ){
         p_row = g.P2_loc[0]
         p_col = g.P2_loc[1]
     }
+    g.PI[player - 1].ploc[0] = p_row
+    g.PI[player - 1].ploc[1] = p_row
     g.Arena[p_row][p_col] = 0
 }
 
@@ -111,19 +123,23 @@ func update_player_location_data( g *gameSpace, player int, row int, col int ) {
         g.P2_loc[0] = row
         g.P2_loc[1] = col
     }
+    g.PI[player - 1].ploc[0] = row
+    g.PI[player - 1].ploc[1] = col
 }
 
 // Redraw the player in the arena using location data in gamespace
 func draw_player( g *gameSpace, player int ){
     var p_row int
     var p_col int
-    if player == 1 {
-        p_row = g.P1_loc[0]
-        p_col = g.P1_loc[1]
-    } else {
-        p_row = g.P2_loc[0]
-        p_col = g.P2_loc[1]
-    }
+    // if player == 1 {
+    //     p_row = g.P1_loc[0]
+    //     p_col = g.P1_loc[1]
+    // } else {
+    //     p_row = g.P2_loc[0]
+    //     p_col = g.P2_loc[1]
+    // }
+    p_row = g.PI[player - 1].ploc[0]
+    p_col = g.PI[player - 1].ploc[1]
     g.Arena[p_row][p_col] = player
 
 }
@@ -134,4 +150,23 @@ func easy_move_wrapper( g *gameSpace, player int, row int, col int ) {
     erase_player(g, player)
     update_player_location_data(g, player, row, col)
     draw_player(g, player)
+}
+
+// Make sure n is between 0 inclusive and size exclusive
+func within_valid_range( n int, size int ) int {
+    if n < 0 {
+        return 0
+    }
+    if n >= size {
+        return size - 1
+    }
+    return n
+}
+
+
+func game_over(player int, message string) {
+	fmt.Printf("Player %v Died. Player %v Loses\n", player, player)
+    fmt.Println("Message:", message)
+    gameover.Player[player] = true
+	gameover.Message[player] = message
 }

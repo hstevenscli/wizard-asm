@@ -64,12 +64,17 @@ func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
 
 func asm_move( g *gameSpace, player int, direction string ) {
     // Using player int to make a pointer to easily access g.PX_loc
-    var p_loc *[2]int
+    var oldp_loc *[2]int
     if player == 1 {
-        p_loc = &g.P1_loc
+        oldp_loc = &g.P1_loc
     } else {
-        p_loc = &g.P2_loc
+        oldp_loc = &g.P2_loc
     }
+
+    p_loc := g.PI[player - 1].ploc
+    fmt.Println("Player moving:", player)
+    fmt.Println("IN MOVE NEW PLOC", p_loc)
+    fmt.Println("IN MOVE old PLOC", oldp_loc)
 
     var d_row int
     var d_col int
