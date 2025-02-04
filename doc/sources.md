@@ -184,3 +184,6 @@ These instructions can open up more creative strategies and make the programming
 ## Interfaces
 [This](https://research.swtch.com/interfaces)
 [And this](https://gobyexample.com/interfaces)
+
+## Maps
+[Digital Ocean](https://www.digitalocean.com/community/tutorials/understanding-maps-in-go)
