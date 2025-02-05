@@ -26,7 +26,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
     // fmt.Println(marr)
 
     // Summon Magma in 3x3 square
-    fmt.Printf("Magma Center: [%v, %v]\n", d_row, d_col)
+    // fmt.Printf("Magma Center: [%v, %v]\n", d_row, d_col)
     for row := -1; row < 2; row++ {
         for col := -1; col < 2; col++ {
             t_row := d_row + row
@@ -63,22 +63,12 @@ func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
 
 
 func asm_move( g *gameSpace, player int, direction string ) {
-    // Using player int to make a pointer to easily access g.PX_loc
-    var oldp_loc *[2]int
-    if player == 1 {
-        oldp_loc = &g.P1_loc
-    } else {
-        oldp_loc = &g.P2_loc
-    }
+
+	// making this (slice p_loc) to fit with the old code in the switch statements
 	var row, col int
 	row = g.Pinfo[player].Row
 	col = g.Pinfo[player].Col
-
-
     p_loc := []int{row, col}
-    fmt.Println("Player moving:", player)
-    fmt.Println("IN MOVE NEW PLOC", p_loc)
-    fmt.Println("IN MOVE old PLOC", oldp_loc)
 
     var d_row int
     var d_col int
@@ -151,13 +141,6 @@ func asm_wait( player int ) {
 }
 
 func asm_recharge( g *gameSpace, player int, amount int ) {
-    // var p_mana *int
-    // if player == 1 {
-    //     p_mana = &g.P1_mana
-    // } else {
-    //     p_mana = &g.P2_mana
-    // }
-    // *p_mana += amount
 	mana := g.Pinfo[player].Mana
 	mana += amount
     if mana > 200 {

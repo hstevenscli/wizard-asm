@@ -61,8 +61,9 @@ func extractIntArg( arg interface{} ) int {
 }
 
 
-func execute_instruction( g *gameSpace, bp *battleProgram ) {
-    fmt.Println("PLAYER", bp.Player, "TAKING AN ACTION")
+func execute_instruction( g *gameSpace, bp *battleProgram ) string {
+    // fmt.Println("PLAYER", bp.Player, "TAKING AN ACTION")
+	var r_msg string
     var c_args []interface{}
     var instr string
     if bp.Ptr < 0 || bp.Ptr >= len(bp.Instructions) {
@@ -71,13 +72,12 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
         c_args = bp.Instructions[bp.Ptr].Args
         instr = bp.Instructions[bp.Ptr].Instruction
     }
-    fmt.Println(instr)
 
 	switch instr {
 		// GAME MODIFYING INSTRUCTIONS START
 	case "WAIT":
 		asm_wait(bp.Player)
-		fmt.Println("Wait Happened")
+		r_msg = "WAIT"
 	case "MOVE":
 		dir := extractStringArg( c_args[0])
 		if dir != "" {
@@ -85,7 +85,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("String not found as argument for Move")
 		}
-		fmt.Println("Move Happened")
+		r_msg = "MOVE"
 	case "MAGMA":
 		arg1 := extractIntArg( c_args[0])
 		arg2 := extractIntArg( c_args[1])
@@ -94,6 +94,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Magma")
 		}
+		r_msg = "MAGMA"
 	case "TELEPORT":
 		arg1 := extractIntArg( c_args[0])
 		arg2 := extractIntArg( c_args[1])
@@ -102,6 +103,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Teleport")
 		}
+		r_msg = "TELEPORT"
 	case "ACID":
 		arg1 := extractIntArg( c_args[0])
 		arg2 := extractIntArg( c_args[1])
@@ -110,6 +112,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Acid")
 		}
+		r_msg = "ACID"
 	case "SHIELD":
 		arg1 := extractIntArg( c_args[0] )
 		if arg1 != -100 {
@@ -117,6 +120,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Shield")
 		}
+		r_msg = "SHIELD"
 	case "RECHARGE":
 		arg1 := extractIntArg( c_args[0] )
 		if arg1 != -100 {
@@ -124,6 +128,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Recharge")
 		}
+		r_msg = "RECHARGE"
 	case "DIVINATION":
 		arg1 := extractIntArg( c_args[0] )
 		if arg1 != -100 {
@@ -131,6 +136,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Divination")
 		}
+		r_msg = "DIVINATION"
 	case "LIGHTNING":
 		dir := extractStringArg( c_args[0])
 		if dir != "" {
@@ -138,18 +144,19 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("String not found as argument for Lightning")
 		}
+		r_msg = "LIGHTNING"
 	// GAME MODIFYING INSTRUCTIONS END
 	// INSTRUCTIONS MODIFYING BATTLEPROGRAM START
 	case "SLOOP":
 		bp.Niterations= extractIntArg( c_args[0]) - 1
 		bp.Lstart= bp.Ptr + 1
-		fmt.Println("SLOOP Happened")
+		r_msg = "SLOOP"
 	case "ELOOP":
 		if bp.Niterations> 0 {
 			bp.Niterations -= 1
 			bp.Ptr = bp.Lstart- 1
 		}
-		fmt.Println("ELOOP Happened")
+		r_msg = "ELOOP"
 	case "JUMP":
 		arg1 := extractIntArg( c_args[0])
 		if arg1 != -100 {
@@ -161,12 +168,17 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) {
 		} else {
 			log.Println("Int not found as argument for Jump")
 		}
+		r_msg = "JUMP"
 	case "CJUMP":
+		r_msg = "CJUMP"
     case "PTRDEATH":
         game_over(bp.Player, "Died due to Pointer Death")
+		r_msg = "PTRDEATH"
 	default:
 		log.Printf("INSTRUCTION NOT RECOGNIZED: %v", bp.Instructions[bp.Ptr].Instruction)
+		r_msg = "BADINSTRUCTION"
 	}
+	return r_msg
 
 
 }
@@ -215,7 +227,9 @@ func get_winner_loser_info() {
 			loser = 2
 		}
 		
+		fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])
 		fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
+
 	}
 
 }
@@ -228,22 +242,40 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 	// player loses if their bp.Ptr leaves the scope of their program
 	for i := 0; i <= 1000; i++ {
 		//P1 Chunk
-		execute_instruction( g, &bp1 )
+		p1_action := execute_instruction( g, &bp1 )
 		bp1.Ptr++
 
+		fmt.Println("===================================")
+		fmt.Printf("Player 1 | #Actions: %v\n", count+1)
+		fmt.Printf("Action: %v\n", p1_action)
+		fmt.Printf("Mana: %v\n", g.Pinfo[1].Mana)
+		fmt.Println("===================================")
+		fmt.Println()
+		pretty_print(g.Arena)
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
 		if check_gameover() {
 			break
 		}
-		pretty_print(g.Arena)
 
 		//P2 Chunk
-		execute_instruction( g, &bp2 )
+		p2_action := execute_instruction( g, &bp2 )
 		bp2.Ptr++
 
+		fmt.Println("===================================")
+		fmt.Printf("Player 2 | #Actions: %v\n", count+1)
+		fmt.Printf("Action: %v\n", p2_action)
+		fmt.Printf("Mana: %v\n", g.Pinfo[2].Mana)
+		fmt.Println("===================================")
+		fmt.Println()
+		pretty_print(g.Arena)
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
 		if check_gameover() {
 			break
 		}
-		pretty_print(g.Arena)
 
 		// Increment game counter
 		count++

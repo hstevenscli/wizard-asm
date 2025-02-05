@@ -8,17 +8,6 @@ import "math/rand"
 type gameSpace struct {
     Size int
     Arena [][]int
-    P1_loc [2]int
-    P2_loc [2]int
-    P1_prot int
-    P2_prot int
-    P1_mana int
-    P2_mana int
-    // Array is 3 long, players come in values 1 & 2, so [0] should
-    // stay empty and not accessed, this makes for easier accessing
-    // of player array
-    // now that im typing this maybe i should just make a map to store
-    // this info
 	Pinfo map[int]*pInfo
 }
 
@@ -70,13 +59,7 @@ func spawn_players( g *gameSpace ) {
     // Place Player 2
     g.Arena[p2_row][p2_col] = 2
 
-    // Record player positions in struct
-    g.P1_loc[0] = p1_row
-    g.P1_loc[1] = p1_col
-    g.P2_loc[0] = p2_row
-    g.P2_loc[1] = p2_col
-
-	// Init Pinfo structs and assign row, col info
+	// Init Pinfo structs and assign row, col info eg record player positions into the struct
 	p1 := pInfo{}
 	p2 := pInfo{}
 	g.Pinfo[1] = &p1
@@ -87,8 +70,6 @@ func spawn_players( g *gameSpace ) {
 	g.Pinfo[2].Col = p2_col
 
 	// Give players mana
-    g.P1_mana = 100
-    g.P2_mana = 100
 	g.Pinfo[1].Mana, g.Pinfo[2].Mana = 100, 100
 }
 
@@ -154,8 +135,8 @@ func within_valid_range( n int, size int ) int {
 
 
 func game_over(player int, message string) {
-	fmt.Printf("Player %v Died. Player %v Loses\n", player, player)
-    fmt.Println("Message:", message)
+	// fmt.Printf("Player %v Died. Player %v Loses\n", player, player)
+    // fmt.Println("Message:", message)
     gameover.Player[player] = true
 	gameover.Message[player] = message
 }
