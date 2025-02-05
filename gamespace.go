@@ -19,13 +19,14 @@ type gameSpace struct {
     // of player array
     // now that im typing this maybe i should just make a map to store
     // this info
-    PI [3]pInfo
+	Pinfo map[int]*pInfo
 }
 
 type pInfo struct {
-	ploc [2]int
-	prot int
-	mana int
+	Row int
+	Col int
+	Prot int
+	Mana int
 }
 
 type gameOver struct {
@@ -47,8 +48,8 @@ func init_gamespace( size int ) gameSpace {
     for i := range g.Arena {
         g.Arena[i] = make([]int, size)
     }
-    g.P1_mana = 100
-    g.P2_mana = 100
+	// Init Map
+	g.Pinfo = make(map[int]*pInfo)
     return g
 }
 
@@ -74,12 +75,21 @@ func spawn_players( g *gameSpace ) {
     g.P1_loc[1] = p1_col
     g.P2_loc[0] = p2_row
     g.P2_loc[1] = p2_col
-    g.PI[0].ploc[0] = p1_row
-    g.PI[0].ploc[1] = p1_col
-    g.PI[1].ploc[0] = p2_row
-    g.PI[1].ploc[1] = p2_col
 
-    fmt.Println("Spawned some players")
+	// Init Pinfo structs and assign row, col info
+	p1 := pInfo{}
+	p2 := pInfo{}
+	g.Pinfo[1] = &p1
+	g.Pinfo[2] = &p2
+	g.Pinfo[1].Row = p1_row
+	g.Pinfo[1].Col = p1_col
+	g.Pinfo[2].Row = p2_row
+	g.Pinfo[2].Col = p2_col
+
+	// Give players mana
+    g.P1_mana = 100
+    g.P2_mana = 100
+	g.Pinfo[1].Mana, g.Pinfo[2].Mana = 100, 100
 }
 
 // Make sure the location is valid first
@@ -102,44 +112,23 @@ func is_valid_loc( r int, c int, size int)bool {
 func erase_player( g *gameSpace, player int ){
     var p_row int
     var p_col int
-    if player == 1 {
-        p_row = g.P1_loc[0]
-        p_col = g.P1_loc[1]
-    } else {
-        p_row = g.P2_loc[0]
-        p_col = g.P2_loc[1]
-    }
-    g.PI[player - 1].ploc[0] = p_row
-    g.PI[player - 1].ploc[1] = p_row
+	p_row = g.Pinfo[player].Row
+	p_col = g.Pinfo[player].Col
     g.Arena[p_row][p_col] = 0
 }
 
 // Update the player location data in gamespace
 func update_player_location_data( g *gameSpace, player int, row int, col int ) {
-    if player == 1 {
-        g.P1_loc[0] = row
-        g.P1_loc[1] = col
-    } else {
-        g.P2_loc[0] = row
-        g.P2_loc[1] = col
-    }
-    g.PI[player - 1].ploc[0] = row
-    g.PI[player - 1].ploc[1] = col
+	g.Pinfo[player].Row = row
+	g.Pinfo[player].Col = col
 }
 
 // Redraw the player in the arena using location data in gamespace
 func draw_player( g *gameSpace, player int ){
     var p_row int
     var p_col int
-    // if player == 1 {
-    //     p_row = g.P1_loc[0]
-    //     p_col = g.P1_loc[1]
-    // } else {
-    //     p_row = g.P2_loc[0]
-    //     p_col = g.P2_loc[1]
-    // }
-    p_row = g.PI[player - 1].ploc[0]
-    p_col = g.PI[player - 1].ploc[1]
+	p_row = g.Pinfo[player].Row
+	p_col = g.Pinfo[player].Col
     g.Arena[p_row][p_col] = player
 
 }

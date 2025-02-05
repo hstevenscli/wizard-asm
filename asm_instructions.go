@@ -70,8 +70,12 @@ func asm_move( g *gameSpace, player int, direction string ) {
     } else {
         oldp_loc = &g.P2_loc
     }
+	var row, col int
+	row = g.Pinfo[player].Row
+	col = g.Pinfo[player].Col
 
-    p_loc := g.PI[player - 1].ploc
+
+    p_loc := []int{row, col}
     fmt.Println("Player moving:", player)
     fmt.Println("IN MOVE NEW PLOC", p_loc)
     fmt.Println("IN MOVE old PLOC", oldp_loc)
@@ -140,27 +144,23 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
 // @TODO Need to implement checks in necessary places for protections
 // At minimum in asm_summon_magma/acid/lightning asm_move/teleport
 func asm_shield( g *gameSpace, player int, d_type int ) {
-    var p_prot *int
-    if player == 1 {
-        p_prot = &g.P1_prot
-    } else {
-        p_prot = &g.P2_prot
-    }
-    *p_prot = d_type
+	g.Pinfo[player].Prot = d_type
 }
 
 func asm_wait( player int ) {
 }
 
 func asm_recharge( g *gameSpace, player int, amount int ) {
-    var p_mana *int
-    if player == 1 {
-        p_mana = &g.P1_mana
-    } else {
-        p_mana = &g.P2_mana
-    }
-    *p_mana += amount
-    if *p_mana > 200 {
+    // var p_mana *int
+    // if player == 1 {
+    //     p_mana = &g.P1_mana
+    // } else {
+    //     p_mana = &g.P2_mana
+    // }
+    // *p_mana += amount
+	mana := g.Pinfo[player].Mana
+	mana += amount
+    if mana > 200 {
         game_over(player, "Mana Overcharge")
     }
 }
@@ -169,15 +169,13 @@ func asm_recharge( g *gameSpace, player int, amount int ) {
 // intensity range 1-10 inclusive
 func asm_divination( g *gameSpace, player int, intensity int ) {
 
-    var p_loc *[2]int
+	var row, col int
+	row = g.Pinfo[player].Row
+	col = g.Pinfo[player].Col
 
-    // if player=1 p_loc should be for player 2, the one they are
-    // looking for
-    if player == 1 {
-        p_loc = &g.P2_loc
-    } else {
-        p_loc = &g.P1_loc
-    }
+
+    p_loc := []int{row, col}
+
 
     num := 11 - intensity
 
@@ -190,12 +188,12 @@ func asm_divination( g *gameSpace, player int, intensity int ) {
 func asm_lightning( g *gameSpace, player int, direction string ) {
 
     dir := strings.ToLower(direction)
-    var p_loc *[2]int
-    if player == 1 {
-        p_loc = &g.P1_loc
-    } else {
-        p_loc = &g.P2_loc
-    }
+
+	var row, col int
+	row = g.Pinfo[player].Row
+	col = g.Pinfo[player].Col
+    p_loc := []int{row, col}
+
     var s_row int = p_loc[0]
     var s_col int = p_loc[1]
     var row_mod int = 0

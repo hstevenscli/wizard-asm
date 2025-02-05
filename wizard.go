@@ -15,12 +15,14 @@ func main() {
 
     // Spawn players in gameSpace
     spawn_players( &g )
+	// fmt.Println(g)
 
     // Pretty print gameSpace
-    // pretty_print(g.Arena)
-    pretty_print(g.Arena)
-    // asm_summon_magma(&g, 2, 1, 1)
     fmt.Println()
+    pretty_print(g.Arena)
+    // pretty_print(g.Arena)
+    // asm_summon_magma(&g, 2, 1, 1)
+    // fmt.Println()
 	// asm_summon_acid(&g, 2, 0, 0)
     // asm_shield(&g, 2, 1)
     // asm_lightning(&g, 1, "s")
@@ -29,7 +31,7 @@ func main() {
 	program1 := read_json_to_bp("./program1.json")
 	// loop_through_battleProgram( &g, program )
 	game_loop_temp( &g, program, program1)
-    pretty_print(g.Arena)
+    // pretty_print(g.Arena)
 
 	
 	// for i, instruction := range program.Instructions {

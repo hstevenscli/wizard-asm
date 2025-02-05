@@ -231,6 +231,11 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		execute_instruction( g, &bp1 )
 		bp1.Ptr++
 
+		if check_gameover() {
+			break
+		}
+		pretty_print(g.Arena)
+
 		//P2 Chunk
 		execute_instruction( g, &bp2 )
 		bp2.Ptr++
@@ -238,8 +243,10 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		if check_gameover() {
 			break
 		}
-		count++
 		pretty_print(g.Arena)
+
+		// Increment game counter
+		count++
 	}
 	if count >= 1000 {
 		fmt.Println("Game Timed Out")
