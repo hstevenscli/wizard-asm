@@ -124,7 +124,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     player_val, p_hit := check_player(row, col, g) 
     if p_hit && player_val != player {
         fmt.Println("Teleport double death")
-        game_over(player + player_val, "Teleportation death")
+        game_over(0, "Teleportation death")
     }
     // Draw changes to g.Arena
     easy_move_wrapper(g, player, row, col)

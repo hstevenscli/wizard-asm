@@ -207,16 +207,16 @@ func loop_through_battleProgram( g *gameSpace, bp battleProgram ) {
 }
 
 func check_gameover() bool {
-	if gameover.Player[1] || gameover.Player[2] {
+	if gameover.Player[1] || gameover.Player[2] || gameover.Player[0] {
 		return true
 	}
 	return false
 }
 
 func get_winner_loser_info() {
-	if !check_gameover() {
-		fmt.Println("Nobody has lost. No winner or loser to identify")
-	} else {
+    if !check_gameover() {
+        fmt.Println("Nobody has lost. No winner or loser to identify")
+    } else {
 		var winner int
 		var loser int
 		if gameover.Player[1] {
@@ -226,12 +226,13 @@ func get_winner_loser_info() {
 			winner = 1
 			loser = 2
 		}
-		
-		fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])
-		fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
-
+        if gameover.Player[0] {
+            fmt.Println("Both players have died.")
+        } else {
+            fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])
+            fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
+        }
 	}
-
 }
 
 func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
