@@ -21,6 +21,11 @@ type battleProgram struct {
 	Niterations int
 }
 
+type battleReplay struct {
+    Replay [][][]int
+
+}
+
 // Read some json and put it into a battleProgram struct
 func read_json_to_bp( json_file string ) battleProgram {
     // Read json file into data
