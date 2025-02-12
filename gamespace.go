@@ -82,6 +82,37 @@ func check_player( r int, c int, g *gameSpace ) (int, bool) {
 	return 0, false
 }
 
+// Check if a player has triggered a gameover state
+func check_gameover() bool {
+	if gameover.Player[1] || gameover.Player[2] || gameover.Player[0] {
+		return true
+	}
+	return false
+}
+
+// Determine who won the game and who lost
+func get_winner_loser_info() {
+    if !check_gameover() {
+        fmt.Println("Nobody has lost. No winner or loser to identify")
+    } else {
+		var winner int
+		var loser int
+		if gameover.Player[1] {
+			winner = 2
+			loser = 1
+		} else {
+			winner = 1
+			loser = 2
+		}
+        if gameover.Player[0] {
+            fmt.Println("Both players have died.")
+        } else {
+            fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])
+            fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
+        }
+	}
+}
+
 func is_valid_loc( r int, c int, size int)bool {
     if r < 0 || r > size - 1 || c < 0 || c > size - 1 {
         return false

@@ -11,14 +11,13 @@ func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-func main() {
+func getBattleReplay(c *gin.Context) {
+	c.JSON(http.StatusOK, battleReplay)
+}
 
-	router := gin.Default()
-    router.GET("/albums", getAlbums)
-
-
+func runGame() {
     // Initialize size 
-    var size int = 10
+    var size int = 16
 
     // Initialize the gamespace to size = 10
     var g gameSpace = init_gamespace(size)
@@ -27,23 +26,40 @@ func main() {
 
     // Spawn players in gameSpace
     spawn_players( &g )
-	// fmt.Println(g)
+	battleReplay = replay{}
+	gameover = gameOver{}
 
-    // Pretty print gameSpace
-    fmt.Println("==================STARTING ARENA====================")
-    pretty_print(g.Arena)
-    fmt.Println("==================STARTING ARENA====================")
-    fmt.Println()
     program := read_json_to_bp("./program.json")
 	program1 := read_json_to_bp("./program1.json")
 
-	game_loop_temp( &g, program, program1)
-    // pretty_print(g.Arena)
 
-    router.GET("/bp", func(c *gin.Context){
-        c.IndentedJSON(http.StatusOK, program)
-        // c.String(http.StatusOK, "HEY THERE")
-    })
+	// Put starting arena state into replay
+	starting_arena := frame{ 
+		ArenaFrame: deep_copy_arena(g.Arena),
+		Player: 0,
+		Action: "Starting State",
+		Mana: 0,
+		Count: -1,
+	}
+	battleReplay.Frame = append(battleReplay.Frame, starting_arena)
+
+	game_loop_temp( &g, program, program1)
+	print_replay( battleReplay )
+	get_winner_loser_info()
+}
+
+func main() {
+
+	router := gin.Default()
+    router.GET("/albums", getAlbums)
+	router.GET("/br", getBattleReplay)
+	router.GET("/game", func(c *gin.Context) {
+		runGame()
+		c.String(200, "Game has been run")
+	})
+
+
+
     router.Run("localhost:8080")
 }
 

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"encoding/json"
+	"log"
 )
 
 type album struct {
@@ -19,4 +22,21 @@ var albums = []album{
 type user struct {
     Username string             `json:"username"`
     BattleProgram battleProgram `json:"battleprogram"`
+}
+
+// Read some json and put it into a battleProgram struct
+func read_json_to_bp( json_file string ) battleProgram {
+    // Read json file into data
+    data, err := os.ReadFile(json_file)
+    if err != nil {
+        log.Fatalf("Failed to read file: %v", err)
+    }
+
+    var program battleProgram
+    err = json.Unmarshal(data, &program)
+    if err != nil {
+        log.Fatalf("Failed to unmarshal json data: %v", err)
+    }
+
+    return program
 }
