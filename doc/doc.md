@@ -32,9 +32,8 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
 ### Checklist Delete when Complete
     6. X Divination (Find where other player is)
     8. Conditional Jump 
-    11. Loop (Start/EndLoop)
     12. Invisibility
-    13. Fix game_loop_temp and make it the real gameloop
+    13. Add mana costs to all of the spells
 
 ## NEXT ON LIST
 
@@ -72,3 +71,16 @@ func asm_lightning_bolt( g *gameSpace, player int, direction string
 __battleProgram:__
 * Lstart -> marking the start of a loop for SLoop instruction
 * Niterations -> used by ELoop to track how long the loop has been going
+
+
+## Mana Costs
+
+summon magma
+summon acid 
+move
+teleport
+shield
+wait
+recharge
+divination
+lightning bolt

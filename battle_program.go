@@ -58,6 +58,7 @@ func deep_copy_arena ( arena [][]int ) [][]int {
 	return acopy
 }
 
+// For debugging basically
 func print_replay( br replay) {
 	for i := 0; i < len( br.Frame ); i++ {
 		for j := 0; j < len(br.Frame[i].ArenaFrame); j++ {
@@ -71,7 +72,6 @@ func print_replay( br replay) {
 
 }
 
-
 // Extract a string from the arg interface; return an empty string if the arg is not a string
 func extractStringArg( arg interface{} ) string {
     switch v := arg.(type) {
@@ -83,6 +83,7 @@ func extractStringArg( arg interface{} ) string {
     }
 }
 
+// Extract an int from the arg interface; return -100 if the an int is unable to be extracted
 func extractIntArg( arg interface{} ) int {
 	switch v := arg.(type) {
 	case float64:
@@ -199,28 +200,6 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 
 
 }
-
-//@TODO DELETE THIS FUNCTION
-// THIS IS THE OLD GAME LOOP, NEW GAME LOOP HANDLES TWO PLAYERS
-// func loop_through_battleProgram( g *gameSpace, bp battleProgram ) {
-// 	// For marking where a sloop instruction happens
-// 	bp.Player = 2
-// 	var timeout int
-// 	for bp.Ptr < len(bp.Instructions) {
-// 		// fmt.Printf("Executing instr %v: %v\n", bp.Ptr, bp.Instructions[bp.Pointer])
-// 		execute_instruction( g, &bp)
-// 		bp.Ptr++
-// 		timeout++
-// 		fmt.Println("Timeout: ", timeout)
-// 		fmt.Println()
-// 		if timeout >= 1000 {
-// 			fmt.Println("TIMEOUT!")
-// 			break
-// 		}
-// 	}
-// 	fmt.Println("Loop ended. Game over")
-// }
-
 
 func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 	bp1.Player = 1
