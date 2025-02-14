@@ -9,7 +9,7 @@ import (
 
 var gameover gameOver
 
-// Shoot a fireball in the indicated direction
+// Summon magma in 3x3 square centered on target row,col
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 
     var d_row int = row
@@ -43,6 +43,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
             }
         }
     }
+    deplete_mana(g, player, 20)
 }
 
 // Summon an acid puddle on target location
@@ -58,6 +59,7 @@ func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
         // Turn the space into acid
         g.Arena[d_row][d_col] = 3
 	}
+    deplete_mana(g, player, 10)
 }
 
 
@@ -128,6 +130,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     }
     // Draw changes to g.Arena
     easy_move_wrapper(g, player, row, col)
+    deplete_mana(g, player, 100)
 }
 
 // Apply a protection to g.PX_prot, valid values: 1 fire, 2 lightning, 3 acid
@@ -135,6 +138,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
 // At minimum in asm_summon_magma/acid/lightning asm_move/teleport
 func asm_shield( g *gameSpace, player int, d_type int ) {
 	g.Pinfo[player].Prot = d_type
+    deplete_mana(g, player, 10)
 }
 
 func asm_wait( player int ) {
@@ -165,6 +169,8 @@ func asm_divination( g *gameSpace, player int, intensity int ) {
     num = rand.Intn(num)
     fmt.Println("Num:", num)
     fmt.Println("divining for player at: ", p_loc)
+    deplete_mana(g, player, 150)
+
 }
 
 
@@ -219,4 +225,5 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         // For debugging, remove later
         g.Arena[s_row][s_col] = 7
     }
+    deplete_mana(g, player, 100)
 }

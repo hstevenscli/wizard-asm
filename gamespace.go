@@ -24,6 +24,17 @@ type gameOver struct {
 	Message [3]string
 }
 
+// Reduce players mana, player dies if mana goes below zero
+func deplete_mana( g *gameSpace, player int, mana_cost int ) {
+    var manaptr *int = &g.Pinfo[player].Mana
+    var new_amount int = *manaptr - mana_cost
+    if new_amount < 0 {
+        game_over(player, "Died of mana depletion")
+    } else {
+        *manaptr = new_amount
+    }
+}
+
 // Print out gameSpace in a human-viewable format
 func pretty_print( slice [][]int ) {
     for i := range slice {
@@ -104,7 +115,7 @@ func get_winner_loser_info() {
 			winner = 1
 			loser = 2
 		}
-        if gameover.Player[0] {
+        if gameover.Player[0] || (gameover.Player[1] && gameover.Player[2]) {
             fmt.Println("Both players have died.")
         } else {
             fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])

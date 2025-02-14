@@ -214,6 +214,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		if check_gameover() {
 			break
 		}
+        fmt.Println("mana in game loop", g.Pinfo[1].Mana)
 
 		//P2 Chunk
 		p2_action, args := execute_instruction( g, &bp2 )

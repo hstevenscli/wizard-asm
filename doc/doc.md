@@ -2,31 +2,25 @@
 
 ### Notes
 
-return player location whenver they use a move or teleport instr. location is returned when spawning players
-
-make a teleport instruction. moves the player to a random location, high mana cost
-
-make the mana Regen take an input but the player will keep doing that same thing depending on how high the number is. eg every 5 mana Regen takes one game cycle.
-
-make fireball a high cost spell.
-
 make a check instruction, it will check whatever is on the stack. make certain instructions return certain values. eg the move spell returns 0 if the move action can't be completed.
 
 an instruction to find out where the enemy is
 an instruction to hide yourself
-a shield instruction 
 a decoy instruction 
 lightning/beam instruction
 a spreading fire instruction
 
 
-#### Update 01/14/25
-
-change fireball to magma eruption
-let the spell take in two numbers, row and col, to allow for better strategies around that spell
-let most spells work in this way, these will mesh better with the divination/find enemy spell
+#### Brainstorming
 
 divination returns a row,col somwhere in an area around the enemy with accuracy increasing as more time and mana is spent on the spell
+or have divination be controlled by the player, they give the coords of the location they want to search and get told if a player is detected. Would work better with decoy this way, if decoy is added to the game
+
+Divination like this would either be
+DIV row1 col1 row2 col2
+so its a square area they search
+
+or 
 
 
 ### Checklist Delete when Complete
@@ -37,19 +31,12 @@ divination returns a row,col somwhere in an area around the enemy with accuracy 
 
 ## NEXT ON LIST
 
-Make a JSON object and read from it, turn the json data into a battle program and run it
-
-```
-loop_through_battle_program
-```
-need to change the main loop to a for loop that lasts for 1000 game ticks for example:
-
-loop 1000 {
-    p1 program chunk
-    p2 program chunk
-}
-and have two main chunks inside the loop, so every iteration of the loop will call each players program once. each chunk will track where each battle program is and if needed not move on if a sloop or eloop instruction is called. this way each battle program gets an instruction called every game tick
-
+Put next item here:
+- [ ] Conditional and crystal ball (for storing numbers)
+- [ ] Divination
+- [ ] Add mana cost to spells 
+- [ ] Invisibility?
+- [ ] Decoy Instruction
 
 ## ASM INSTRUCTIONS
 
@@ -75,12 +62,16 @@ __battleProgram:__
 
 ## Mana Costs
 
-summon magma
-summon acid 
-move
-teleport
-shield
-wait
-recharge
-divination
-lightning bolt
+| Spell | Cost |
+| - | - |
+| Magma | 20   |
+| Acid   | 10   |
+| Move  |  0  |
+| Teleport   | 100  |
+| Shield   | 10   |
+| Wait   |  0  |
+| Recharge | 0 | 
+| Divination | 150
+| Lightning | 50
+
+
