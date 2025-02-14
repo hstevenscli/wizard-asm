@@ -49,6 +49,19 @@ func runGame() {
 }
 
 func main() {
+    // // Initialize size 
+    // var size int = 4
+
+    // // Initialize the gamespace to size = 10
+    // var g gameSpace = init_gamespace(size)
+
+    // // Spawn players in gameSpace
+    // spawn_players( &g )
+	// pretty_print(g.Arena)
+	// asm_divination( &g, 1, 0)
+	// fmt.Println(g.Pinfo[1].CrystalBall)
+	// fmt.Println(g.Pinfo[1].Mana)
+	// get_winner_loser_info()
 
 	router := gin.Default()
     router.GET("/albums", getAlbums)

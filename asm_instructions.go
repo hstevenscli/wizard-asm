@@ -4,7 +4,6 @@ import (
     "fmt"
     "math/rand"
     "strings"
-
 )
 
 var gameover gameOver
@@ -153,24 +152,24 @@ func asm_recharge( g *gameSpace, player int, amount int ) {
 }
 
 // Hone in on location of enemy, player = player who cast it,
-// intensity range 1-10 inclusive
-func asm_divination( g *gameSpace, player int, intensity int ) {
-
-	var row, col int
-	row = g.Pinfo[player].Row
-	col = g.Pinfo[player].Col
-
-
-    p_loc := []int{row, col}
-
-
-    num := 11 - intensity
-
-    num = rand.Intn(num)
-    fmt.Println("Num:", num)
-    fmt.Println("divining for player at: ", p_loc)
-    deplete_mana(g, player, 150)
-
+// level range 0-5 inclusive 0 is most accurate, 5 is least accurate
+func asm_divination( g *gameSpace, player int, level int ) {
+	var tprow, tpcol int
+	if player == 1 {
+		fmt.Println(1)
+		tprow = g.Pinfo[2].Row
+		tpcol = g.Pinfo[2].Col
+	} else {
+		tprow = g.Pinfo[1].Row
+		tpcol = g.Pinfo[1].Col
+	}
+	row_shift := rand.Intn(level * 2 + 1) - level
+	col_shift := rand.Intn(level * 2 + 1) - level
+	r_row := tprow + row_shift
+	r_col := tpcol + col_shift
+	g.Pinfo[player].CrystalBall[0] = r_row
+	g.Pinfo[player].CrystalBall[1] = r_col
+    deplete_mana(g, player, 200 - (level * 10))
 }
 
 

@@ -16,6 +16,7 @@ type pInfo struct {
 	Col int
 	Prot int
 	Mana int
+	CrystalBall [2]int
 }
 
 type gameOver struct {
@@ -175,7 +176,8 @@ func within_valid_range( n int, size int ) int {
     return n
 }
 
-
+// sets gameover to true for player in the gameOver object as well as a death message
+// Need to call get_winner_loser_info() to see game over messages
 func game_over(player int, message string) {
 	// fmt.Printf("Player %v Died. Player %v Loses\n", player, player)
     // fmt.Println("Message:", message)
