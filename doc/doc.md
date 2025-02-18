@@ -13,28 +13,14 @@ a spreading fire instruction
 
 #### Brainstorming
 
-divination returns a row,col somwhere in an area around the enemy with accuracy increasing as more time and mana is spent on the spell
-or have divination be controlled by the player, they give the coords of the location they want to search and get told if a player is detected. Would work better with decoy this way, if decoy is added to the game
-
-Divination like this would either be
-DIV row1 col1 row2 col2
-so its a square area they search
-
-or 
-
-
-### Checklist Delete when Complete
-    6. X Divination (Find where other player is)
-    8. Conditional Jump 
-    12. Invisibility
-    13. Add mana costs to all of the spells
+Divination right now returns a random location in the vicinity of the other player. Might change later
 
 ## NEXT ON LIST
 
 Put next item here:
 - [ ] Conditional and crystal ball (for storing numbers)
-- [ ] Divination
-- [ ] Add mana cost to spells 
+- [x] Divination
+- [x] Add mana cost to spells 
 - [ ] Invisibility?
 - [ ] Decoy Instruction
 
@@ -73,5 +59,3 @@ __battleProgram:__
 | Recharge | 0 | 
 | Divination | 150
 | Lightning | 50
-
-

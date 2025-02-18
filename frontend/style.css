@@ -1,0 +1,13 @@
+html, body {
+    margin-left: 50px;
+    padding: 50px;
+}
+
+p {
+    color: limegreen;
+}
+
+textarea {
+    font-weight: bold;
+    text-transform: uppercase;
+}
