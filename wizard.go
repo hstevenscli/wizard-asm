@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 
@@ -13,6 +14,10 @@ func getAlbums(c *gin.Context) {
 
 func getBattleReplay(c *gin.Context) {
 	c.JSON(http.StatusOK, battleReplay)
+}
+
+func receivedJSON() {
+	fmt.Println("GOT SOME JSSON")
 }
 
 func runGame() {
@@ -64,8 +69,23 @@ func main() {
 	// get_winner_loser_info()
 
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080"}, // Change to match your frontend URL
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+        AllowCredentials: true,
+    }))
+
+
+
     router.GET("/albums", getAlbums)
 	router.GET("/br", getBattleReplay)
+	router.GET("/json", func(c *gin.Context) {
+		receivedJSON()
+		c.JSON(200, gin.H{"msg": "Got your json"})
+	})
+	router.POST("/submitprogram", )
+
 	router.GET("/game", func(c *gin.Context) {
 		runGame()
 		c.String(200, "Game has been run")
@@ -73,7 +93,7 @@ func main() {
 
 
 
-    router.Run("localhost:8080")
+    router.Run("localhost:8081")
 }
 
 
