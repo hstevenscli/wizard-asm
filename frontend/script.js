@@ -2,7 +2,7 @@
 
 main();
 
-var url = "http://localhost:8081/json"
+var url = "http://localhost:8081/battleprogram"
 
 function getTextareaLines() {
     let text = document.querySelector(".textarea").value;
@@ -36,7 +36,15 @@ async function main() {
             program.instructions.push(standbyobj);
         }
         let jsonProgram = JSON.stringify(program);
-        let response = await fetch(url);
+        console.log(jsonProgram);
+
+        let response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: jsonProgram
+        });
         if (response.ok) {
             let json = await response.json();
             console.log("Response:", json)

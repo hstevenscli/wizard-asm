@@ -16,8 +16,24 @@ func getBattleReplay(c *gin.Context) {
 	c.JSON(http.StatusOK, battleReplay)
 }
 
-func receivedJSON() {
-	fmt.Println("GOT SOME JSSON")
+func postBattleProgram(c *gin.Context) {
+	var newBattleProgram battleProgram
+
+	// Call bind json and return if an error occurs
+	if err := c.BindJSON(&newBattleProgram); err != nil {
+		return
+	}
+
+
+	// Save program to the database
+	fmt.Println(newBattleProgram)
+
+
+
+	// Modify battleProgram
+	// newBattleProgram.Player = 2
+
+	c.IndentedJSON(http.StatusCreated, newBattleProgram)
 }
 
 func runGame() {
@@ -79,16 +95,18 @@ func main() {
 
 
     router.GET("/albums", getAlbums)
-	router.GET("/br", getBattleReplay)
+
+	router.GET("/battlereplay", getBattleReplay)
+
 	router.GET("/json", func(c *gin.Context) {
-		receivedJSON()
 		c.JSON(200, gin.H{"msg": "Got your json"})
 	})
-	router.POST("/submitprogram", )
 
-	router.GET("/game", func(c *gin.Context) {
+	router.POST("/battleprogram", postBattleProgram)
+
+	router.POST("/game", func(c *gin.Context) {
 		runGame()
-		c.String(200, "Game has been run")
+		c.String(201, "Game has been run")
 	})
 
 
