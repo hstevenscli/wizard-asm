@@ -10,6 +10,27 @@ function getTextareaLines() {
     return arr
 }
 
+function linesToObject() {
+    let program = {user: user, instructions: []}
+    let lines = getTextareaLines();
+
+    for (let i = 0; i < lines.length; i++) {
+        let standbyobj = {instruction: "", args: []}
+        let line = lines[i].split(" ");
+        standbyobj.instruction = line[0];
+        for (let j = 1; j < line.length; j++) {
+            let copy = line[j]
+            if (!isNaN(Number(copy))) {
+                standbyobj.args.push(Number(line[j]))
+            } else {
+                standbyobj.args.push(line[j])
+            }
+        }
+        program.instructions.push(standbyobj);
+    }
+    return program;
+}
+
 async function main() {
 
     // Need to get a cookie or somethign for the appropriate user?
@@ -18,23 +39,9 @@ async function main() {
     let submitbutton = document.querySelector("#submitbutton");
     submitbutton.addEventListener("click", submitProgram);
     async function submitProgram(event) {
-        let program = {user: user, instructions: []}
-        let lines = getTextareaLines();
 
-        for (let i = 0; i < lines.length; i++) {
-            let standbyobj = {instruction: "", args: []}
-            let line = lines[i].split(" ");
-            standbyobj.instruction = line[0];
-            for (let j = 1; j < line.length; j++) {
-                let copy = line[j]
-                if (!isNaN(Number(copy))) {
-                    standbyobj.args.push(Number(line[j]))
-                } else {
-                    standbyobj.args.push(line[j])
-                }
-            }
-            program.instructions.push(standbyobj);
-        }
+        let program = linesToObject();
+
         let jsonProgram = JSON.stringify(program);
         console.log(jsonProgram);
 
