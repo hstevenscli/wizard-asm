@@ -13,12 +13,70 @@
         <script src="script.js" type="module"></script>
     </head>
     <body>
+        <div id="app">
         <div class="block">
             <h2>Welcome To The Battle Arena</h2>
-            <p>Write some stuff here</p>
+            <p>{{ greeting }}</p>
             <textarea class="textarea"></textarea>
             <button class="button" id="submitbutton">Submit Program</button>
         </div>
+        <button @click="showLogin" class="button" id="opensignin">Sign In</button>
+
+
+        <div class="modal" :class="{'is-active': showLoginModal}">
+            <div class="modal-background" @click="showLoginModal = false"></div>
+            <div class="modal-content">
+                <!-- Any other Bulma elements you want -->
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                    <input class="input" type="email" placeholder="Username">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <span class="icon is-small is-right">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                    <input class="input" type="password" placeholder="Password">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    </p>
+                </div>
+
+                <div class="field" v-if="showVerifyPassword">
+                    <p class="control has-icons-left">
+                    <input class="input" type="passwordverify" placeholder="Verify Password">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <p class="control">
+                    <button @click="login" v-if="showLoginButton" class="button is-success">
+                        Login
+                    </button>
+                    <button @click="register" v-if="showRegisterButton" class="button is-info ml-1">
+                        Register
+                    </button>
+                    </p>
+                </div>
+                <p v-if="showSignUpText" class="control">Don't have an account? <a @click="signUp">Sign Up</a></p>
+                <p v-if="showLoginText" class="control">Already have an account? <a @click="loginLayout">Login</a></p>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; showVerifyPassword = false;"></button>
+        </div>
+
+
+
+        </div>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="vueapp.js"></script>
     </body>
 </html>
 
