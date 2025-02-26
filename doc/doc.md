@@ -23,6 +23,8 @@ Put next item here:
 - [x] Add mana cost to spells 
 - [ ] Invisibility?
 - [ ] Decoy Instruction
+- [ ] Flesh out frontend; Get Login/Register working
+- [ ] Hook up backend to mongoDB
 
 ## ASM INSTRUCTIONS
 

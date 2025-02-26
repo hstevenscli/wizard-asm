@@ -24,11 +24,8 @@ func postBattleProgram(c *gin.Context) {
 		return
 	}
 
-
 	// Save program to the database
 	fmt.Println(newBattleProgram)
-
-
 
 	// Modify battleProgram
 	// newBattleProgram.Player = 2
@@ -103,6 +100,9 @@ func main() {
 	})
 
 	router.POST("/battleprogram", postBattleProgram)
+	router.POST("/register", func(c *gin.Context) {
+		c.JSON(201, gin.H{"Response": "Registered Successfully"})
+	})
 
 	router.POST("/game", func(c *gin.Context) {
 		runGame()
