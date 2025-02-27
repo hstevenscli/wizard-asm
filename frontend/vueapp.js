@@ -9,7 +9,9 @@ Vue.createApp({
             showRegisterButton: false,
             showSignUpText: true,
             showLoginText: false,
-
+            showBattlePage: false,
+            showReplaysPage: false,
+            showTutorialPage: true,
         };
     },
     methods: {
@@ -62,8 +64,10 @@ Vue.createApp({
             return arr
         },
         linesToObject: function () {
+            // @TODO change to get actual user
+            var user = "Hunter";
             let program = {user: user, instructions: []}
-            let lines = getTextareaLines();
+            let lines = this.getTextareaLines();
 
             for (let i = 0; i < lines.length; i++) {
                 let standbyobj = {instruction: "", args: []}
@@ -82,6 +86,9 @@ Vue.createApp({
             return program;
         },
         submitProgram: async function () {
+            let button = document.getElementById("sbutton");
+            button.classList.add("is-loading");
+            var url = "http://localhost:8081/battleprogram"
             let program = this.linesToObject();
             let jsonProgram = JSON.stringify(program);
             let response = await fetch(url, {
@@ -93,10 +100,70 @@ Vue.createApp({
             });
             if (response.ok) {
                 let json = await response.json();
+                button.classList.remove("is-loading");
                 console.log("Response:", json)
             } else {
                 alert("HTTP-Error: " + response.status);
+                button.classList.remove("is-loading");
             }
+            button.classList.remove("is-loading");
+        },
+        showTutorial: function () {
+            this.showBattlePage = false;
+            this.showReplaysPage = false;
+            this.showTutorialPage = true;
+
+        },
+        showBattle: function () {
+            this.showBattlePage = true;
+            this.showReplaysPage = false;
+            this.showTutorialPage = false;
+        },
+        showReplays: function () {
+            this.showBattlePage = false;
+            this.showReplaysPage = true;
+            this.showTutorialPage = false;
+        },
+        runGame: async function () {
+            let button = document.getElementById("gamebutton");
+            button.classList.add("is-loading");
+            var url = "http://localhost:8081/game"
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                button.classList.remove("is-loading");
+                console.log("Response:", json)
+            } else {
+                alert("HTTP-Error: " + response.status);
+                button.classList.remove("is-loading");
+            }
+            button.classList.remove("is-loading");
+
+        },
+        getReplays: async function () {
+            let url = "http://localhost:8081/battlereplay" 
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                if (json.Frame === null) {
+                    console.log("No games to grab");
+                } else {
+                    console.log(json);
+                }
+            } else {
+                alert("HTTP-Error: ", + response.status);
+            }
+
         }
     },
     created: async function () {

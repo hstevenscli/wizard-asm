@@ -106,7 +106,7 @@ func main() {
 
 	router.POST("/game", func(c *gin.Context) {
 		runGame()
-		c.String(201, "Game has been run")
+        c.JSON(201, gin.H{"msg": "Game has been run"})
 	})
 
 

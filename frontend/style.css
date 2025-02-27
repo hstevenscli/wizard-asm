@@ -1,8 +1,8 @@
-html, body {
-    /* margin-left: 50px; */
-    /* padding: 50px; */
-    margin: 2em;
-}
+/* html, body { */
+/*     /1* margin-left: 50px; *1/ */
+/*     /1* padding: 50px; *1/ */
+/*     margin-left: 1em; */
+/* } */
 
 p {
     color: limegreen;
@@ -12,3 +12,7 @@ textarea {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+/* .navbar { */
+/*     background-color: white; */
+/* } */
