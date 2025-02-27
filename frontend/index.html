@@ -103,8 +103,37 @@
         <div v-if="showReplaysPage" class="replayspage">
             <h1>REPLAYS</h1>
             <button @click="runGame" class="button" id="gamebutton">Run Game</button>
-            <button @click="getReplays" class="button">Get Replay</button>
+            <button @click="getReplay" class="button">Get Replay</button>
+            <!-- <li v-for="obj in currentReplay.Frames"> -->
+            <!--     <p v-for="arr in obj.ArenaFrame"> -->
+            <!--         {{ arr }} -->
+            <!--     </p> -->
 
+            <!-- </li> -->
+            <button @click="startReplay" class="button">Start Replay</button>
+            <!-- <div v-for="frame in currentReplay.Frames" :key="frame.Player"> -->
+            <!--     <p v-for="row in frame.ArenaFrame" :key="row"> -->
+            <!--         {{ row }} -->
+            <!--     </p> -->
+            <!--     <div>Player: {{ frame.Player }} | #Actions: {{ frame.Count }}</div> -->
+            <!--     <div>Action: {{ frame.Action }} {{ frame.Args }}</div> -->
+            <!--     <div>Mana: {{ frame.Mana }}</div> -->
+            <!--     <br> -->
+            <!-- </div> -->
+
+            <!-- <p>{{frameToDisplay}}</p> -->
+            <div v-for="row in frameToDisplay.ArenaFrame">
+                {{ row }}
+            </div>
+            <div v-if="frameToDisplay" id="info">
+                <div>Player: {{ frameToDisplay.Player }} | #Actions: {{ frameToDisplay.Count }}</div>
+                <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
+                <div>Mana: {{ frameToDisplay.Mana }}</div>
+            </div>
+            <br>
+
+            <canvas v-show="true" id="myCanvas" width="610" height="610" style="border:1px solid black;">
+            </canvas>
         </div>
 
 

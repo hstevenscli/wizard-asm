@@ -29,7 +29,7 @@ type frame struct {
 }
 
 type replay struct {
-    Frame []frame
+    Frames []frame
 }
 
 var battleReplay replay
@@ -46,7 +46,7 @@ func add_frame_to_replay( arena [][]int, player int, pinfo pInfo, count int, act
 		Args: args,
 	}
 	// add frame to replay
-	battleReplay.Frame = append(battleReplay.Frame, f)
+	battleReplay.Frames = append(battleReplay.Frames, f)
 }
 
 func deep_copy_arena ( arena [][]int ) [][]int {
@@ -60,13 +60,13 @@ func deep_copy_arena ( arena [][]int ) [][]int {
 
 // For debugging basically
 func print_replay( br replay) {
-	for i := 0; i < len( br.Frame ); i++ {
-		for j := 0; j < len(br.Frame[i].ArenaFrame); j++ {
-			fmt.Println(br.Frame[i].ArenaFrame[j])
+	for i := 0; i < len( br.Frames ); i++ {
+		for j := 0; j < len(br.Frames[i].ArenaFrame); j++ {
+			fmt.Println(br.Frames[i].ArenaFrame[j])
 		}
-		fmt.Printf("Player %v | #Actions: %v\n", br.Frame[i].Player, br.Frame[i].Count)
-		fmt.Printf("Action: %v\n", br.Frame[i].Action)
-		fmt.Printf("Mana: %v\n", br.Frame[i].Mana)
+		fmt.Printf("Player %v | #Actions: %v\n", br.Frames[i].Player, br.Frames[i].Count)
+		fmt.Printf("Action: %v\n", br.Frames[i].Action)
+		fmt.Printf("Mana: %v\n", br.Frames[i].Mana)
 		fmt.Println()
 	}
 

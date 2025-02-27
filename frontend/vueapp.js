@@ -12,6 +12,8 @@ Vue.createApp({
             showBattlePage: false,
             showReplaysPage: false,
             showTutorialPage: true,
+            currentReplay: {},
+            frameToDisplay: false,
         };
     },
     methods: {
@@ -123,6 +125,7 @@ Vue.createApp({
             this.showBattlePage = false;
             this.showReplaysPage = true;
             this.showTutorialPage = false;
+            this.drawCanvas();
         },
         runGame: async function () {
             let button = document.getElementById("gamebutton");
@@ -145,7 +148,7 @@ Vue.createApp({
             button.classList.remove("is-loading");
 
         },
-        getReplays: async function () {
+        getReplay: async function () {
             let url = "http://localhost:8081/battlereplay" 
             let response = await fetch(url, {
                 method: 'GET',
@@ -155,19 +158,81 @@ Vue.createApp({
             });
             if (response.ok) {
                 let json = await response.json();
-                if (json.Frame === null) {
+                if (json.Frames === null) {
                     console.log("No games to grab");
                 } else {
                     console.log(json);
+                    this.currentReplay = json;
                 }
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
+        },
+        startReplay: function () {
+            var index = 0;
+            var waitTime = 1000;
+            let interval = setInterval(() => {
+                console.log("Index is:", index)
+                console.log("Every 1 Second a second passses...", index);
+                this.frameToDisplay = this.currentReplay.Frames[index];
+                index++;
+                waitTime--;
+                
+                if (index > this.currentReplay.Frames.length) {
+                    clearInterval(interval);
+                    // -2 is the last frame to be displayed
+                    this.frameToDisplay = this.currentReplay.Frames[index-2];
+                    return;
+                }
+            }, waitTime);
+        },
+        drawCanvas: function () {
+            setTimeout(() => {
+                const canvas = document.getElementById("myCanvas");
+                const ctx = canvas.getContext("2d");
+                var offset = 2;
+                var row = offset;
+                size = 36;
+                var color1 = "grey";
+                var color2 = "grey";
 
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, 610, 610)
+
+                // ctx.fillRect(2, 2, 36, 36)
+
+                for (let j=0; j < 16; j++) {
+                    var num = offset;
+                    for (let i= 0; i < 8; i++) {
+                        if (j % 2 == 0) {
+                            ctx.fillStyle = color1;
+                        } else {
+                            ctx.fillStyle = color2;
+                        }
+                        ctx.fillRect(num, row, size, size);
+                        if ( j % 2 == 0 ) {
+                            ctx.fillStyle = color2;
+                        } else {
+                            ctx.fillStyle = color1;
+                        }
+                        ctx.fillRect(offset + num + size, row, size, size);
+                        num = offset + offset + num + size*2;
+                        console.log(i);
+                    }
+                    row = offset + row + size;
+                }
+                ctx.beginPath();
+                ctx.arc(20, 20, 18, 0, 2 * Math.PI);
+                // ctx.fill();
+                ctx.stroke();
+
+            }, 1);
         }
     },
     created: async function () {
         this.helloThere();
+    },
+    mounted: function () {
     }
 
 }).mount("#app")

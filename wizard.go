@@ -59,7 +59,7 @@ func runGame() {
 		Mana: 0,
 		Count: -1,
 	}
-	battleReplay.Frame = append(battleReplay.Frame, starting_arena)
+	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
 
 	game_loop_temp( &g, program, program1)
 	print_replay( battleReplay )
