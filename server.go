@@ -19,10 +19,10 @@ var albums = []album{
     {ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
 }
 
-type user struct {
-    Username string             `json:"username"`
-    BattleProgram battleProgram `json:"battleprogram"`
-}
+// type user struct {
+//     Username string             `json:"username"`
+//     BattleProgram battleProgram `json:"battleprogram"`
+// }
 
 // Read some json and put it into a battleProgram struct
 func read_json_to_bp( json_file string ) battleProgram {

@@ -1,87 +1,88 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+    "log"
+    "encoding/json"
+    "os"
+    "context"
+    "fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+    "github.com/joho/godotenv"
+
+    "go.mongodb.org/mongo-driver/v2/bson"
+    "go.mongodb.org/mongo-driver/v2/mongo"
+    "go.mongodb.org/mongo-driver/v2/mongo/options"
+
 )
 
+func connectToMongo() *mongo.Client {
+    // load env variable
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+    // get mongo uri
+    uri := os.Getenv("MONGODB_URI")
+    docs := "www.mongodb.com/docs/drivers/go/current/"
+    if uri == "" {
+        log.Fatal("Set your 'MONGODB_URI' environment variable. " +
+			"See: " + docs +
+			"usage-examples/#environment-variable")
+    }
 
-func getAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
-}
-
-func getBattleReplay(c *gin.Context) {
-	c.JSON(http.StatusOK, battleReplay)
-}
-
-func postBattleProgram(c *gin.Context) {
-	var newBattleProgram battleProgram
-
-	// Call bind json and return if an error occurs
-	if err := c.BindJSON(&newBattleProgram); err != nil {
-		return
+    // connect with the right options
+    client, err := mongo.Connect(options.Client().ApplyURI(uri))
+	if err != nil {
+        log.Fatal("Error connecting to Mongodb", err)
 	}
 
-	// Save program to the database
-	fmt.Println(newBattleProgram)
 
-	// Modify battleProgram
-	// newBattleProgram.Player = 2
-
-	c.IndentedJSON(http.StatusCreated, newBattleProgram)
+    return client
 }
 
-func runGame() {
-    // Initialize size 
-    var size int = 16
 
-    // Initialize the gamespace to size = 10
-    var g gameSpace = init_gamespace(size)
+func getUserByUsername(client *mongo.Client) {
+    var result bson.M
 
-    fmt.Printf("SIZE: %v\n", size)
+    coll := client.Database("wizardb").Collection("users")
+    username := "Hunter"
 
-    // Spawn players in gameSpace
-    spawn_players( &g )
-	battleReplay = replay{}
-	gameover = gameOver{}
+    err := coll.FindOne(context.TODO(), bson.D{{"user", username}}).Decode(&result)
+    if err == mongo.ErrNoDocuments {
+        fmt.Printf("No document found with user %s\n", username)
+        return
+    }
+    if err != nil {
+        panic(err)
+    }
 
-    program := read_json_to_bp("./program.json")
-	program1 := read_json_to_bp("./program1.json")
+    jsonData, err := json.MarshalIndent(result, "", "  ")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("%s\n", jsonData)
+}
 
 
-	// Put starting arena state into replay
-	starting_arena := frame{ 
-		ArenaFrame: deep_copy_arena(g.Arena),
-		Player: 0,
-		Action: "Starting State",
-		Mana: 0,
-		Count: -1,
-	}
-	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
-
-	game_loop_temp( &g, program, program1)
-	print_replay( battleReplay )
-	get_winner_loser_info()
+func mongoMiddleware(client *mongo.Client) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        c.Set("mongoClient", client)
+        c.Next()
+    }
 }
 
 func main() {
-    // // Initialize size 
-    // var size int = 4
 
-    // // Initialize the gamespace to size = 10
-    // var g gameSpace = init_gamespace(size)
-
-    // // Spawn players in gameSpace
-    // spawn_players( &g )
-	// pretty_print(g.Arena)
-	// asm_divination( &g, 1, 0)
-	// fmt.Println(g.Pinfo[1].CrystalBall)
-	// fmt.Println(g.Pinfo[1].Mana)
-	// get_winner_loser_info()
+    client := connectToMongo()
+    defer func() {
+        if err := client.Disconnect(context.TODO()); err != nil {
+            log.Fatal("Error disconnecting from MongoDB:", err)
+		}
+	}()
 
 	router := gin.Default()
+    router.Use(mongoMiddleware(client))
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080"}, // Change to match your frontend URL
         AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -90,28 +91,20 @@ func main() {
     }))
 
 
-
-    router.GET("/albums", getAlbums)
-
+    // GET ROUTES
 	router.GET("/battlereplay", getBattleReplay)
 
-	router.GET("/json", func(c *gin.Context) {
-		c.JSON(200, gin.H{"msg": "Got your json"})
-	})
-
+    // POST ROUTES
 	router.POST("/battleprogram", postBattleProgram)
 	router.POST("/register", func(c *gin.Context) {
 		c.JSON(201, gin.H{"Response": "Registered Successfully"})
 	})
-
 	router.POST("/game", func(c *gin.Context) {
 		runGame()
         c.JSON(201, gin.H{"msg": "Game has been run"})
 	})
-
-
+    router.POST("/users", postUsers)
+    router.POST("/login", postLogin)
 
     router.Run("localhost:8081")
 }
-
-
