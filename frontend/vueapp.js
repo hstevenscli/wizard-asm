@@ -14,6 +14,7 @@ Vue.createApp({
             showTutorialPage: true,
             currentReplay: {},
             frameToDisplay: false,
+            emailinput: "",
         };
     },
     methods: {

@@ -26,26 +26,20 @@ func getClient(c *gin.Context) *mongo.Client {
 }
 
 func authenticatePassword(hashedPassword []byte, password []byte) bool {
-    // use bcrypt to compare passwords
-    password = []byte("MyDarkSecret")
-
-    // Hashing the password with the default cost of 10
-    hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-    if err != nil {
-        panic(err)
-    }
-
     // Comparing the password with the hash
-    err = bcrypt.CompareHashAndPassword(hashedPassword, password)
+    err := bcrypt.CompareHashAndPassword(hashedPassword, password)
     fmt.Println(err) // nil means it is a match
-
-    return true
+    if err == nil {
+        return true
+    }
+    return false
 }
 
 func postLogin(c *gin.Context) {
     var loginUser user
     var result user
     if err :=  c.BindJSON(&loginUser); err != nil {
+        c.JSON(400, gin.H{"status": "Bad Request"})
         fmt.Println("Bad format with username and password")
         return
     }
@@ -78,22 +72,47 @@ func postLogin(c *gin.Context) {
 }
 
 func postUsers(c *gin.Context) {
+    // capture username and password of user that is about to be created
     var newUser user
     mongoClient := getClient(c)
     coll := mongoClient.Database("wizardb").Collection("users")
 
     // Get username and password from the request
     if err := c.BindJSON(&newUser); err != nil {
-        fmt.Println("Bad request")
+        c.JSON(400, gin.H{"status": "Bad Request"})
         return
     }
 
-    result, err := coll.InsertOne(context.TODO(), newUser)
+    // make sure the username isnt already taken
+    filter := bson.D{{ "username", newUser.Username }}
+    // .Err() will query without needing to save a result into a struct
+    err := coll.FindOne(context.TODO(), filter).Err()
+    // err is nil when it finds something
+    if err == nil {
+        // username is not free, we need to return
+        c.JSON(409, gin.H{"status": "Username already taken"})
+        return
+    } else if err != mongo.ErrNoDocuments {
+        c.JSON(500, gin.H{"error": "Internal Server Error"})
+        return
+    }
+
+    // encrypt password
+    // Hashing the password with the default cost of 10
+    password := []byte(newUser.Password)
+    hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+    if err != nil {
+        c.JSON(500, gin.H{"error": "Internal Server Error"})
+        panic(err)
+    }
+    newUser.Password = string(hashedPassword)
+
+    _, err = coll.InsertOne(context.TODO(), newUser)
     if err != nil {
         panic(err)
     }
 
-    c.JSON(http.StatusOK, gin.H{"msg": result})
+    c.JSON(http.StatusOK, gin.H{"status": "User created successfully"})
 }
 
 func getAlbums(c *gin.Context) {
@@ -109,16 +128,17 @@ func postBattleProgram(c *gin.Context) {
 
 	// Call bind json and return if an error occurs
 	if err := c.BindJSON(&newBattleProgram); err != nil {
+        c.JSON(400, gin.H{"status": "Bad Request"})
 		return
 	}
 
-	// Save program to the database
-	fmt.Println(newBattleProgram)
 
-	// Modify battleProgram
-	// newBattleProgram.Player = 2
+    // TODO Save the program to the DB
 
-	c.IndentedJSON(http.StatusCreated, newBattleProgram)
+
+
+
+    c.IndentedJSON(201, gin.H{"status": "Program created successfully"})
 }
 
 func runGame() {

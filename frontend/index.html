@@ -42,7 +42,7 @@
                 <!-- Any other Bulma elements you want -->
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="email" placeholder="Username">
+                    <input v-model="emailinput" class="input" type="email" placeholder="Username">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
@@ -68,6 +68,7 @@
                     </span>
                     </p>
                 </div>
+                <p>Input is: {{ emailinput }}</p>
 
                 <div class="field">
                     <p class="control">
