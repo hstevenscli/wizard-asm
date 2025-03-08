@@ -14,12 +14,35 @@ Vue.createApp({
             showTutorialPage: true,
             currentReplay: {},
             frameToDisplay: false,
-            emailinput: "",
+            usernameInput: "",
+            passwordInput: "",
+            passwordConfirmationInput: "",
+            disabledButton: true,
+            errors: {},
+            hamburgerEnabled: false,
         };
     },
     methods: {
+        testSession: async function () {
+            var url = "http://localhost:8081/testsession";
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                console.log("Response:", json)
+            } else {
+                console.log("Error:", response.status)
+            }
+        },
         helloThere: function () {
             console.log("hello");
+        },
+        toggleHamburger: function () {
+            this.hamburgerEnabled = !this.hamburgerEnabled;
         },
         showLogin: function () {
             this.showLoginModal = true;
@@ -31,6 +54,8 @@ Vue.createApp({
             this.showRegisterButton = true;
             this.showLoginText = true;
             this.showSignUpText = false;
+            this.usernameInput = "";
+            this.passwordInput = "";
         },
         loginLayout: function () {
             this.showVerifyPassword = false;
@@ -38,11 +63,16 @@ Vue.createApp({
             this.showRegisterButton = false;
             this.showLoginText = false;
             this.showSignUpText = true;
+            this.usernameInput = "";
+            this.passwordInput = "";
+            this.passwordConfirmationInput = "";
         },
         register: async function () {
-            console.log("Registering");
-            var url = "http://localhost:8081/register"
-            let jstring = JSON.stringify({msg: "HEY"})
+            let username = this.usernameInput;
+            let password = this.passwordInput;
+            let passwordConfirmation = this.passwordConfirmationInput;
+            var url = "http://localhost:8081/users";
+            let jstring = JSON.stringify({msg: "HEY"});
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -58,8 +88,57 @@ Vue.createApp({
             }
 
         },
-        login: function () {
+        verify: function () {
+            let username = this.usernameInput;
+            let password = this.passwordInput;
+            let passwordConfirmation = this.passwordConfirmationInput;
+            let pwcheck = false;
+            let usercheck = false;
+
+
+            if (this.showVerifyPassword){
+
+                if (passwordConfirmation !== "") {
+                    if (password !== passwordConfirmation) {
+                        this.disabledButton = true;
+                        this.errors.passwordmatch = "Passwords do not match"
+                    } else {
+                        pwcheck = true;
+                        delete this.errors.passwordmatch;
+                    }
+                }
+                if (username.length <= 4) {
+                    this.disabledButton = true;
+                    this.errors.username = "Username must be at least 5 characters"
+                } else {
+                    usercheck = true;
+                    delete this.errors.username;
+                }
+            }
+            if (pwcheck && usercheck) {
+                this.disabledButton = false;
+            }
+            // if (username.)
+        },
+        login: async function () {
             console.log("Logging in");
+            var url = "http://localhost:8081/login";
+            let jsonbody = JSON.stringify({ username: this.usernameInput, password: this.passwordInput });
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: jsonbody
+            });
+            if (response.ok) {
+                let json = await response.json();
+                console.log("Response:", json)
+                this.showLoginModal = false;
+            } else {
+                // TODO change this to a more user friendly response
+                alert("HTTP-Error: ", + response.status);
+            }
         },
         getTextareaLines: function () {
             let text = document.querySelector(".textarea").value;
@@ -173,8 +252,6 @@ Vue.createApp({
             var index = 0;
             var waitTime = 1000;
             let interval = setInterval(() => {
-                console.log("Index is:", index)
-                console.log("Every 1 Second a second passses...", index);
                 this.frameToDisplay = this.currentReplay.Frames[index];
                 index++;
                 waitTime--;
@@ -196,29 +273,17 @@ Vue.createApp({
                 size = 36;
                 var color1 = "grey";
                 var color2 = "grey";
-
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, 610, 610)
 
                 // ctx.fillRect(2, 2, 36, 36)
 
                 for (let j=0; j < 16; j++) {
-                    var num = offset;
-                    for (let i= 0; i < 8; i++) {
-                        if (j % 2 == 0) {
-                            ctx.fillStyle = color1;
-                        } else {
-                            ctx.fillStyle = color2;
-                        }
-                        ctx.fillRect(num, row, size, size);
-                        if ( j % 2 == 0 ) {
-                            ctx.fillStyle = color2;
-                        } else {
-                            ctx.fillStyle = color1;
-                        }
-                        ctx.fillRect(offset + num + size, row, size, size);
-                        num = offset + offset + num + size*2;
-                        console.log(i);
+                    var iterableNum = offset;
+                    for (let i= 0; i < 16; i++) {
+                        ctx.fillStyle = color1;
+                        ctx.fillRect(iterableNum, row, size, size);
+                        iterableNum = offset + iterableNum + size;
                     }
                     row = offset + row + size;
                 }

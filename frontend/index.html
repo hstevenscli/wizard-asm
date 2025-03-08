@@ -10,6 +10,7 @@
             href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
             >
         <link rel="stylesheet" href="style.css">
+        <script src="https://kit.fontawesome.com/b0903595af.js" crossorigin="anonymous"></script>
         <!-- <script src="script.js" type="module"></script> -->
     </head>
     <body>
@@ -21,8 +22,14 @@
                 <a class="navbar-item" href="https://wizard.nothingdangerous.live">
                     <img src="./photos/crystal-ball-svgrepo-com.svg" alt="My SVG">
                 </a>
+                <a role="button" @click="toggleHamburger" :class="{'is-active': hamburgerEnabled}" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            <div class="navbar-menu">
+            <div :class="{'is-active': hamburgerEnabled}" class="navbar-menu">
                 <div class="navbar-start">
                     <a @click="showTutorial" class="navbar-item">Home</a>
                     <a @click="showBattle" class="navbar-item">Battle</a>
@@ -32,6 +39,9 @@
                     <div class="navbar-item">
                         <a @click="showLogin" class="button is-small is-primary">Sign In</a>
                     </div>
+                    <div class="navbar-item">
+                        <a @click="testSession" class="button is-small is-primary">Test Session</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -40,42 +50,49 @@
             <div class="modal-background" @click="showLoginModal = false"></div>
             <div class="modal-content">
                 <!-- Any other Bulma elements you want -->
+
                 <div class="field">
-                    <p class="control has-icons-left has-icons-right">
-                    <input v-model="emailinput" class="input" type="email" placeholder="Username">
+                    <!-- <label class="label">Username</label> -->
+                    <div class="control has-icons-left has-icons-right">
+                    <input v-model="usernameInput" @blur="verify" class="input" type="email" placeholder="Username">
                     <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
+                        <i class="fa-solid fa-user"></i>
                     </span>
-                    <span class="icon is-small is-right">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    </p>
+                    </div>
+                    <p class="help is-danger">{{ errors.username }}</p>
                 </div>
+
                 <div class="field">
-                    <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password">
+                    <!-- <label class="label">Password</label> -->
+                    <div class="control has-icons-left">
+                    <input v-model="passwordInput" @input="verify" class="input" type="password" placeholder="Password">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
-                    </p>
+                    </div>
+                    <p class="help is-danger">{{ errors.passwordlength }}</p>
                 </div>
 
                 <div class="field" v-if="showVerifyPassword">
-                    <p class="control has-icons-left">
-                    <input class="input" type="passwordverify" placeholder="Verify Password">
+                    <div class="control has-icons-left">
+                    <input v-model="passwordConfirmationInput" @input="verify" class="input" type="password" placeholder="Verify Password">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
-                    </p>
+                    </div>
+                    <p class="help is-danger">{{ errors.passwordmatch }}</p>
                 </div>
-                <p>Input is: {{ emailinput }}</p>
+
+                <!-- <p>Input is: {{ usernameInput }}</p> -->
+                <!-- <p>password is {{ passwordInput }}</p> -->
+                <!-- <p>password conf is {{ passwordConfirmationInput }}</p> -->
 
                 <div class="field">
                     <p class="control">
                     <button @click="login" v-if="showLoginButton" class="button is-success">
                         Login
                     </button>
-                    <button @click="register" v-if="showRegisterButton" class="button is-info ml-1">
+                    <button @click="register" v-if="showRegisterButton" class="button is-info ml-1" :disabled="disabledButton">
                         Register
                     </button>
                     </p>

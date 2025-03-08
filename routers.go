@@ -2,6 +2,8 @@ package main
 
 import (
     "fmt"
+    // "strconv"
+    "time"
     "context"
     "net/http"
 	"github.com/gin-gonic/gin"
@@ -14,6 +16,7 @@ type user struct {
     Username string `bson:"username"`
     Password string `bson:"password"`
 }
+
 
 func getClient(c *gin.Context) *mongo.Client {
     client, exists := c.Get("mongoClient")
@@ -33,6 +36,34 @@ func authenticatePassword(hashedPassword []byte, password []byte) bool {
         return true
     }
     return false
+}
+
+// check if the cookie exists and if it has a valid session id
+func validSession(c *gin.Context) bool {
+    cookie, err := c.Cookie("My_Cookie")
+    if err != nil {
+        fmt.Println("No cookie please login")
+        // c.JSON(403, gin.H{"status": "Cookie not found"})
+        return false
+    }
+    if _, exists := sessionStore[cookie]; !exists {
+        fmt.Println("Session not found please log in")
+        // c.JSON(403, gin.H{"status": "Session not found"})
+        return false
+    }
+    // c.JSON(200, gin.H{"status": "Boobies"})
+    return true
+}
+
+func postLogout(c *gin.Context) {
+    cookie, err := c.Cookie("My_Cookie")
+    if err != nil {
+        c.JSON(409, gin.H{"status": "Already logged out/cookie not found"})
+    } else {
+        c.SetCookie("My_Cookie", "", -1, "/",  "localhost", false, false)
+        delete(sessionStore, cookie)
+        c.JSON(200, gin.H{"status": "Logged out successfully"})
+    }
 }
 
 func postLogin(c *gin.Context) {
@@ -58,14 +89,27 @@ func postLogin(c *gin.Context) {
             c.JSON(401, gin.H{"status": "unauthorized", "message": "invalid username or password"})
             return
         }
-        c.JSON(500, gin.H{"message": "server error"})
+        c.JSON(500, gin.H{"status": "server error"})
         return
     }
     // Encrypt password and verify here
 
     authenticated := authenticatePassword([]byte(result.Password), []byte(loginUser.Password))
+
+    // Put sessionID in session store
     if authenticated {
-        c.JSON(200, gin.H{"status":"success"})
+        sessionID, err := generateSessionID()
+        // Session ID Error
+        if err != nil {
+            fmt.Println("Error Generating ID")
+            c.JSON(500, gin.H{"status": "Internal server error, please try again later"})
+            return
+        }
+        sessionStore[sessionID] = session{ Username: loginUser.Username, Timestamp: time.Now().Add(time.Hour *24*30) }
+        c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  "127.0.0.1", false, false)
+
+        fmt.Println("session store: ", sessionStore)
+        c.JSON(200, gin.H{"status": sessionID})
     } else {
         c.JSON(401, gin.H{"status": "unauthorized", "message": "invalid username or password"})
     }
@@ -139,6 +183,19 @@ func postBattleProgram(c *gin.Context) {
 
 
     c.IndentedJSON(201, gin.H{"status": "Program created successfully"})
+}
+
+func cookieHandler(c *gin.Context) {
+    cookie, err := c.Cookie("My_Cookie")
+    if err != nil {
+        sessionID := "123"
+        fmt.Println("Number:", sessionID)
+        fmt.Println("Cookie My_Cookie not found, Setting cookie My_Cookie with secret value")
+        cookie = "notset"
+        c.SetCookie("My_Cookie", sessionID, 3600, "/",  "localhost", false, false)
+    }
+
+    fmt.Printf("Cookie Value: %s\n", cookie)
 }
 
 func runGame() {

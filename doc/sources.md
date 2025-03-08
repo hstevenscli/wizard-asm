@@ -187,3 +187,6 @@ These instructions can open up more creative strategies and make the programming
 
 ## Maps
 [Digital Ocean](https://www.digitalocean.com/community/tutorials/understanding-maps-in-go)
+
+## Cookies
+[Gin](https://gin-gonic.com/docs/examples/cookie/)

@@ -1,19 +1,20 @@
 package main
 
 import (
-    "log"
-    "encoding/json"
-    "os"
-    "context"
-    "fmt"
-	"github.com/gin-gonic/gin"
+	"context"
+	// "crypto/rand"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/gin-contrib/cors"
-    "github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 
-    "go.mongodb.org/mongo-driver/v2/bson"
-    "go.mongodb.org/mongo-driver/v2/mongo"
-    "go.mongodb.org/mongo-driver/v2/mongo/options"
-
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func connectToMongo() *mongo.Client {
@@ -72,6 +73,19 @@ func mongoMiddleware(client *mongo.Client) gin.HandlerFunc {
     }
 }
 
+
+func authorizeMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        authed := validSession(c)
+        if !authed {
+            c.JSON(401, gin.H{"status": "Session Not Found"})
+            c.Abort()
+            return
+        }
+        c.Next()
+    }
+}
+
 func main() {
 
     client := connectToMongo()
@@ -84,7 +98,7 @@ func main() {
 	router := gin.Default()
     router.Use(mongoMiddleware(client))
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080"}, // Change to match your frontend URL
+		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080", "http://127.0.0.1:8081"}, // Change to match your frontend URL
         AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
         AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
         AllowCredentials: true,
@@ -103,8 +117,14 @@ func main() {
 		runGame()
         c.JSON(201, gin.H{"msg": "Game has been run"})
 	})
+    // PUT the stuff in this function into a helper function to authenticate on protected routes
+    router.GET("/testsession", authorizeMiddleware(), func(c *gin.Context) {
+            c.JSON(200, gin.H{"status": "Boobies"})
+    })
     router.POST("/users", postUsers)
     router.POST("/login", postLogin)
+    router.POST("/logout", postLogout)
+    router.GET("/cookie", cookieHandler)
 
     router.Run("localhost:8081")
 }
