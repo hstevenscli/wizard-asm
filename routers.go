@@ -15,6 +15,7 @@ import (
 type user struct {
     Username string `bson:"username"`
     Password string `bson:"password"`
+	BP battleProgram
 }
 
 
@@ -53,6 +54,24 @@ func validSession(c *gin.Context) bool {
     }
     // c.JSON(200, gin.H{"status": "Boobies"})
     return true
+}
+
+// ALWAYS MAKE SURE SESSION IS VALID BEFORE USING THIS FUNCTION
+func getSessionInfo(c *gin.Context) session {
+	cookie, _ := c.Cookie("My_Cookie")
+	ses, _ := sessionStore[cookie]
+	return ses
+}
+
+func getSession(c *gin.Context) {
+	authed := validSession(c)
+	if !authed {
+		c.JSON(401, gin.H{"status": "Unauthenticated"})
+	} else {
+		ses := getSessionInfo(c)
+		fmt.Println("SESSIONINFO:", ses)
+		c.JSON(200, gin.H{"session": ses})
+	}
 }
 
 func postLogout(c *gin.Context) {
@@ -106,7 +125,7 @@ func postLogin(c *gin.Context) {
             return
         }
         sessionStore[sessionID] = session{ Username: loginUser.Username, Timestamp: time.Now().Add(time.Hour *24*30) }
-        c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  "127.0.0.1", false, false)
+        c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  "localhost", false, false)
 
         fmt.Println("session store: ", sessionStore)
         c.JSON(200, gin.H{"status": sessionID})
@@ -159,10 +178,6 @@ func postUsers(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"status": "User created successfully"})
 }
 
-func getAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
-}
-
 func getBattleReplay(c *gin.Context) {
 	c.JSON(http.StatusOK, battleReplay)
 }
@@ -175,10 +190,9 @@ func postBattleProgram(c *gin.Context) {
         c.JSON(400, gin.H{"status": "Bad Request"})
 		return
 	}
-
-
     // TODO Save the program to the DB
 
+	fmt.Println("NewBP:", newBattleProgram)
 
 
 

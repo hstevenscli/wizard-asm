@@ -95,7 +95,10 @@ func main() {
 		}
 	}()
 
+
 	router := gin.Default()
+	router.Static("/frontend", "./frontend")
+
     router.Use(mongoMiddleware(client))
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080", "http://127.0.0.1:8081"}, // Change to match your frontend URL
@@ -104,27 +107,30 @@ func main() {
         AllowCredentials: true,
     }))
 
+	router.GET("/", func(c *gin.Context) {
+		c.File("./frontend/index.html")
+	})
+
 
     // GET ROUTES
+    router.GET("/cookie", cookieHandler)
 	router.GET("/battlereplay", getBattleReplay)
+	router.GET("/session", getSession)
 
-    // POST ROUTES
-	router.POST("/battleprogram", postBattleProgram)
-	router.POST("/register", func(c *gin.Context) {
-		c.JSON(201, gin.H{"Response": "Registered Successfully"})
-	})
-	router.POST("/game", func(c *gin.Context) {
-		runGame()
-        c.JSON(201, gin.H{"msg": "Game has been run"})
-	})
     // PUT the stuff in this function into a helper function to authenticate on protected routes
     router.GET("/testsession", authorizeMiddleware(), func(c *gin.Context) {
             c.JSON(200, gin.H{"status": "Boobies"})
     })
+
+    // POST ROUTES
+	router.POST("/battleprogram", postBattleProgram)
     router.POST("/users", postUsers)
     router.POST("/login", postLogin)
-    router.POST("/logout", postLogout)
-    router.GET("/cookie", cookieHandler)
+    router.POST("/logout", authorizeMiddleware(), postLogout)
+	router.POST("/game", func(c *gin.Context) {
+		runGame()
+        c.JSON(201, gin.H{"msg": "Game has been run"})
+	})
 
     router.Run("localhost:8081")
 }

@@ -20,6 +20,7 @@ Vue.createApp({
             disabledButton: true,
             errors: {},
             hamburgerEnabled: false,
+            whoami: "",
         };
     },
     methods: {
@@ -34,6 +35,24 @@ Vue.createApp({
             if (response.ok) {
                 let json = await response.json();
                 console.log("Response:", json)
+            } else {
+                console.log("Error:", response.status)
+            }
+        },
+        getSessionInfo: async function () {
+            var url = "http://localhost:8081/session";
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                console.log("Response:", json);
+                console.log("IAM:", this.whoami)
+                this.whoami = json.session.Username;
+                console.log("IAM:", this.whoami)
             } else {
                 console.log("Error:", response.status)
             }
@@ -70,9 +89,8 @@ Vue.createApp({
         register: async function () {
             let username = this.usernameInput;
             let password = this.passwordInput;
-            let passwordConfirmation = this.passwordConfirmationInput;
             var url = "http://localhost:8081/users";
-            let jstring = JSON.stringify({msg: "HEY"});
+            let jstring = JSON.stringify({ username: username, password: password });
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -135,6 +153,22 @@ Vue.createApp({
                 let json = await response.json();
                 console.log("Response:", json)
                 this.showLoginModal = false;
+                this.getSessionInfo();
+            } else {
+                // TODO change this to a more user friendly response
+                alert("HTTP-Error: ", + response.status);
+            }
+        },
+        logout: async function () {
+            console.log("Logging out")
+            var url = "http://localhost:8081/logout";
+            let response = await fetch(url, {
+                method: 'POST',
+            });
+            if (response.ok) {
+                let json = await response.json();
+                console.log("Response:", json);
+                this.whoami = "";
             } else {
                 // TODO change this to a more user friendly response
                 alert("HTTP-Error: ", + response.status);
@@ -147,7 +181,8 @@ Vue.createApp({
         },
         linesToObject: function () {
             // @TODO change to get actual user
-            var user = "Hunter";
+            var user = this.whoami;
+
             let program = {user: user, instructions: []}
             let lines = this.getTextareaLines();
 
@@ -297,6 +332,7 @@ Vue.createApp({
     },
     created: async function () {
         this.helloThere();
+        this.getSessionInfo();
     },
     mounted: function () {
     }

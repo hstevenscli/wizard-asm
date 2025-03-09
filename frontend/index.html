@@ -9,7 +9,7 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
             >
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="/frontend/style.css">
         <script src="https://kit.fontawesome.com/b0903595af.js" crossorigin="anonymous"></script>
         <!-- <script src="script.js" type="module"></script> -->
     </head>
@@ -20,7 +20,7 @@
             <div class="navbar-brand">
                 <!-- navbar items, navbar burger... -->
                 <a class="navbar-item" href="https://wizard.nothingdangerous.live">
-                    <img src="./photos/crystal-ball-svgrepo-com.svg" alt="My SVG">
+                    <img src="/frontend/photos/crystal-ball-svgrepo-com.svg" alt="My SVG">
                 </a>
                 <a role="button" @click="toggleHamburger" :class="{'is-active': hamburgerEnabled}" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
@@ -37,10 +37,16 @@
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <a @click="showLogin" class="button is-small is-primary">Sign In</a>
+                        <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Sign In</a>
                     </div>
                     <div class="navbar-item">
                         <a @click="testSession" class="button is-small is-primary">Test Session</a>
+                    </div>
+                    <div class="navbar-item">
+                        <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a>
+                    </div>
+                    <div class="navbar-item">
+                        <a v-if="whoami.length !== 0" @click="logout" class="button is-small is-danger">Logout</a>
                     </div>
                 </div>
             </div>
@@ -108,12 +114,17 @@
 
         </div>
 
-        <div v-if="showBattlePage" class="battlepage">
+        <div v-if="showBattlePage" class="battlepage m-6">
             <div class="block">
                 <h2>Welcome To The Battle Arena</h2>
-                <p>{{ greeting }}</p>
+                <p>Create a Battle Program</p>
                 <textarea class="textarea"></textarea>
                 <button @click="submitProgram" class="button" id="sbutton" >Submit Program</button>
+                <p>hi0</p>
+            </div>
+            <div class="block">
+                <p>Your Programs</p>
+                <div>Magma 0 0</div>
             </div>
 
         </div>
@@ -161,7 +172,7 @@
 
     </div>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="vueapp.js"></script>
+        <script src="/frontend/vueapp.js"></script>
     </body>
 </html>
 
