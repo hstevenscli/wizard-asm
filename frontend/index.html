@@ -37,7 +37,7 @@
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Sign In</a>
+                        <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Login</a>
                     </div>
                     <div class="navbar-item">
                         <a @click="testSession" class="button is-small is-primary">Test Session</a>
@@ -53,7 +53,7 @@
         </nav>
 
         <div class="modal" :class="{'is-active': showLoginModal}">
-            <div class="modal-background" @click="showLoginModal = false"></div>
+            <div class="modal-background" @click="showLoginModal = false; loginLayout()"></div>
             <div class="modal-content">
                 <!-- Any other Bulma elements you want -->
 
@@ -106,13 +106,64 @@
                 <p v-if="showSignUpText" class="control">Don't have an account? <a @click="signUp">Sign Up</a></p>
                 <p v-if="showLoginText" class="control">Already have an account? <a @click="loginLayout">Login</a></p>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; showVerifyPassword = false;"></button>
+            <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; loginLayout()"></button>
         </div>
 
-        <div v-if="showTutorialPage" class="tutorial">
-            <p>Welcome to Wizard-asm</p>
+
+
+        <!-- --> 
+
+        <div v-if="showTutorialPage" class="tutorial m-6 has-text-centered">
+            <p class="is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
+            <br>
+            <ul class="is-size-3">Game Instructions</ul>
+            <br>
+            <p class="has-text-left">Spells and Actions</p>
+            <div class="listy">
+                <label>Magma 0 0</label>
+                    <div class="ml-6">
+                        Summons magma in a 3x3 square centered on target location
+                    </div>
+                <div>
+                    Acid
+                </div>
+                <div>
+                    Move
+                </div>
+                <div>
+                    Teleport
+                <div>
+                    Shield
+                </div>
+                <div>
+                    Wait
+                </div>
+                <div>
+                    Recharge
+                </div>
+                <div>
+                    Divination
+                </div>
+                <div>
+                    Lightning
+                </div>
+                <div>Recharge
+                </div>
+
+            </div>
+            <p>Logical Instructions</p>
+                <div>Sloop</div>
+                <div>Eloop</div>
+                <div>Jump</div>
+                <div>CJump</div>
 
         </div>
+
+
+
+
+
+        <!-- --> 
 
         <div v-if="showBattlePage" class="battlepage m-6">
             <div class="block">

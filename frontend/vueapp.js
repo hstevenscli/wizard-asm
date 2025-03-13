@@ -85,6 +85,7 @@ Vue.createApp({
             this.usernameInput = "";
             this.passwordInput = "";
             this.passwordConfirmationInput = "";
+            delete this.errors.username;
         },
         register: async function () {
             let username = this.usernameInput;
@@ -100,11 +101,15 @@ Vue.createApp({
             });
             if (response.ok) {
                 let json = await response.json();
+                this.usernameInput = "";
+                this.passwordInput = "";
+                this.passwordConfirmationInput = "";
+                this.showLoginModal = false;
+                this.loginLayout();
                 console.log("Response:", json)
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
-
         },
         verify: function () {
             let username = this.usernameInput;
@@ -153,6 +158,8 @@ Vue.createApp({
                 let json = await response.json();
                 console.log("Response:", json)
                 this.showLoginModal = false;
+                this.usernameInput = "";
+                this.passwordInput = "";
                 this.getSessionInfo();
             } else {
                 // TODO change this to a more user friendly response
