@@ -21,6 +21,7 @@ Vue.createApp({
             errors: {},
             hamburgerEnabled: false,
             whoami: "",
+            ploc: {},
         };
     },
     methods: {
@@ -247,7 +248,7 @@ Vue.createApp({
             this.showBattlePage = false;
             this.showReplaysPage = true;
             this.showTutorialPage = false;
-            this.drawCanvas();
+            this.drawBlankCanvas();
         },
         runGame: async function () {
             let button = document.getElementById("gamebutton");
@@ -295,18 +296,64 @@ Vue.createApp({
             var waitTime = 1000;
             let interval = setInterval(() => {
                 this.frameToDisplay = this.currentReplay.Frames[index];
+                this.getPlayerLocationsInCurrentFrame();
+                this.drawPlayers();
+                // console.log(this.frameToDisplay.ArenaFrame)
                 index++;
                 waitTime--;
                 
-                if (index > this.currentReplay.Frames.length) {
+                // clearInterval(interval);
+                if (index >= this.currentReplay.Frames.length) {
+                    // -1 is the last frame to be displayed
+                    this.frameToDisplay = this.currentReplay.Frames[index - 1];
                     clearInterval(interval);
-                    // -2 is the last frame to be displayed
-                    this.frameToDisplay = this.currentReplay.Frames[index-2];
                     return;
                 }
             }, waitTime);
         },
-        drawCanvas: function () {
+        getPlayerLocationsInCurrentFrame: function () {
+            let ploc = {
+                p1row: -1,
+                p1col: -1,
+                p2row: -1,
+                p2col: -1
+            }
+            console.log("IN getplayerlocations, this.frameToDisplay:", this.frameToDisplay);
+            for (let i = 0; i < this.frameToDisplay.ArenaFrame.length; i++ ) {
+                let p1rowindex = this.frameToDisplay.ArenaFrame[i].indexOf(1);
+                let p2rowindex = this.frameToDisplay.ArenaFrame[i].indexOf(2);
+                if (p1rowindex !== -1) {
+                    ploc.p1row = i;
+                    ploc.p1col = p1rowindex;
+                }
+                if (p2rowindex !== -1) {
+                    ploc.p2row = i;
+                    ploc.p2col = p2rowindex;
+                }
+            }
+            this.ploc = ploc;
+            return ploc
+        },
+        drawPlayers: function () {
+            const canvas = document.getElementById("myCanvas");
+            const ctx = canvas.getContext("2d");
+            let x = this.ploc.p1row;
+            let y = this.ploc.p1col;
+            xt = x*40-20 + (2*x - 2);
+            yt = y*40-20 + (2*x - 2);
+            if (xt < 0) {
+                xt = 0;
+            }
+            if (yt < 0) {
+                yt = 0;
+            }
+            console.log("X:", xt, "Y:", yt);
+            ctx.beginPath();
+            ctx.arc(yt, xt, 18, 0, 2 * Math.PI);
+            // ctx.fill();
+            ctx.stroke();
+        },
+        drawBlankCanvas: function () {
             setTimeout(() => {
                 const canvas = document.getElementById("myCanvas");
                 const ctx = canvas.getContext("2d");
@@ -329,10 +376,10 @@ Vue.createApp({
                     }
                     row = offset + row + size;
                 }
-                ctx.beginPath();
-                ctx.arc(20, 20, 18, 0, 2 * Math.PI);
-                // ctx.fill();
-                ctx.stroke();
+                // ctx.beginPath();
+                // ctx.arc(20, 20, 18, 0, 2 * Math.PI);
+                // // ctx.fill();
+                // ctx.stroke();
 
             }, 1);
         }
