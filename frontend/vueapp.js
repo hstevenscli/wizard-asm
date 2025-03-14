@@ -216,6 +216,7 @@ Vue.createApp({
             var url = "http://localhost:8081/battleprogram"
             let program = this.linesToObject();
             let jsonProgram = JSON.stringify(program);
+            console.log(jsonProgram)
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {

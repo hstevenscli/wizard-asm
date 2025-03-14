@@ -15,10 +15,12 @@ import (
 type user struct {
     Username string `bson:"username"`
     Password string `bson:"password"`
-	BP battleProgram
+    BP battleProgram `bson:"bp"`
 }
 
 
+// For getting the mongo client into each handler function
+// because the mongo client is started in the main func
 func getClient(c *gin.Context) *mongo.Client {
     client, exists := c.Get("mongoClient")
     if !exists {
@@ -190,13 +192,66 @@ func postBattleProgram(c *gin.Context) {
         c.JSON(400, gin.H{"status": "Bad Request"})
 		return
 	}
-    // TODO Save the program to the DB
 
-	fmt.Println("NewBP:", newBattleProgram)
+    // Get database collection
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("users")
+
+    filter := bson.D{{ "username", newBattleProgram.User }}
+    update := bson.D{{"$set", bson.D{{ "bp", newBattleProgram }} }}
+    _, err := coll.UpdateOne(context.TODO(), filter, update)
+    if err != nil {
+        fmt.Println("Error", err)
+        c.JSON(500, gin.H{"status": "server error"})
+        return
+    }
+
+    // fmt.Println("Matched Count:", updresult.MatchedCount)
+    // fmt.Println("Modified Count:", updresult.ModifiedCount)
+
+    c.IndentedJSON(201, gin.H{"status": "Program created/saved successfully"})
+}
 
 
+func getBattleProgramByUsername(c *gin.Context) {
+    // var userToLookup user
+    username := c.Param("username")
+    fmt.Println("USername:", username)
+    var found user
 
-    c.IndentedJSON(201, gin.H{"status": "Program created successfully"})
+    // if err := c.BindJSON(&userToLookup); err != nil {
+    //     c.JSON(400, gin.H{"status": "bad request"})
+    //     return
+    // }
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("users")
+    filter := bson.D{{ "username", username }}
+
+    err := coll.FindOne(context.TODO(), filter).Decode(&found)
+    if err != nil {
+        if err == mongo.ErrNoDocuments {
+            c.JSON(409, gin.H{"status": "user not found"})
+            return
+        }
+        c.JSON(500, gin.H{"status": "server error"})
+        return
+    }
+
+    fmt.Println("Battle program found:", found)
+    c.JSON(200, found.BP)
+}
+
+func getBattlePrograms(c *gin.Context) {
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("users")
+
+    // err := coll.Find
+
+}
+
+func getSubsetOfBattlePrograms(c *gin.Context) {
+    // mongoClient := getClient(c)
+    return
 }
 
 func cookieHandler(c *gin.Context) {

@@ -116,6 +116,7 @@ func main() {
     router.GET("/cookie", cookieHandler)
 	router.GET("/battlereplay", getBattleReplay)
 	router.GET("/session", getSession)
+    router.GET("/battleprogram/:username", getBattleProgramByUsername)
 
     // PUT the stuff in this function into a helper function to authenticate on protected routes
     router.GET("/testsession", authorizeMiddleware(), func(c *gin.Context) {
