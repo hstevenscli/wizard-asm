@@ -61,3 +61,29 @@ __battleProgram:__
 | Recharge | 0 | 
 | Divination | 150
 | Lightning | 50
+
+
+
+## Notes on how the user runs battles
+
+
+method 1: duels
+
+user makes a request giving a username of someone to duel and providing their own username
+lookup the two battleprograms run a battle and return it to the user that made the request
+
+Needed implementations
+frontend: a button with a text box to put a username into
+
+backend: receive a request like get(/duels)
+need a handler that will lookup both bps from the db, load them into memory and call the run duels function
+
+
+
+method 2: tourney?
+
+upon submission, run the bp against a few other randomly selected bps and return the results
+
+needed implementations
+frontend: make call to backend tourney handler, maybe get(/tournament)
+backend: /tournament handler that will query the db for a number of battleprograms from various users and run the submitted program against all of them.
