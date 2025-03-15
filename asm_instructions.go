@@ -144,9 +144,8 @@ func asm_wait( player int ) {
 }
 
 func asm_recharge( g *gameSpace, player int, amount int ) {
-	mana := g.Pinfo[player].Mana
-	mana += amount
-    if mana > 200 {
+	g.Pinfo[player].Mana += amount
+    if g.Pinfo[player].Mana > 200 {
         game_over(player, "Mana Overcharge")
     }
 }

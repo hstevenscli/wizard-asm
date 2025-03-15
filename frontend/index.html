@@ -193,6 +193,10 @@
             <!-- </li> -->
             <button @click="startReplay" class="button">Start Replay</button>
             <button @click="getPlayerLocationsInCurrentFrame" class="button">Player Locations</button>
+            <button @click="getDuel" class="button">Duel</button>
+            <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
+            <button @click="console.log(duelUserInput)" class="button is-danger">Duel Input</button>
+            <br>
             <!-- <div v-for="frame in currentReplay.Frames" :key="frame.Player"> -->
             <!--     <p v-for="row in frame.ArenaFrame" :key="row"> -->
             <!--         {{ row }} -->
@@ -224,7 +228,8 @@
 
 
     </div>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.13/vue.global.js"></script>
         <script src="/frontend/vueapp.js"></script>
     </body>
 </html>

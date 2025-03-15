@@ -9,6 +9,7 @@ type gameSpace struct {
     Size int
     Arena [][]int
 	Pinfo map[int]*pInfo
+	Gameover gameOver
 }
 
 type pInfo struct {

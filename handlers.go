@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     // "strconv"
+	"errors"
     "time"
     "context"
     "net/http"
@@ -130,7 +131,7 @@ func postLogin(c *gin.Context) {
         c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  "localhost", false, false)
 
         fmt.Println("session store: ", sessionStore)
-        c.JSON(200, gin.H{"status": sessionID})
+        c.JSON(200, gin.H{"status": "successfully logged in"})
     } else {
         c.JSON(401, gin.H{"status": "unauthorized", "message": "invalid username or password"})
     }
@@ -181,7 +182,7 @@ func postUsers(c *gin.Context) {
 }
 
 func getBattleReplay(c *gin.Context) {
-	c.JSON(http.StatusOK, battleReplay)
+	c.JSON(http.StatusOK, gin.H{"status": "This version of replay has deprecated"})
 }
 
 func postBattleProgram(c *gin.Context) {
@@ -212,8 +213,77 @@ func postBattleProgram(c *gin.Context) {
     c.IndentedJSON(201, gin.H{"status": "Program created/saved successfully"})
 }
 
+func getDuel(c *gin.Context) {
+	var ses session
+	ses = getSessionInfo(c)
+    mongoClient := getClient(c)
+	user1 := ses.Username
+	user2 := c.Param("username")
+	bp1, err := getAndLoadBattleProgram(user1, mongoClient)
+	// error handling for bp1
+	if err != nil {
+		if err.Error() == "No user found" {
+			c.JSON(409, gin.H{"status": "User1 not found"})
+			fmt.Println("Err:", err)
+			return
+		} else if err.Error() == "Battle Program is empty" {
+			c.JSON(409, gin.H{"status": "Battle program 1 is empty"})
+			fmt.Println("Err:", err)
+			return
+		} else {
+			c.JSON(500, gin.H{"status": "server error"})
+			fmt.Println("Err:", err)
+			return
+		}
+	}
+	// error handling for bp2
+	bp2, err := getAndLoadBattleProgram(user2, mongoClient)
+	if err != nil {
+		if err.Error() == "No user found" {
+			c.JSON(409, gin.H{"status": "User2 not found"})
+			fmt.Println("Err:", err)
+			return
+		} else if err.Error() == "Battle Program is empty" {
+			c.JSON(409, gin.H{"status": "Battle program 2 is empty"})
+			fmt.Println("Err:", err)
+			return
+		} else {
+			c.JSON(500, gin.H{"status": "server error"})
+			fmt.Println("Err:", err)
+			return
+		}
+	}
+	br := runBattle(bp1, bp2)
+	c.JSON(200, br)
+}
 
-func getBattleProgramByUsername(c *gin.Context) {
+// fetches a battleProgram from the database and returns it to the caller
+func getAndLoadBattleProgram(username string, mongoClient *mongo.Client) (battleProgram, error){
+    // var userToLookup user
+    var found user
+	var bp battleProgram
+
+    coll := mongoClient.Database("wizardb").Collection("users")
+    filter := bson.D{{ "username", username }}
+
+	// query for users battleprogram
+    err := coll.FindOne(context.TODO(), filter).Decode(&found)
+    if err != nil {
+        if err == mongo.ErrNoDocuments {
+			return bp, errors.New("No user found")
+        }
+		return bp, err
+    }
+
+	// check if battleprogram is empty
+	if found.BP.User == "" {
+		return bp, errors.New("Battle Program is empty")
+	}
+	bp = found.BP
+	return bp, nil
+}
+
+func getBattleProgramByUsernameHandler(c *gin.Context) {
     // var userToLookup user
     username := c.Param("username")
     fmt.Println("USername:", username)
@@ -242,11 +312,10 @@ func getBattleProgramByUsername(c *gin.Context) {
 }
 
 func getBattlePrograms(c *gin.Context) {
-    mongoClient := getClient(c)
-    coll := mongoClient.Database("wizardb").Collection("users")
+    // mongoClient := getClient(c)
+    // coll := mongoClient.Database("wizardb").Collection("users")
 
     // err := coll.Find
-
 }
 
 func getSubsetOfBattlePrograms(c *gin.Context) {
@@ -267,6 +336,31 @@ func cookieHandler(c *gin.Context) {
     fmt.Printf("Cookie Value: %s\n", cookie)
 }
 
+
+func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
+	var size int = 16
+	var g gameSpace = init_gamespace(size)
+	spawn_players(&g)
+	br := replay{}
+	gameover = gameOver{}
+
+	// Put starting arena state into replay
+	starting_arena := frame{ 
+		ArenaFrame: deep_copy_arena(g.Arena),
+		Player: 0,
+		Action: "Starting State",
+		Mana: 0,
+		Count: -1,
+	}
+	br.Frames = append(br.Frames, starting_arena)
+
+	game_loop_temp( &g, bp1, bp2, &br)
+	print_replay( br )
+	get_winner_loser_info()
+	return br
+}
+
+// Deprecated
 func runGame() {
     // Initialize size 
     var size int = 16
@@ -278,7 +372,7 @@ func runGame() {
 
     // Spawn players in gameSpace
     spawn_players( &g )
-	battleReplay = replay{}
+	battleReplay := replay{}
 	gameover = gameOver{}
 
     program := read_json_to_bp("./program.json")
@@ -295,7 +389,7 @@ func runGame() {
 	}
 	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
 
-	game_loop_temp( &g, program, program1)
+	game_loop_temp( &g, program, program1, &battleReplay)
 	print_replay( battleReplay )
 	get_winner_loser_info()
 }

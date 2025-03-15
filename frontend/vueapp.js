@@ -21,6 +21,7 @@ Vue.createApp({
             errors: {},
             hamburgerEnabled: false,
             whoami: "",
+            duelUserInput: "",
             ploc: {},
         };
     },
@@ -335,6 +336,24 @@ Vue.createApp({
             this.ploc = ploc;
             return ploc
         },
+        getDuel: async function () {
+            let url = "http://localhost:8081/duels/" + this.duelUserInput; 
+            console.log("hi");
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                this.currentReplay = json;
+                console.log(json)
+            } else {
+                alert("HTTP-Error: ", + response.status);
+            }
+
+        },
         drawPlayers: function () {
             const canvas = document.getElementById("myCanvas");
             const ctx = canvas.getContext("2d");
@@ -386,10 +405,10 @@ Vue.createApp({
         }
     },
     created: async function () {
+    },
+    mounted: function () {
         this.helloThere();
         this.getSessionInfo();
     },
-    mounted: function () {
-    }
 
 }).mount("#app")

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"fmt"
+	"log"
+	"strings"
 )
 
 type instruction struct {
@@ -30,12 +31,13 @@ type frame struct {
 
 type replay struct {
     Frames []frame
+	GamoverInfo gameOver
 }
 
-var battleReplay replay
+// var battleReplay replay
 
 // Add a snapshot of the Arena to the battleReplay
-func add_frame_to_replay( arena [][]int, player int, pinfo pInfo, count int, action string, args []interface{} ) {
+func add_frame_to_replay( arena [][]int, player int, pinfo pInfo, count int, action string, args []interface{}, battleReplay *replay ) {
 	// Make frame struct
 	f := frame{
 		ArenaFrame: deep_copy_arena(arena),
@@ -65,7 +67,7 @@ func print_replay( br replay) {
 			fmt.Println(br.Frames[i].ArenaFrame[j])
 		}
 		fmt.Printf("Player %v | #Actions: %v\n", br.Frames[i].Player, br.Frames[i].Count)
-		fmt.Printf("Action: %v\n", br.Frames[i].Action)
+		fmt.Printf("Action: %v | Args: %v\n", br.Frames[i].Action, br.Frames[i].Args)
 		fmt.Printf("Mana: %v\n", br.Frames[i].Mana)
 		fmt.Println()
 	}
@@ -105,6 +107,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
         c_args = bp.Instructions[bp.Ptr].Args
         instr = bp.Instructions[bp.Ptr].Instruction
     }
+	instr = strings.ToUpper(instr)
 
 	switch instr {
 		// GAME MODIFYING INSTRUCTIONS START
@@ -201,7 +204,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 
 }
 
-func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
+func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *replay ) {
 	bp1.Player = 1
 	bp2.Player = 2
 	var count int
@@ -210,7 +213,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		//P1 Chunk
 		p1_action, args := execute_instruction( g, &bp1 )
 		bp1.Ptr++
-		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args)
+		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br)
 		if check_gameover() {
 			break
 		}
@@ -219,7 +222,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram ) {
 		//P2 Chunk
 		p2_action, args := execute_instruction( g, &bp2 )
 		bp2.Ptr++
-		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args)
+		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br)
 		if check_gameover() {
 			break
 		}
