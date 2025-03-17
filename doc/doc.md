@@ -18,13 +18,14 @@ Divination right now returns a random location in the vicinity of the other play
 ## NEXT ON LIST
 
 Put next item here:
-- [ ] Conditional and crystal ball (for storing numbers)
+- [x] Conditional
+- [ ] crystal ball (for storing numbers)
 - [x] Divination
 - [x] Add mana cost to spells 
 - [ ] Invisibility?
 - [ ] Decoy Instruction
-- [ ] Flesh out frontend; Get Login/Register working
-- [ ] Hook up backend to mongoDB
+- [x] Flesh out frontend; Get Login/Register working
+- [x] Hook up backend to mongoDB
 
 ## ASM INSTRUCTIONS
 

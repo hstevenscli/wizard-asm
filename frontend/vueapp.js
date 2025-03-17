@@ -296,22 +296,41 @@ Vue.createApp({
         startReplay: function () {
             var index = 0;
             var waitTime = 1000;
-            let interval = setInterval(() => {
+
+            const step = () => {
+                if (index >= this.currentReplay.Frames.length) {
+                    this.frameToDisplay = this.currentReplay.Frames[index - 1];
+                    return; 
+                }
+
                 this.frameToDisplay = this.currentReplay.Frames[index];
                 this.getPlayerLocationsInCurrentFrame();
-                this.drawPlayers();
-                // console.log(this.frameToDisplay.ArenaFrame)
+
                 index++;
-                waitTime--;
+                waitTime = Math.max(50, waitTime -2*index)
+
+                setTimeout(step, waitTime);
+            }
+
+            step();
+
+            // let interval = setInterval(() => {
+            //     this.frameToDisplay = this.currentReplay.Frames[index];
+            //     this.getPlayerLocationsInCurrentFrame();
+            //     this.drawPlayers();
+            //     // console.log(this.frameToDisplay.ArenaFrame)
+            //     index++;
                 
-                // clearInterval(interval);
-                if (index >= this.currentReplay.Frames.length) {
-                    // -1 is the last frame to be displayed
-                    this.frameToDisplay = this.currentReplay.Frames[index - 1];
-                    clearInterval(interval);
-                    return;
-                }
-            }, waitTime);
+            //     // clearInterval(interval);
+            //     if (index >= this.currentReplay.Frames.length) {
+            //         // -1 is the last frame to be displayed
+            //         this.frameToDisplay = this.currentReplay.Frames[index - 1];
+            //         clearInterval(interval);
+            //         return;
+            //     }
+            //     waitTime -= 10;
+            //     console.log("Waittime:", waitTime);
+            // }, waitTime);
         },
         getPlayerLocationsInCurrentFrame: function () {
             let ploc = {

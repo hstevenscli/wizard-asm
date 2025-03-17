@@ -195,7 +195,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 		}
 	case "CJUMP":
     case "PTRDEATH":
-        game_over(bp.Player, "Died due to Pointer Death")
+        game_over(g, bp.Player, "Died due to Pointer Death")
 	default:
 		log.Printf("INSTRUCTION NOT RECOGNIZED: %v", bp.Instructions[bp.Ptr].Instruction)
 	}
@@ -214,7 +214,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		p1_action, args := execute_instruction( g, &bp1 )
 		bp1.Ptr++
 		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br)
-		if check_gameover() {
+		if check_gameover(g) {
 			break
 		}
         fmt.Println("mana in game loop", g.Pinfo[1].Mana)
@@ -223,7 +223,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		p2_action, args := execute_instruction( g, &bp2 )
 		bp2.Ptr++
 		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br)
-		if check_gameover() {
+		if check_gameover(g) {
 			break
 		}
 

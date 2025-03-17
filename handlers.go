@@ -342,7 +342,8 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	var g gameSpace = init_gamespace(size)
 	spawn_players(&g)
 	br := replay{}
-	gameover = gameOver{}
+	gameover := gameOver{}
+	g.Gameover = &gameover
 
 	// Put starting arena state into replay
 	starting_arena := frame{ 
@@ -356,7 +357,9 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 
 	game_loop_temp( &g, bp1, bp2, &br)
 	print_replay( br )
-	get_winner_loser_info()
+	get_winner_loser_info(&g)
+	fmt.Println("gameover struct:", g.Gameover)
+	br.GamoverInfo = gameover
 	return br
 }
 
@@ -373,7 +376,8 @@ func runGame() {
     // Spawn players in gameSpace
     spawn_players( &g )
 	battleReplay := replay{}
-	gameover = gameOver{}
+	gameover := gameOver{}
+	g.Gameover = &gameover
 
     program := read_json_to_bp("./program.json")
 	program1 := read_json_to_bp("./program1.json")
@@ -391,6 +395,6 @@ func runGame() {
 
 	game_loop_temp( &g, program, program1, &battleReplay)
 	print_replay( battleReplay )
-	get_winner_loser_info()
+	get_winner_loser_info(&g)
 }
 

@@ -1,7 +1,8 @@
 /* html, body { */
-/*     /1* margin-left: 50px; *1/ */
-/*     /1* padding: 50px; *1/ */
+/*     margin-left: 50px; */
+/*     padding: 50px; */
 /*     margin-left: 1em; */
+/*     background-color: ghostwhite; */
 /* } */
 
 p {
@@ -15,7 +16,7 @@ textarea {
 
 ul {
     text-align: left;
-    color: blue;
+    color: white;
 }
 
 li {

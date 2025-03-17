@@ -9,7 +9,7 @@ type gameSpace struct {
     Size int
     Arena [][]int
 	Pinfo map[int]*pInfo
-	Gameover gameOver
+	Gameover *gameOver
 }
 
 type pInfo struct {
@@ -31,7 +31,7 @@ func deplete_mana( g *gameSpace, player int, mana_cost int ) {
     var manaptr *int = &g.Pinfo[player].Mana
     var new_amount int = *manaptr - mana_cost
     if new_amount < 0 {
-        game_over(player, "Died of mana depletion")
+        game_over(g, player, "Died of mana depletion")
     } else {
         *manaptr = new_amount
     }
@@ -96,31 +96,31 @@ func check_player( r int, c int, g *gameSpace ) (int, bool) {
 }
 
 // Check if a player has triggered a gameover state
-func check_gameover() bool {
-	if gameover.Player[1] || gameover.Player[2] || gameover.Player[0] {
+func check_gameover(g *gameSpace) bool {
+	if g.Gameover.Player[1] || g.Gameover.Player[2] || g.Gameover.Player[0] {
 		return true
 	}
 	return false
 }
 
 // Determine who won the game and who lost
-func get_winner_loser_info() {
-    if !check_gameover() {
+func get_winner_loser_info(g *gameSpace) {
+    if !check_gameover(g) {
         fmt.Println("Nobody has lost. No winner or loser to identify")
     } else {
 		var winner int
 		var loser int
-		if gameover.Player[1] {
+		if g.Gameover.Player[1] {
 			winner = 2
 			loser = 1
 		} else {
 			winner = 1
 			loser = 2
 		}
-        if gameover.Player[0] || (gameover.Player[1] && gameover.Player[2]) {
+        if g.Gameover.Player[0] || (g.Gameover.Player[1] && g.Gameover.Player[2]) {
             fmt.Println("Both players have died.")
         } else {
-            fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, gameover.Message[loser])
+            fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, g.Gameover.Message[loser])
             fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
         }
 	}
@@ -179,9 +179,9 @@ func within_valid_range( n int, size int ) int {
 
 // sets gameover to true for player in the gameOver object as well as a death message
 // Need to call get_winner_loser_info() to see game over messages
-func game_over(player int, message string) {
+func game_over(g *gameSpace, player int, message string) {
 	// fmt.Printf("Player %v Died. Player %v Loses\n", player, player)
     // fmt.Println("Message:", message)
-    gameover.Player[player] = true
-	gameover.Message[player] = message
+    g.Gameover.Player[player] = true
+	g.Gameover.Message[player] = message
 }

@@ -39,11 +39,14 @@
                     <div class="navbar-item">
                         <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Login</a>
                     </div>
+                    <!-- <div class="navbar-item"> -->
+                    <!--     <a @click="testSession" class="button is-small is-primary">Test Session</a> -->
+                    <!-- </div> -->
+                    <!-- <div class="navbar-item"> -->
+                    <!--     <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a> -->
+                    <!-- </div> -->
                     <div class="navbar-item">
-                        <a @click="testSession" class="button is-small is-primary">Test Session</a>
-                    </div>
-                    <div class="navbar-item">
-                        <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a>
+                        <p><u><b>{{ whoami }}</b></u></p>
                     </div>
                     <div class="navbar-item">
                         <a v-if="whoami.length !== 0" @click="logout" class="button is-small is-danger">Logout</a>
@@ -114,50 +117,114 @@
         <!-- --> 
 
         <div v-if="showTutorialPage" class="tutorial m-6 has-text-centered">
-            <p class="is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
+            <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
             <br>
-            <ul class="is-size-3">Game Instructions</ul>
+            <p class="is-size-4">Please read the tutorial below to understand how the game works</p>
             <br>
-            <p class="has-text-left">Spells and Actions</p>
-            <div class="listy">
-                <label>Magma 0 0</label>
-                    <div class="ml-6">
-                        Summons magma in a 3x3 square centered on target location
+            <div class="content has-text-left">
+                    <h1>Template</h1>
+                    <div class="box">
+                        <h4>Instruction [argument 1] [argument 2] ...</h4>
+                        <p>This is how all of the game instructions will be explained down below. The name of the instruction will be listed, followed by a number of arguments that must be provided. Arguments have been kept simple in most cases, usually a number or a single letter (or two). </p>
+                        <p>In the following examples arguments will be denoted in an abbreviated form [arg1] [arg2] ...</p>
                     </div>
-                <div>
-                    Acid
+
+                    <section class="section is-medium">
+
+                    </section>
+
+
+                <h2 class="has-text-left">Spells and Actions</h2>
+                    <div class="box">
+                        <h4>Magma [arg1] [arg2]</h4>
+                        <p>Summons an explosion of magma in a 3x3 square centered on target location chosen by arg1 and arg2</p>
+                        <p>Arg 1: A number (0-15); The row you want to target</p>
+                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                    </div>
+                    <div class="box">
+                        <h4>Acid [arg1] [arg2]</h4>
+                        <p>Summons a puddle of acid on target location chosen by arg1 and arg2</p>
+                        <p>Arg 1: A number (0-15); The row you want to target</p>
+                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                    </div>
+                    <div class="box">
+                        <h4>Move [arg1]</h4>
+                        <p>Move a single tile in the direction chosen by arg1</p>
+                        <p>Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
+                                <figure class="image is-128x128">
+                                    <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
+                                </figure>
+                    </div>
+                    <div class="box">
+                        <h4>Teleport [arg1] [arg2]</h4>
+                        <p>Teleport to target location</p>
+                        <p>Arg 1: A number (0-15); The row you want to target</p>
+                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                        <p>Alternatively, you can put -1 for both arguments to teleport to a random location</p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Shield [arg1]</h4>
+                        <p>Apply a magical shield to protect from certain damage types</p>
+                        <p>Arg 1: A number (1, 2, or 3) 1 to protect against fire, 2 against lightning, 3 against acid</p>
+                        <p style="color: yellow">NOTE! Not currently implemented/working</p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Wait</h4>
+                        <p>Simply wait and do nothing</p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Recharge [arg1]</h4>
+                        <p>Recharge your mana by the amount given by arg1</p>
+                        <p>Arg 1: A number (0-200)</p>
+                        <p>Running out of mana while trying to cast a spell will result in a loss, however having too much mana will result in a loss due to mana overcharge. Think wisely about how much mana you actually need!</p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Divination [arg1]</h4>
+                        <p>Hone in on the location of the enemy player</p>
+                        <p>Arg 1: a number (0-5) to specify the accuracy of the spell</p>
+                        <p>0 will give an exact location of the enemy, while each subsequent number will give a location with a margin of error equal to that number</p>
+                        <p style="color: yellow">NOTE! Not currently implemented/working</p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Lightning [arg1]</h4>
+                        <p>Shoot lightning in a straight line in a specfied direction</p>
+                        <p>Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
+                                <figure class="image is-128x128">
+                                    <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
+                                </figure>
+
+                    </div>
+
+                <h2>Logical Instructions</h2>
+                <div class="box">
+                    <h4>Sloop [arg1]</h4>
+                    <p>Start a loop that will run a specified number of times</p>
+                    <p>Arg 1: A number, how many times you want the loop to run</p>
+                    <p style="color: yellow">NOTE! Nested loops using Sloop and Eloop is not currently supported</p>
                 </div>
-                <div>
-                    Move
+                <div class="box">
+                    <h4>Eloop</h4>
+                    <p>Paired with an Sloop instruction. This will specify the end of your loop and will signal the program reader to go back to up to your Sloop instruction</p>
+
                 </div>
-                <div>
-                    Teleport
-                <div>
-                    Shield
+                <div class="box">
+                    <h4>Jump [arg1]</h4>
+                    <p>This will tell the program reader to go back or forward a specified number of instructions in your program</p>
+                    <p>Arg 1: A number (positive or negative), the amount of instructions you would like to jump forward or backward</p>
+
                 </div>
-                <div>
-                    Wait
-                </div>
-                <div>
-                    Recharge
-                </div>
-                <div>
-                    Divination
-                </div>
-                <div>
-                    Lightning
-                </div>
-                <div>Recharge
+                <div class="box">
+                    <h4>CJump</h4>
+                    <p style="color: yellow">Work in progress</p>
                 </div>
 
             </div>
-            <p>Logical Instructions</p>
-                <div>Sloop</div>
-                <div>Eloop</div>
-                <div>Jump</div>
-                <div>CJump</div>
 
-        </div>
         </div>
 
 
@@ -183,31 +250,15 @@
 
         <div v-if="showReplaysPage" class="replayspage">
             <h1>REPLAYS</h1>
-            <button @click="runGame" class="button" id="gamebutton">Run Game</button>
-            <button @click="getReplay" class="button">Get Replay</button>
-            <!-- <li v-for="obj in currentReplay.Frames"> -->
-            <!--     <p v-for="arr in obj.ArenaFrame"> -->
-            <!--         {{ arr }} -->
-            <!--     </p> -->
+            <button @click="runGame" class="button" id="gamebutton" disabled>Run Game</button>
+            <button @click="getReplay" class="button" disabled>Get Replay</button>
 
-            <!-- </li> -->
+            <button @click="getPlayerLocationsInCurrentFrame" class="button" disabled>Player Locations</button>
             <button @click="startReplay" class="button">Start Replay</button>
-            <button @click="getPlayerLocationsInCurrentFrame" class="button">Player Locations</button>
             <button @click="getDuel" class="button">Duel</button>
             <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
-            <button @click="console.log(duelUserInput)" class="button is-danger">Duel Input</button>
             <br>
-            <!-- <div v-for="frame in currentReplay.Frames" :key="frame.Player"> -->
-            <!--     <p v-for="row in frame.ArenaFrame" :key="row"> -->
-            <!--         {{ row }} -->
-            <!--     </p> -->
-            <!--     <div>Player: {{ frame.Player }} | #Actions: {{ frame.Count }}</div> -->
-            <!--     <div>Action: {{ frame.Action }} {{ frame.Args }}</div> -->
-            <!--     <div>Mana: {{ frame.Mana }}</div> -->
-            <!--     <br> -->
-            <!-- </div> -->
 
-            <!-- <p>{{frameToDisplay}}</p> -->
             <div v-for="row in frameToDisplay.ArenaFrame">
                 {{ row }}
             </div>
@@ -217,6 +268,25 @@
                 <div>Mana: {{ frameToDisplay.Mana }}</div>
             </div>
             <br>
+
+            <ul>
+
+                <!-- I can do all of this here, or get all of the information out of the currentReplay -->
+                <!-- in a dedicated function and then extract information from that to display here -->
+                <div v-for="frame in currentReplay.Frames">
+                    Player: {{ frame.Player }}
+                    <br>
+                    Action: {{ frame.Action }} {{ frame.Args ? frame.Args.join(" ") : "" }}
+                    <br>
+                    Mana: {{ frame.Mana }}
+                    <br>
+                    Count: {{ frame.Count }}
+                    <br>
+                    <br>
+                    <br>
+                </div>
+
+            </ul>
 
             <canvas v-show="true" id="myCanvas" width="610" height="610" style="border:1px solid black;">
             </canvas>

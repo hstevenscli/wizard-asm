@@ -6,7 +6,7 @@ import (
     "strings"
 )
 
-var gameover gameOver
+// var gameover gameOver
 
 // Summon magma in 3x3 square centered on target row,col
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
@@ -35,7 +35,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
             if valid {
 				player_val, p_hit := check_player(t_row, t_col, g)
 				if p_hit {
-					game_over(player_val, "Burned in magma")
+					game_over(g, player_val, "Burned in magma")
 				}
 				// FOR DEBUGGING, ERASE LATER
                 g.Arena[t_row][t_col] = 3
@@ -53,7 +53,7 @@ func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
 	if valid {
         player_val, p_hit := check_player(d_row, d_col, g)
         if p_hit {
-            game_over(player_val, "Burned in acid")
+            game_over(g, player_val, "Burned in acid")
         }
         // Turn the space into acid
         g.Arena[d_row][d_col] = 3
@@ -103,7 +103,7 @@ func asm_move( g *gameSpace, player int, direction string ) {
     if g.Arena[d_row][d_col] != 1 && g.Arena[d_row][d_col] != 2 {
         if g.Arena[d_row][d_col] == 3 {
             fmt.Printf("You stepped in Acid!! (I think). Player %v stepped in: %v\n", player, g.Arena[d_row][d_col])
-            game_over(player, "Stepped in acid")
+            game_over(g, player, "Stepped in acid")
         }
         easy_move_wrapper(g, player, d_row, d_col)
     }
@@ -125,7 +125,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     player_val, p_hit := check_player(row, col, g) 
     if p_hit && player_val != player {
         fmt.Println("Teleport double death")
-        game_over(0, "Teleportation death")
+        game_over(g, 0, "Teleportation death")
     }
     // Draw changes to g.Arena
     easy_move_wrapper(g, player, row, col)
@@ -146,7 +146,7 @@ func asm_wait( player int ) {
 func asm_recharge( g *gameSpace, player int, amount int ) {
 	g.Pinfo[player].Mana += amount
     if g.Pinfo[player].Mana > 200 {
-        game_over(player, "Mana Overcharge")
+        game_over(g, player, "Mana Overcharge")
     }
 }
 
@@ -217,7 +217,7 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         }
         player_val, p_hit := check_player(s_row, s_col, g)
         if p_hit {
-            game_over(player_val, "Struck by lightning")
+            game_over(g, player_val, "Struck by lightning")
 
         }
         // For debugging, remove later
