@@ -23,6 +23,7 @@ Vue.createApp({
             whoami: "",
             duelUserInput: "",
             ploc: {},
+            tempProgram: [""],
         };
     },
     methods: {
@@ -52,15 +53,23 @@ Vue.createApp({
             if (response.ok) {
                 let json = await response.json();
                 console.log("Response:", json);
-                console.log("IAM:", this.whoami)
                 this.whoami = json.session.Username;
-                console.log("IAM:", this.whoami)
             } else {
                 console.log("Error:", response.status)
             }
         },
+        buyPremiumSpell: function (event) {
+            let button = event.target;
+            button.classList.add("is-loading");
+            setTimeout(() => {
+                button.classList.remove("is-loading");
+                button.classList.remove("is-warning");
+                button.classList.add("is-primary");
+            }, 2000);
+            console.log("BOUGHT SPELL");
+        },
         helloThere: function () {
-            console.log("hello");
+            // console.log("hello");
         },
         toggleHamburger: function () {
             this.hamburgerEnabled = !this.hamburgerEnabled;
@@ -235,16 +244,54 @@ Vue.createApp({
             }
             button.classList.remove("is-loading");
         },
+        getBattleProgram: async function () {
+            let url = "http://localhost:8081/battleprogram/" + this.whoami;
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            });
+            if (response.ok) {
+                let json = await response.json();
+                console.log("BattleProgram Found", json);
+                this.extractInstructionsFromBP(json)
+            } else {
+                alert("HTTP-Error: " + response)
+            }
+        },
+        saveTempProgram: function () {
+            let program = this.getTextareaLines();
+            this.tempProgram = program;
+            console.log(this.tempProgram);
+        },
+        extractInstructionsFromBP: function (bp) {
+            let text = document.querySelector(".textarea");
+            text.value = "";
+            let instructions = [];
+            for (let i = 0; i < bp.instructions.length; i++) {
+                let instruction = bp.instructions[i].instruction;
+                let args = bp.instructions[i].args;
+                instructions.push(`${instruction} ${args.join(" ")}`);
+            }
+            text.value = instructions.join("\n");
+            console.log(instructions);
+        },
         showTutorial: function () {
             this.showBattlePage = false;
             this.showReplaysPage = false;
             this.showTutorialPage = true;
 
         },
-        showBattle: function () {
+        showBattle: async function () {
             this.showBattlePage = true;
             this.showReplaysPage = false;
             this.showTutorialPage = false;
+            this.$nextTick(() =>{
+                let text = document.querySelector(".textarea");
+                console.log("Temp Program", this.tempProgram);
+                text.value = this.tempProgram.join("\n");
+            });
         },
         showReplays: function () {
             this.showBattlePage = false;
