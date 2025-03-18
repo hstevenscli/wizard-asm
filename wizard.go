@@ -128,7 +128,7 @@ func main() {
     })
 
     // POST ROUTES
-	router.POST("/battleprogram", postBattleProgram)
+	router.POST("/battleprogram", authorizeMiddleware(), postBattleProgram)
     router.POST("/users", postUsers)
     router.POST("/login", postLogin)
     router.POST("/logout", authorizeMiddleware(), postLogout)
@@ -137,5 +137,5 @@ func main() {
         c.JSON(201, gin.H{"msg": "Game has been run"})
 	})
 
-    router.Run("localhost:8081")
+    router.Run("0.0.0.0:8081")
 }

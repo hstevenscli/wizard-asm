@@ -24,6 +24,7 @@ Vue.createApp({
             duelUserInput: "",
             ploc: {},
             tempProgram: [""],
+            premiumSpells: {},
         };
     },
     methods: {
@@ -58,13 +59,40 @@ Vue.createApp({
                 console.log("Error:", response.status)
             }
         },
-        buyPremiumSpell: function (event) {
+        buyPremiumSpell: function (event, whichspell) {
+            console.log(whichspell);
             let button = event.target;
             button.classList.add("is-loading");
             setTimeout(() => {
                 button.classList.remove("is-loading");
                 button.classList.remove("is-warning");
                 button.classList.add("is-primary");
+                button.innerHTML = "";
+
+                let purchasedspan = document.createElement("span");
+                purchasedspan.textContent = "Purchased";
+
+                let iconspan = document.createElement("span");
+                iconspan.classList.add("icon");
+                iconspan.classList.add("is-small");
+                let iele = document.createElement("i");
+                iele.classList.add("fas");
+                iele.classList.add("fa-check");
+                iconspan.appendChild(iele);
+                button.appendChild(iconspan);
+
+
+                button.appendChild(purchasedspan);
+                button.disabled = true;
+
+                this.premiumSpells[whichspell] = true;
+                let price = document.querySelector(`.${whichspell}`);
+                let inner = price.innerHTML;
+                price.innerHTML = "";
+
+                let strikethrough = document.createElement("s");
+                strikethrough.innerHTML = inner;
+                price.appendChild(strikethrough);
             }, 2000);
             console.log("BOUGHT SPELL");
         },
@@ -238,8 +266,8 @@ Vue.createApp({
                 let json = await response.json();
                 button.classList.remove("is-loading");
                 console.log("Response:", json)
-            } else {
-                alert("HTTP-Error: " + response.status);
+            } else if (response.status === 401){
+                alert("HTTP-Error: " + "Please log in first");
                 button.classList.remove("is-loading");
             }
             button.classList.remove("is-loading");
@@ -256,8 +284,10 @@ Vue.createApp({
                 let json = await response.json();
                 console.log("BattleProgram Found", json);
                 this.extractInstructionsFromBP(json)
+            } else if (response.status === 404) {
+                console.log("Need to log in first");
             } else {
-                alert("HTTP-Error: " + response)
+                alert("Something Happened");
             }
         },
         saveTempProgram: function () {

@@ -171,14 +171,14 @@
                         <p>Summons an explosion of magma in a 3x3 square centered on target location chosen by arg1 and arg2</p>
                         <p>Arg 1: A number (0-15); The row you want to target</p>
                         <p>Arg 2: A number (0-15); The column you want to target</p>
-                        <p style="color: blue">Mana Cost: 20</p>
+                        <p style="color: #3087f7">Mana Cost: 20</p>
                     </div>
                     <div class="box">
                         <h4>Acid [arg1] [arg2]</h4>
                         <p>Summons a puddle of acid on target location chosen by arg1 and arg2</p>
                         <p>Arg 1: A number (0-15); The row you want to target</p>
                         <p>Arg 2: A number (0-15); The column you want to target</p>
-                        <p style="color: blue">Mana Cost: 10</p>
+                        <p style="color: #3087f7">Mana Cost: 10</p>
                     </div>
                     <div class="box">
                         <h4>Move [arg1]</h4>
@@ -187,7 +187,7 @@
                                 <figure class="image is-128x128">
                                     <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
                                 </figure>
-                        <p style="color: blue">Mana Cost: 0</p>
+                        <p style="color: #3087f7">Mana Cost: 0</p>
                     </div>
                     <div class="box">
                         <h4>Teleport [arg1] [arg2]</h4>
@@ -195,7 +195,7 @@
                         <p>Arg 1: A number (0-15); The row you want to target</p>
                         <p>Arg 2: A number (0-15); The column you want to target</p>
                         <p>Alternatively, you can put -1 for both arguments to teleport to a random location</p>
-                        <p style="color: blue">Mana Cost: 100</p>
+                        <p style="color: #3087f7">Mana Cost: 100</p>
 
                     </div>
                     <div class="box">
@@ -203,13 +203,13 @@
                         <p>Apply a magical shield to protect from certain damage types</p>
                         <p>Arg 1: A number (1, 2, or 3) 1 to protect against fire, 2 against lightning, 3 against acid</p>
                         <p style="color: yellow">NOTE! Not currently implemented/working</p>
-                        <p style="color: blue">Mana Cost: 10</p>
+                        <p style="color: #3087f7">Mana Cost: 10</p>
 
                     </div>
                     <div class="box">
                         <h4>Wait</h4>
                         <p>Simply wait and do nothing</p>
-                        <p style="color: blue">Mana Cost: 0</p>
+                        <p style="color: #3087f7">Mana Cost: 0</p>
 
                     </div>
                     <div class="box">
@@ -217,7 +217,7 @@
                         <p>Recharge your mana by the amount given by arg1</p>
                         <p>Arg 1: A number (0-200)</p>
                         <p>Running out of mana while trying to cast a spell will result in a loss, however having too much mana will result in a loss due to mana overcharge. Think wisely about how much mana you actually need!</p>
-                        <p style="color: blue">Mana Cost: 0</p>
+                        <p style="color: #3087f7">Mana Cost: 0</p>
 
                     </div>
                     <div class="box">
@@ -226,7 +226,7 @@
                         <p>Arg 1: a number (0-5) to specify the accuracy of the spell</p>
                         <p>0 will give an exact location of the enemy, while each subsequent number will give a location with a margin of error equal to that number</p>
                         <p style="color: yellow">NOTE! Not currently implemented/working</p>
-                        <p style="color: blue">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
+                        <p style="color: #3087f7">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
 
                     </div>
                     <div class="box">
@@ -236,7 +236,7 @@
                                 <figure class="image is-128x128">
                                     <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
                                 </figure>
-                        <p style="color: blue">Mana Cost: 100</p>
+                        <p style="color: #3087f7">Mana Cost: 100</p>
 
                     </div>
 
@@ -246,25 +246,25 @@
                     <p>Start a loop that will run a specified number of times</p>
                     <p>Arg 1: A number, how many times you want the loop to run</p>
                     <p style="color: yellow">NOTE! Nested loops using Sloop and Eloop is not currently supported</p>
-                    <p style="color: blue">Mana Cost: 0</p>
+                    <p style="color: #3087f7">Mana Cost: 0</p>
                 </div>
                 <div class="box">
                     <h4>Eloop</h4>
                     <p>Paired with an Sloop instruction. This will specify the end of your loop and will signal the program reader to go back to up to your Sloop instruction</p>
-                    <p style="color: blue">Mana Cost: 0</p>
+                    <p style="color: #3087f7">Mana Cost: 0</p>
 
                 </div>
                 <div class="box">
                     <h4>Jump [arg1]</h4>
                     <p>This will tell the program reader to go back or forward a specified number of instructions in your program</p>
                     <p>Arg 1: A number (positive or negative), the amount of instructions you would like to jump forward or backward</p>
-                    <p style="color: blue">Mana Cost: 0</p>
+                    <p style="color: #3087f7">Mana Cost: 0</p>
 
                 </div>
                 <div class="box">
                     <h4>CJump</h4>
                     <p style="color: yellow">Work in progress</p>
-                    <p style="color: blue">Mana Cost: 0</p>
+                    <p style="color: #3087f7">Mana Cost: 0</p>
                 </div>
 
             <section class="section is-large"></section>
@@ -281,10 +281,14 @@
                 <div class="box">
                     <h4>PowerWordKill&trade;</h4>
                     <p>Instantly kill your opponent</p>
-                    <p style="color: blue">Mana Cost: 1</p>
+                    <p style="color: #3087f7">Mana Cost: 1</p>
                     <div class="buttons">
-                        <button @click="buyPremiumSpell($event)" class="button is-warning pwk" style="color: white;">Buy Now</button>
-                        <p style="color: white; margin-left: 10px;">$9.99</p>
+                        <button @click="buyPremiumSpell($event, 'pwk')" class="button is-warning" style="color: white;">Buy Now</button>
+                        <p class="pwk" style="color: white; margin-left: 10px;">$9.99</p>
+                    </div>
+                    <div  v-if="premiumSpells['pwk']" class="notification is-success">
+                        <button @click="premiumSpells['pwk'] = false" class="delete"></button>
+                        Thank you for your purchase. Please use this power responsibly.
                     </div>
                     <!-- <div class="columns"> -->
                     <!--     <div class="column"> -->

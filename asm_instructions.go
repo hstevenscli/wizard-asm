@@ -225,3 +225,16 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
     }
     deplete_mana(g, player, 100)
 }
+
+
+func asm_power_word_kill( g *gameSpace, player int) {
+	var deadplayer int
+
+	if player == 1 {
+		deadplayer = 2
+	} else {
+		deadplayer = 1
+	}
+	game_over(g, deadplayer, "Power Word Killed to Death")
+	deplete_mana(g, player, 1)
+}
