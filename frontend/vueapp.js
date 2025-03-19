@@ -284,6 +284,7 @@ Vue.createApp({
                 let json = await response.json();
                 console.log("BattleProgram Found", json);
                 this.extractInstructionsFromBP(json)
+                this.saveTempProgram();
             } else if (response.status === 404) {
                 console.log("Need to log in first");
             } else {

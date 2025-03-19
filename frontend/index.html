@@ -32,8 +32,8 @@
             <div :class="{'is-active': hamburgerEnabled}" class="navbar-menu">
                 <div class="navbar-start">
                     <a @click="showTutorial" class="navbar-item">Home</a>
-                    <a @click="showBattle" class="navbar-item">Battle</a>
-                    <a @click="showReplays" class="navbar-item">Replays</a>
+                    <a v-show="whoami !== ''" @click="showBattle" class="navbar-item">Battle</a>
+                    <a v-show="whoami !== ''" @click="showReplays" class="navbar-item">Replays</a>
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
@@ -120,16 +120,24 @@
             <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
             <div class="content has-text-left">
                 <br>
-                <p class="is-size-4">Please read the tutorial below to understand how the game works</p>
-                <p>Game is in beta.<br>Currently only duels are working, meaning you must provide the username of the player you wish to fight</p>
+                <p class="is-size-4 has-text-centered">Please read the tutorial below to understand how the game works</p>
+
+                <h3>What it is</h3>
+                <p>Game is in beta.<br><br>Currently only duels are working, meaning you must provide the username of the player you wish to fight</p>
                 <p>Wizard-ASM is wizard themed multiplayer arena battle game meant to get you thinking about problems like a programmer</p>
+                <h3>How the game works</h3>
                 <p>The game takes place in a 16x16 grid where you and your opponent will receive random spawns</p>
-                <image></image>
                 <p>You control a wizard with access to an arsenal of spells with the aim of the game being to destroy the other player before they can destroy you</p>
-                <p>The catch: You need to provide all instructions to your wizard before the game actually starts</p>
+                <p>But there's a catch! You need to provide all instructions to your wizard before the game actually starts</p>
+                <p>In 'the game' you write what is called a battle program, a list of instructions that your wizard will follow until he slays his enemy or is slain himself</p>
+                <p>Many of these instructions require a location. You need to tell your wizard where exactly to summon an acid puddle for example.</p>
+                <p>To tell your wizard where to target his spell you must usually give a row and a column</p>
+                    <img src="/frontend/photos/wizasmtutorial.png" />
+                    <p>The arena rows and columns start at the top left and end at the bottom right</p>
+                    <p>You will also notice that rows and columns start at zero, not one. Thats because computers in real life start counting at zero</p>
                 <p>Once a battle starts there is no way to change your strategy or adapt to what the enemy is doing. Everything you want to do needs to be considered beforehand</p>
                 <p>Fret not! For your spells are all you need. With them you can summon lava, shoot lightning, teleport, and magically deduce the location of your opponent. Rely on your spells and you will be a victor in The Arena.</p>
-                <p>Head over to the 'Battle' tab to learn about the spells available to you</p>
+                <p>Log in and then head over to the 'Battle' tab to learn about the spells available to you</p>
                 <br>
 
             </div>
@@ -299,6 +307,19 @@
                     <!--     </div> -->
 
                     <!-- </div> -->
+                </div>
+                <div class="box">
+                    <h4>Wish&trade;</h4>
+                    <p>Get anything you wish for</p>
+                    <p style="color: #3087f7">Mana Cost: 200</p>
+                    <div class="buttons">
+                        <button @click="buyPremiumSpell($event, 'wish')" class="button is-warning" style="color: white;">Buy Now</button>
+                        <p class="wish" style="color: white; margin-left: 10px;">$15.99</p>
+                    </div>
+                    <div  v-if="premiumSpells['wish']" class="notification is-success">
+                        <button @click="premiumSpells['wish'] = false" class="delete"></button>
+                        Thank you for your purchase. Please use this power responsibly.
+                    </div>
                 </div>
 
             </div>

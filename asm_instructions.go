@@ -75,8 +75,8 @@ func asm_move( g *gameSpace, player int, direction string ) {
     var d_col int
 
     dir := strings.ToLower(direction)
-    switch dir {
-    case "n":
+	switch dir {
+	case "n":
         d_row = p_loc[0] - 1
         d_col = p_loc[1]
     case "s":
