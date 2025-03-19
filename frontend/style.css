@@ -6,8 +6,11 @@
 /* } */
 
 p {
-    color: #32CD32;
+    color: #68cef9;
+    font-size: large;
 }
+
+
 
 textarea {
     font-weight: bold;

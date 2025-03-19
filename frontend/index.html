@@ -122,22 +122,71 @@
                 <br>
                 <p class="is-size-4 has-text-centered">Please read the tutorial below to understand how the game works</p>
 
-                <h3>What it is</h3>
+                <h3>The Game</h3>
                 <p>Game is in beta.<br><br>Currently only duels are working, meaning you must provide the username of the player you wish to fight</p>
                 <p>Wizard-ASM is wizard themed multiplayer arena battle game meant to get you thinking about problems like a programmer</p>
-                <h3>How the game works</h3>
+                <h3>The Arena</h3>
                 <p>The game takes place in a 16x16 grid where you and your opponent will receive random spawns</p>
-                <p>You control a wizard with access to an arsenal of spells with the aim of the game being to destroy the other player before they can destroy you</p>
-                <p>But there's a catch! You need to provide all instructions to your wizard before the game actually starts</p>
-                <p>In 'the game' you write what is called a battle program, a list of instructions that your wizard will follow until he slays his enemy or is slain himself</p>
-                <p>Many of these instructions require a location. You need to tell your wizard where exactly to summon an acid puddle for example.</p>
-                <p>To tell your wizard where to target his spell you must usually give a row and a column</p>
-                    <img src="/frontend/photos/wizasmtutorial.png" />
+                    <img style="background-color: white;" src="/frontend/photos/wizasmtutorial.png" />
                     <p>The arena rows and columns start at the top left and end at the bottom right</p>
                     <p>You will also notice that rows and columns start at zero, not one. Thats because computers in real life start counting at zero</p>
-                <p>Once a battle starts there is no way to change your strategy or adapt to what the enemy is doing. Everything you want to do needs to be considered beforehand</p>
+                    <p>You control a wizard in this arena with access to an arsenal of spells. The game ends when one of you dies
+                    or a game timeout happens (Nobody dies after 2000 game actions)</p>
+                <p>But there's a catch! You need to provide all instructions to your wizard in the form of a battle program before the game actually starts</p>
+
+                <h3>What is a Battle Program</h3>
+                <p>In 'the game' you write what is called a battle program, a list of instructions that your wizard will follow until he slays 
+                    his enemy or is slain himself</p>
+                <p>Many of these spells require a row and column to resolve properly. You need to tell your wizard where exactly to 
+                    summon an acid puddle for example.</p>
+
+                <p>A battle program is just a simple list of instructions (spells or actions to take) and the arguments 
+                needed for that instruction</p>
+                <h3>Example Battle Program</h3>
+                <div class="columns">
+                    <div class="column">
+                        <p>This simple example program to the left has a few things we should point out</p>
+                        <p>This program will have the wizard recharge mana so they are topped off at 200 mana (You cant go over 200 or below zero or your wizard will die)
+                        then shoot lightning to the north and south, recharge back up to 200, shoot lightning east and west,
+                        recharge to 200 again and then start again at the first lightning instruction</p>
+                        <p>All instructions and their arguments are explained in detail in the 'Battle' tab</p>
+                    </div>
+                    <div class="column">
+                        <ul>
+                            <li>
+                                RECHARGE 100
+                            </li>
+                            <li>
+                                LIGHTNING N
+                            </li>
+                            <li>
+                                LIGHTNING S
+                            </li>
+                            <li>
+                                RECHARGE 200
+                            </li>
+                            <li>
+                                LIGHTNING E
+                            </li>
+                            <li>
+                                LIGHTNING W
+                            </li>
+                            <li>
+                                RECHARGE 200
+                            </li>
+                            <li>
+                                JUMP -6
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p>Once a battle starts there is no way to change your strategy or adapt to what the enemy is doing. 
+                    Everything you want to do needs to be considered beforehand</p>
+
+                <h3>Get Started Today!</h3>
                 <p>Fret not! For your spells are all you need. With them you can summon lava, shoot lightning, teleport, and magically deduce the location of your opponent. Rely on your spells and you will be a victor in The Arena.</p>
-                <p>Log in and then head over to the 'Battle' tab to learn about the spells available to you</p>
+                <p>Log in or register, then head over to the 'Battle' tab to learn about the spells available to you</p>
                 <br>
 
             </div>
@@ -153,7 +202,7 @@
             <div class="block">
                 <h2>Welcome To The Battle Arena</h2>
                 <p>Create a Battle Program</p>
-                <textarea @blur="saveTempProgram" class="textarea" placeholder="magma 0 0"></textarea>
+                <textarea @blur="saveTempProgram" class="bptextarea textarea" placeholder="magma 0 0"></textarea>
                 <div class="buttons">
                     <button @click="submitProgram" class="button is-primary" id="sbutton" >Submit</button>
                     <button @click="getBattleProgram" class="button is-link is-outlined">Load Saved Program</button>

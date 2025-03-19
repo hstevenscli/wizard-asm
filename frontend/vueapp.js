@@ -221,7 +221,7 @@ Vue.createApp({
             }
         },
         getTextareaLines: function () {
-            let text = document.querySelector(".textarea").value;
+            let text = document.querySelector(".bptextarea").value;
             let arr = text.split("\n");
             return arr
         },
@@ -297,7 +297,7 @@ Vue.createApp({
             console.log(this.tempProgram);
         },
         extractInstructionsFromBP: function (bp) {
-            let text = document.querySelector(".textarea");
+            let text = document.querySelector(".bptextarea");
             text.value = "";
             let instructions = [];
             for (let i = 0; i < bp.instructions.length; i++) {
@@ -319,7 +319,7 @@ Vue.createApp({
             this.showReplaysPage = false;
             this.showTutorialPage = false;
             this.$nextTick(() =>{
-                let text = document.querySelector(".textarea");
+                let text = document.querySelector(".bptextarea");
                 console.log("Temp Program", this.tempProgram);
                 text.value = this.tempProgram.join("\n");
             });
