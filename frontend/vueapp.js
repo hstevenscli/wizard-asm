@@ -25,6 +25,10 @@ Vue.createApp({
             ploc: {},
             tempProgram: [""],
             premiumSpells: {},
+            showReportModal: false,
+            bugReportMessage: "",
+            bugEmail: "",
+            showBugNotification: false,
         };
     },
     methods: {
@@ -218,6 +222,37 @@ Vue.createApp({
             } else {
                 // TODO change this to a more user friendly response
                 alert("HTTP-Error: ", + response.status);
+            }
+        },
+        activateReportModal: function () {
+            this.showReportModal = true;
+        },
+        postBugReport: async function () {
+            if (this.bugReportMessage === "") {
+                return
+            }
+            let button = document.getElementById("bugSubmitButton")
+            button.classList.add("is-loading");
+            var url = "http://localhost:8081/bugreport";
+            var report = { message: this.bugReportMessage, email: this.bugEmail}
+            console.log(report)
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(report)
+            });
+            if (response.ok) {
+                let json = await response.json()
+                button.classList.remove("is-loading");
+                console.log(json)
+                this.bugReportMessage = "";
+                this.bugEmail = "";
+                this.showBugNotification = true;
+            } else {
+                alert("HTTP-Error: ", response.status)
+                button.classList.remove("is-loading");
             }
         },
         getTextareaLines: function () {

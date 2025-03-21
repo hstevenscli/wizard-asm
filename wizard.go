@@ -122,6 +122,7 @@ func main() {
 		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
 	})
 
+
     // PUT the stuff in this function into a helper function to authenticate on protected routes
     router.GET("/testsession", authorizeMiddleware(), func(c *gin.Context) {
             c.JSON(200, gin.H{"status": "Boobies"})
@@ -136,6 +137,7 @@ func main() {
 		runGame()
         c.JSON(201, gin.H{"msg": "Game has been run"})
 	})
+	router.POST("/bugreport", postBugReport)
 
     router.Run("0.0.0.0:8081")
 }
