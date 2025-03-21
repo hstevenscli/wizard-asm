@@ -37,7 +37,9 @@
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
+                        <a @click="activateReportModal" class="button is-small is-danger">Bug Report</a>
                         <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Login</a>
+
                     </div>
                     <!-- <div class="navbar-item"> -->
                     <!--     <a @click="testSession" class="button is-small is-primary">Test Session</a> -->
@@ -110,6 +112,45 @@
                 <p v-if="showLoginText" class="control">Already have an account? <a @click="loginLayout">Login</a></p>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; loginLayout()"></button>
+        </div>
+
+        <div class="modal" :class="{'is-active': showReportModal}">
+            <div class="modal-background" @click="showReportModal = false; showBugNotification = false;"></div>
+            <div class="modal-content">
+                <!-- Any other Bulma elements you want -->
+
+                <div class="field">
+                    <label class="label">Please type your message below!</label>
+                    <p class="help has-text-white">A suggestion, bug you found, other comments...</p>
+                    <div class="control">
+                        <textarea v-model="bugReportMessage" class="textarea" placeholder="" maxlength="500"></textarea>
+                    </div>
+                </div>
+
+                <label class="has-text-white">Leave your email if you would like to receive follow up on your bug report or suggestion</label>
+                <div class="field">
+                    <div class="control has-icons-left has-icons-right">
+                    <input v-model="bugEmail" class="input" type="email" placeholder="Email">
+                    <span class="icon is-small is-left">
+                        <i class="fa-solid fa-envelope"></i>
+                    </span>
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button @click="postBugReport" class="button is-link" id="bugSubmitButton">Submit</button>
+                    </div>
+                    <div class="control">
+                        <button @click="showReportModal = false; showBugNotification = false" class="button is-light">Cancel</button>
+                    </div>
+                </div>
+                <div v-show="showBugNotification" class="notification is-info">
+                    <button @click="showBugNotification = false" class="delete"></button>
+                    Thank you for your feedback
+                </div>
+
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="showReportModal = false"></button>
         </div>
 
 
@@ -387,6 +428,7 @@
             <button @click="getDuel" class="button">Duel</button>
             <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
             <br>
+            <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
 
             <div v-for="row in frameToDisplay.ArenaFrame">
                 {{ row }}

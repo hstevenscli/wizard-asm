@@ -19,6 +19,10 @@ type user struct {
     BP battleProgram `bson:"bp"`
 }
 
+type report struct {
+	Message string `bson:"message"`
+	Email string `bson:"email,omitempty"`
+}
 
 // For getting the mongo client into each handler function
 // because the mongo client is started in the main func
@@ -211,6 +215,37 @@ func postBattleProgram(c *gin.Context) {
     // fmt.Println("Modified Count:", updresult.ModifiedCount)
 
     c.IndentedJSON(201, gin.H{"status": "Program created/saved successfully"})
+}
+
+func postBugReport(c *gin.Context) {
+	var newBugReport report
+	if err := c.BindJSON(&newBugReport); err != nil {
+		c.JSON(400, gin.H{"status": "Bad request; json error"})
+		return
+	}
+
+	// check length of message
+	if len(newBugReport.Message) > 500 {
+		c.JSON(413, gin.H{"status": "Message too long"})
+		return
+	}
+
+	if len(newBugReport.Email) > 50 {
+		c.JSON(413, gin.H{"status": "Email too long"})
+		return
+	}
+
+	// get database and collection
+	mongoClient := getClient(c)
+	coll := mongoClient.Database("wizardb").Collection("reports")
+
+	result, err := coll.InsertOne(context.TODO(), newBugReport)
+	if err != nil {
+		c.JSON(500, gin.H{"status": "Server error"})
+		return
+	}
+	fmt.Println("Result:", result)
+	c.JSON(201, gin.H{"status": "Report made successfully"})
 }
 
 func getDuel(c *gin.Context) {
