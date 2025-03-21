@@ -296,14 +296,91 @@ Vue.createApp({
             this.tempProgram = program;
             console.log(this.tempProgram);
         },
+        checkProgram: function () {
+            let validInstructions = [
+                "magma", 
+                "lightning", 
+                "acid", 
+                "move", 
+                "shield", 
+                "teleport", 
+                "wait", 
+                "recharge", 
+                "divination", 
+                "sloop",
+                "eloop",
+                "jump",
+                "cjump",
+            ]
+            let program = this.getTextareaLines();
+            for (let i = 0; i < program.length; i++ ) {
+                let args = [];
+                let line = program[i].split(" ");
+                let instruction = line[0];
+                // Check instruction
+                if (!validInstructions.includes(instruction)) {
+                    console.log("Instruction not recognized:", instruction);
+                }
+                // make sure that the length of line is equal to what it should be
+                // this is to ensure that theres not extra arguments on something
+                // that shouldnt have arguments
+                //
+                //
+                // if instruction passes now check args
+                let count = this.returnCountOfArgs(instruction);
+                if (count == 2) {
+                    let arg1 = line[1]
+                    let arg2 = line[2]
+                    args.push(arg1, arg2)
+                } else if (count == 1) {
+                    let arg1 = line[1]
+                    args.push(arg1)
+                }
+                console.log("ARGS:", args);
+
+            }
+        },
+        returnCountOfArgs: function (instruction) {
+            let count = -1
+            let twocount = [
+                "magma",
+                "acid",
+                "teleport",
+            ]
+            let onecount = [
+                "move",
+                "shield",
+                "recharge",
+                "lightning",
+                "divination",
+                "sloop",
+                "jump",
+                "cjump",
+            ]
+            if (twocount.includes(instruction)) {
+                count = 2;
+            }
+            if (onecount.includes(instruction)) {
+                count = 1;
+            }
+            return count;
+        },
         extractInstructionsFromBP: function (bp) {
+            console.log("BP:", bp);
             let text = document.querySelector(".bptextarea");
             text.value = "";
             let instructions = [];
             for (let i = 0; i < bp.instructions.length; i++) {
                 let instruction = bp.instructions[i].instruction;
                 let args = bp.instructions[i].args;
-                instructions.push(`${instruction} ${args.join(" ")}`);
+                console.log("Args:", args);
+                if (args) {
+                    console.log("GOT HERE")
+                    instructions.push(`${instruction} ${args.join(" ")}`);
+                } else {
+                    console.log("IN ELSE")
+                    instructions.push(`${instruction}`);
+                }
             }
             text.value = instructions.join("\n");
             console.log(instructions);
@@ -385,7 +462,7 @@ Vue.createApp({
                 this.getPlayerLocationsInCurrentFrame();
 
                 index++;
-                waitTime = Math.max(50, waitTime -2*index)
+                waitTime = Math.max(30, waitTime -2*index)
 
                 setTimeout(step, waitTime);
             }

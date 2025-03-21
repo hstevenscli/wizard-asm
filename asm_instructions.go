@@ -88,6 +88,18 @@ func asm_move( g *gameSpace, player int, direction string ) {
     case "e":
         d_row = p_loc[0]
         d_col = p_loc[1] + 1
+    case "ne":
+        d_row = p_loc[0] - 1
+        d_col = p_loc[1] + 1
+    case "nw":
+        d_row = p_loc[0] - 1
+        d_col = p_loc[1] - 1
+    case "se":
+        d_row = p_loc[0] + 1
+        d_col = p_loc[1] + 1
+    case "sw":
+        d_row = p_loc[0] + 1
+        d_col = p_loc[1] - 1
     default:
         d_row = p_loc[0]
         d_col = p_loc[1]
@@ -209,7 +221,7 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         col_mod = -1
     }
 
-    for i:= 0; i < g.Size-1; i++ {
+    for i := 0; i < g.Size-1; i++ {
         s_row = s_row + row_mod
         s_col = s_col + col_mod
         if !is_valid_loc(s_row, s_col, g.Size ) {
