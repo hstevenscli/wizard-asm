@@ -86,7 +86,7 @@ func postLogout(c *gin.Context) {
     if err != nil {
         c.JSON(409, gin.H{"status": "Already logged out/cookie not found"})
     } else {
-        c.SetCookie("My_Cookie", "", -1, "/",  "wizard.nothingdangerous.live", false, false)
+        c.SetCookie("My_Cookie", "", -1, "/",  getCookieDomain(), false, false)
         delete(sessionStore, cookie)
         c.JSON(200, gin.H{"status": "Logged out successfully"})
     }
@@ -132,7 +132,7 @@ func postLogin(c *gin.Context) {
             return
         }
         sessionStore[sessionID] = session{ Username: loginUser.Username, Timestamp: time.Now().Add(time.Hour *24*30) }
-        c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  "wizard.nothingdangerous.live", false, false)
+        c.SetCookie("My_Cookie", sessionID, 60*60*24*30, "/",  getCookieDomain(), false, false)
 
         fmt.Println("session store: ", sessionStore)
         c.JSON(200, gin.H{"status": "successfully logged in"})
@@ -365,7 +365,7 @@ func cookieHandler(c *gin.Context) {
         fmt.Println("Number:", sessionID)
         fmt.Println("Cookie My_Cookie not found, Setting cookie My_Cookie with secret value")
         cookie = "notset"
-        c.SetCookie("My_Cookie", sessionID, 3600, "/",  "wizard.nothingdangerous.live", false, false)
+        c.SetCookie("My_Cookie", sessionID, 3600, "/",  getCookieDomain(), false, false)
     }
 
     fmt.Printf("Cookie Value: %s\n", cookie)

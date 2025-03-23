@@ -180,54 +180,63 @@
                     his enemy or is slain himself</p>
                 <p>Many of these spells require a row and column to resolve properly. You need to tell your wizard where exactly to 
                     summon an acid puddle for example.</p>
+                <p>Most spells also have a mana cost associated with them. You start with 100 mana. Make sure to keep your mana from going below zero or your wizard will die!</p>
 
                 <p>A battle program is just a simple list of instructions (spells or actions to take) and the arguments 
                 needed for that instruction</p>
-                <h3>Example Battle Program</h3>
-                <div class="columns">
-                    <div class="column">
-                        <p>This simple example program to the left has a few things we should point out</p>
-                        <p>This program will have the wizard recharge mana so they are topped off at 200 mana (You cant go over 200 or below zero or your wizard will die)
-                        then shoot lightning to the north and south, recharge back up to 200, shoot lightning east and west,
-                        recharge to 200 again and then start again at the first lightning instruction</p>
-                        <p>All instructions and their arguments are explained in detail in the 'Battle' tab</p>
-                    </div>
-                    <div class="column">
-                        <ul>
-                            <li>
-                                RECHARGE 100
-                            </li>
-                            <li>
-                                LIGHTNING N
-                            </li>
-                            <li>
-                                LIGHTNING S
-                            </li>
-                            <li>
-                                RECHARGE 200
-                            </li>
-                            <li>
-                                LIGHTNING E
-                            </li>
-                            <li>
-                                LIGHTNING W
-                            </li>
-                            <li>
-                                RECHARGE 200
-                            </li>
-                            <li>
-                                JUMP -6
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
 
                 <p>Once a battle starts there is no way to change your strategy or adapt to what the enemy is doing. 
                     Everything you want to do needs to be considered beforehand</p>
 
+                <br>
+                <h1 style="border-bottom: 3px solid white;">Battle Program Example Step by Step</h1>
+                <br>
+
+            <div class="content">
+                <div class="columns">
+                    <div class="column">
+                    <h3>Battle Program in Detail</h3>
+                        <p>This simple example program to the right has a few things we should point out</p>
+                        <p>This program recharges 100 mana to top off at 200 (You cant go over 200 or below zero or your wizard will die)
+                        then shoot lightning to the north and south, recharge back up to 200, shoot lightning east and west,
+                        recharge to 200 again and then start again at the first lightning instruction</p>
+                        <p>All instructions and their arguments are explained in detail in the 'Battle' tab</p>
+                    </div>
+                    <div class="column is-offset-one-quarter has-text-white">
+                        <h3 >Example Program</h3>
+                        <li>
+                            RECHARGE 100
+                        </li>
+                        <li>
+                            LIGHTNING N
+                        </li>
+                        <li>
+                            LIGHTNING S
+                        </li>
+                        <li>
+                            RECHARGE 200
+                        </li>
+                        <li>
+                            LIGHTNING E
+                        </li>
+                        <li>
+                            LIGHTNING W
+                        </li>
+                        <li>
+                            RECHARGE 200
+                        </li>
+                        <li>
+                            JUMP -6
+                        </li>
+                    </div>
+                </div>
+
+            </div>
+
                 <h3>Get Started Today!</h3>
                 <p>Fret not! For your spells are all you need. With them you can summon lava, shoot lightning, teleport, and magically deduce the location of your opponent. Rely on your spells and you will be a victor in The Arena.</p>
-                <p>Log in or register, then head over to the 'Battle' tab to learn about the spells available to you</p>
+                <p><a @click="whoami === '' && showLogin()">Log in or register</a>, then head over to the 'Battle' tab to learn about the spells available to you</p>
                 <br>
 
             </div>
@@ -241,28 +250,36 @@
 
         <div v-if="showBattlePage" class="battlepage m-6">
             <div class="block">
-                <h2>Welcome To The Battle Arena</h2>
-                <p>Create a Battle Program</p>
+                <h1 class="title is-3">Create a Battle Program</h1>
+                <h1 class="subtitle is-5">After creating your program, head over to the 'Replays' tab to duel another player</h1>
                 <textarea @blur="saveTempProgram" class="bptextarea textarea" placeholder="magma 0 0"></textarea>
-                <div class="buttons">
+                <div class="buttons mt-1">
                     <button @click="submitProgram" class="button is-primary" id="sbutton" >Save Program</button>
                     <button @click="getBattleProgram" class="button is-link is-outlined">Load Saved Program</button>
                     <button @click="checkProgram" class="button is-danger">Check Program(Debugging)</button>
                 </div>
-                <p>After creating your program, head over to the 'Replays' tab to duel another player</p>
+                <br>
+                <br>
+
+
+                <!-- <p class="is-warning help">You start with 100 mana, keep mana usage in mind as not having enough or using too much will result in a loss</p> -->
+                <!-- <h1 style="border-bottom: 3px solid white;"></h1> -->
             </div>
+                <br>
 
             <div class="content has-text-left">
-            <section class="section is-medium"></section>
+            <section class="section is-small"></section>
                     <h1 style="border-bottom: 5px solid white;">Game Instructions In Detail</h1>
                         <h2>Example Template</h2>
+                        <p>This is how all following instructions will be structured</p>
                     <div class="box">
-                        <h4>Instruction [argument 1] [argument 2] ...</h4>
-                        <p>This is how all of the game instructions will be explained down below. The name of the instruction will be listed, followed by a number of arguments that must be provided. Arguments have been kept simple in most cases, usually a number or a single letter (or two). </p>
-                        <p>In the following examples arguments will be denoted in an abbreviated form [arg1] [arg2] ...</p>
+                        <h4>Instruction Name [argument 1] [argument 2] ...</h4>
+                        <p>The name of the instruction will be listed, followed by a number of arguments that must be provided. Arguments have been kept simple in most cases, usually a number or a single letter (or two). </p>
+                        <!-- <p>In the following examples arguments will be denoted in an abbreviated form [arg1] [arg2] ...</p> -->
+                        <p style="color: #3087f7">Mana Cost: X</p>
                     </div>
 
-            <section class="section is-medium"></section>
+            <section class="section is-small"></section>
 
 
                 <h2 class="has-text-left">Spells and Actions</h2>

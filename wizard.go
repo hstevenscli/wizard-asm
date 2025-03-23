@@ -17,6 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
+
 func connectToMongo() *mongo.Client {
     // load env variable
     err := godotenv.Load()
@@ -86,12 +87,22 @@ func authorizeMiddleware() gin.HandlerFunc {
     }
 }
 
+func getCookieDomain() string {
+	cookiedomain := os.Getenv("COOKIE_DOMAIN")
+	if cookiedomain == "" {
+		cookiedomain = "wizard.nothingdangerous.live"
+	}
+	return cookiedomain
+}
+
 func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
 	}
+
+
     client := connectToMongo()
     defer func() {
         if err := client.Disconnect(context.TODO()); err != nil {
