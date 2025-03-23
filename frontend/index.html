@@ -245,10 +245,11 @@
                 <p>Create a Battle Program</p>
                 <textarea @blur="saveTempProgram" class="bptextarea textarea" placeholder="magma 0 0"></textarea>
                 <div class="buttons">
-                    <button @click="submitProgram" class="button is-primary" id="sbutton" >Submit</button>
+                    <button @click="submitProgram" class="button is-primary" id="sbutton" >Save Program</button>
                     <button @click="getBattleProgram" class="button is-link is-outlined">Load Saved Program</button>
-                    <button @click="checkProgram" class="button is-danger">Check Program</button>
+                    <button @click="checkProgram" class="button is-danger">Check Program(Debugging)</button>
                 </div>
+                <p>After creating your program, head over to the 'Replays' tab to duel another player</p>
             </div>
 
             <div class="content has-text-left">
@@ -430,6 +431,7 @@
             <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
             <br>
             <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
+            <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p>
 
             <div v-for="row in frameToDisplay.ArenaFrame">
                 {{ row }}
