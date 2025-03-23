@@ -33,7 +33,7 @@ Vue.createApp({
     },
     methods: {
         testSession: async function () {
-            var url = "http://localhost:8081/testsession";
+            var url = "/testsession";
             let response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -48,7 +48,7 @@ Vue.createApp({
             }
         },
         getSessionInfo: async function () {
-            var url = "http://localhost:8081/session";
+            var url = "/session";
             let response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -133,7 +133,7 @@ Vue.createApp({
         register: async function () {
             let username = this.usernameInput;
             let password = this.passwordInput;
-            var url = "http://localhost:8081/users";
+            var url = "/users";
             let jstring = JSON.stringify({ username: username, password: password });
             let response = await fetch(url, {
                 method: 'POST',
@@ -188,7 +188,7 @@ Vue.createApp({
         },
         login: async function () {
             console.log("Logging in");
-            var url = "http://localhost:8081/login";
+            var url = "/login";
             let jsonbody = JSON.stringify({ username: this.usernameInput, password: this.passwordInput });
             let response = await fetch(url, {
                 method: 'POST',
@@ -211,7 +211,7 @@ Vue.createApp({
         },
         logout: async function () {
             console.log("Logging out")
-            var url = "http://localhost:8081/logout";
+            var url = "/logout";
             let response = await fetch(url, {
                 method: 'POST',
             });
@@ -233,7 +233,7 @@ Vue.createApp({
             }
             let button = document.getElementById("bugSubmitButton")
             button.classList.add("is-loading");
-            var url = "http://localhost:8081/bugreport";
+            var url = "/bugreport";
             var report = { message: this.bugReportMessage, email: this.bugEmail}
             console.log(report)
             let response = await fetch(url, {
@@ -286,7 +286,7 @@ Vue.createApp({
         submitProgram: async function () {
             let button = document.getElementById("sbutton");
             button.classList.add("is-loading");
-            var url = "http://localhost:8081/battleprogram"
+            var url = "/battleprogram"
             let program = this.linesToObject();
             let jsonProgram = JSON.stringify(program);
             console.log(jsonProgram)
@@ -308,7 +308,7 @@ Vue.createApp({
             button.classList.remove("is-loading");
         },
         getBattleProgram: async function () {
-            let url = "http://localhost:8081/battleprogram/" + this.whoami;
+            let url = "/battleprogram/" + this.whoami;
             let response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -445,7 +445,7 @@ Vue.createApp({
         runGame: async function () {
             let button = document.getElementById("gamebutton");
             button.classList.add("is-loading");
-            var url = "http://localhost:8081/game"
+            var url = "/game"
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -464,7 +464,7 @@ Vue.createApp({
 
         },
         getReplay: async function () {
-            let url = "http://localhost:8081/battlereplay" 
+            let url = "/battlereplay" 
             let response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -546,7 +546,7 @@ Vue.createApp({
             return ploc
         },
         getDuel: async function () {
-            let url = "http://localhost:8081/duels/" + this.duelUserInput; 
+            let url = "/duels/" + this.duelUserInput; 
             console.log("hi");
             let response = await fetch(url, {
                 method: 'GET',

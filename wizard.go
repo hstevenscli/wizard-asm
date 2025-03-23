@@ -88,6 +88,10 @@ func authorizeMiddleware() gin.HandlerFunc {
 
 func main() {
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
     client := connectToMongo()
     defer func() {
         if err := client.Disconnect(context.TODO()); err != nil {
@@ -139,5 +143,5 @@ func main() {
 	})
 	router.POST("/bugreport", postBugReport)
 
-    router.Run("0.0.0.0:8081")
+    router.Run("0.0.0.0:"+port)
 }
