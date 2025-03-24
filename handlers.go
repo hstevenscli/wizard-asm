@@ -374,7 +374,7 @@ func cookieHandler(c *gin.Context) {
 
 
 func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
-	var size int = 2
+	var size int = 16
 	var g gameSpace = init_gamespace(size)
 	spawn_players(&g)
 	br := replay{}
