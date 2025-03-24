@@ -23,6 +23,7 @@ type battleProgram struct {
 type frame struct {
 	ArenaFrame [][]int
 	Player int
+	PlayerName string
 	Action string
 	Mana int
 	Count int
@@ -31,17 +32,18 @@ type frame struct {
 
 type replay struct {
     Frames []frame
-	GamoverInfo gameOver
+	GameoverInfo gameOver
 }
 
 // var battleReplay replay
 
 // Add a snapshot of the Arena to the battleReplay
-func add_frame_to_replay( arena [][]int, player int, pinfo pInfo, count int, action string, args []interface{}, battleReplay *replay ) {
+func add_frame_to_replay( arena [][]int, player int, pinfo pInfo, count int, action string, args []interface{}, battleReplay *replay, username string ) {
 	// Make frame struct
 	f := frame{
 		ArenaFrame: deep_copy_arena(arena),
 		Player: player,
+		PlayerName: username,
 		Action: action,
 		Mana: pinfo.Mana,
 		Count: count,
@@ -66,7 +68,7 @@ func print_replay( br replay) {
 		for j := 0; j < len(br.Frames[i].ArenaFrame); j++ {
 			fmt.Println(br.Frames[i].ArenaFrame[j])
 		}
-		fmt.Printf("Player %v | #Actions: %v\n", br.Frames[i].Player, br.Frames[i].Count)
+		fmt.Printf("Player %v | #Actions: %v\n", br.Frames[i].PlayerName, br.Frames[i].Count)
 		fmt.Printf("Action: %v | Args: %v\n", br.Frames[i].Action, br.Frames[i].Args)
 		fmt.Printf("Mana: %v\n", br.Frames[i].Mana)
 		fmt.Println()
@@ -211,18 +213,27 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 
 	for i := 0; i <= 1000; i++ {
 		//P1 Chunk
+		// TODO
+		// Pass the lightnign locations back to this point
+		// In the form of an array of row,col pairs
 		p1_action, args := execute_instruction( g, &bp1 )
 		bp1.Ptr++
-		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br)
+		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br, bp1.User)
 		if check_gameover(g) {
 			break
 		}
-        fmt.Println("mana in game loop", g.Pinfo[1].Mana)
+		// cleanup_lightning_trail()
+		// After adding the frame to the rplay, which has lihgtning positions drawn to it, 
+		// call a function that will take the lightning locations and remove them from the gamespace
+		// and do it again in P2 Chunk
+		// the function will go to all of the row,col locations and set the number to 0
+		// 
+        // fmt.Println("mana in game loop", g.Pinfo[1].Mana)
 
 		//P2 Chunk
 		p2_action, args := execute_instruction( g, &bp2 )
 		bp2.Ptr++
-		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br)
+		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br, bp2.User)
 		if check_gameover(g) {
 			break
 		}

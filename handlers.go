@@ -288,6 +288,7 @@ func getDuel(c *gin.Context) {
 			return
 		}
 	}
+	fmt.Printf("Running a game between Player1: %v and Player2: %v\n", user1, user2)
 	br := runBattle(bp1, bp2)
 	c.JSON(200, br)
 }
@@ -373,7 +374,7 @@ func cookieHandler(c *gin.Context) {
 
 
 func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
-	var size int = 16
+	var size int = 2
 	var g gameSpace = init_gamespace(size)
 	spawn_players(&g)
 	br := replay{}
@@ -384,6 +385,7 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	starting_arena := frame{ 
 		ArenaFrame: deep_copy_arena(g.Arena),
 		Player: 0,
+		PlayerName: "",
 		Action: "Starting State",
 		Mana: 0,
 		Count: -1,
@@ -391,10 +393,11 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	br.Frames = append(br.Frames, starting_arena)
 
 	game_loop_temp( &g, bp1, bp2, &br)
-	print_replay( br )
+	// print_replay( br )
 	get_winner_loser_info(&g)
 	fmt.Println("gameover struct:", g.Gameover)
-	br.GamoverInfo = gameover
+	gameover.Conclusion = get_winner_loser_info(&g)
+	br.GameoverInfo = gameover
 	return br
 }
 

@@ -24,6 +24,7 @@ type gameOver struct {
 	// Player = []
 	Player [3]bool
 	Message [3]string
+	Conclusion string
 }
 
 // Reduce players mana, player dies if mana goes below zero
@@ -104,9 +105,10 @@ func check_gameover(g *gameSpace) bool {
 }
 
 // Determine who won the game and who lost
-func get_winner_loser_info(g *gameSpace) {
+func get_winner_loser_info(g *gameSpace) string {
+	var rstring string
     if !check_gameover(g) {
-        fmt.Println("Nobody has lost. No winner or loser to identify")
+		rstring = fmt.Sprintf("Nobody has lost. No winner or loser to identify\n")
     } else {
 		var winner int
 		var loser int
@@ -119,11 +121,13 @@ func get_winner_loser_info(g *gameSpace) {
 		}
         if g.Gameover.Player[0] || (g.Gameover.Player[1] && g.Gameover.Player[2]) {
             fmt.Println("Both players have died.")
+			rstring = "Both players have died."
         } else {
-            fmt.Printf("Player %v has died.\nDeath message: %v\n", loser, g.Gameover.Message[loser])
-            fmt.Printf("Winner is player %v\nLoser is player %v\n", winner, loser)
+        	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n", loser, g.Gameover.Message[loser])
+            rstring += fmt.Sprintf("Winner is player %v\nLoser is player %v\n", winner, loser)
         }
 	}
+	return rstring
 }
 
 func is_valid_loc( r int, c int, size int)bool {

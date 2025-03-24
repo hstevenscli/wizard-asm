@@ -148,6 +148,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
 // @TODO Need to implement checks in necessary places for protections
 // At minimum in asm_summon_magma/acid/lightning asm_move/teleport
 func asm_shield( g *gameSpace, player int, d_type int ) {
+	fmt.Println("Player put up a shield fo type:", d_type)
 	g.Pinfo[player].Prot = d_type
     deplete_mana(g, player, 10)
 }
@@ -228,12 +229,29 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
             break
         }
         player_val, p_hit := check_player(s_row, s_col, g)
+		// fmt.Printf("ASDFFSD: %v", g.Pinfo[player_val].Prot)
+		// if p_hit && g.Pinfo[player_val].Prot == 2 {
+		// 	fmt.Println("Player hit, but they have protection to lightning")
+		// }
+		fmt.Println("1pinfo", g.Pinfo[1].Prot)
+		fmt.Println("2pinfo", g.Pinfo[2].Prot)
+
+		fmt.Println("Player val: ", player_val, "PHIT:", p_hit)
+		// if p_hit && g.Pinfo[player_val].Prot == 2 {
+		// 	fmt.Println("hi")
+		// }
+
         if p_hit {
+			if g.Pinfo[player_val].Prot != 2 {
+
             game_over(g, player_val, "Struck by lightning")
+			}
 
         }
         // For debugging, remove later
-        g.Arena[s_row][s_col] = 7
+		// if i == 0 {
+		// 	g.Arena[s_row][s_col] = 7
+		// }
     }
     deplete_mana(g, player, 100)
 }

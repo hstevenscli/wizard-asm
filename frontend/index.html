@@ -449,23 +449,26 @@
             <br>
             <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
             <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p>
+            <p>Duel the user 'titan1' to face a more difficult opponent</p>
 
             <div v-for="row in frameToDisplay.ArenaFrame">
                 {{ row }}
             </div>
             <div v-if="frameToDisplay" id="info">
-                <div>Player: {{ frameToDisplay.Player }} | #Actions: {{ frameToDisplay.Count }}</div>
+                <div>Player: {{ frameToDisplay.PlayerName }} | #Actions: {{ frameToDisplay.Count }}</div>
                 <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
                 <div>Mana: {{ frameToDisplay.Mana }}</div>
             </div>
             <br>
+
+            <div>Gameover {{ currentReplay.GameoverInfo }} </div>
 
             <ul>
 
                 <!-- I can do all of this here, or get all of the information out of the currentReplay -->
                 <!-- in a dedicated function and then extract information from that to display here -->
                 <div v-for="frame in currentReplay.Frames">
-                    Player: {{ frame.Player }}
+                    Player: {{ frame.PlayerName }}
                     <br>
                     Action: {{ frame.Action }} {{ frame.Args ? frame.Args.join(" ") : "" }}
                     <br>

@@ -26,6 +26,7 @@ Put next item here:
 - [ ] Decoy Instruction
 - [x] Flesh out frontend; Get Login/Register working
 - [x] Hook up backend to mongoDB
+- [ ] Implement add instruction
 
 ## ASM INSTRUCTIONS
 
@@ -40,6 +41,19 @@ func asm_recharge( g *gameSpace, player int, amount int )
 func asm_divination( g *gameSpace, player int, intensity int ) 
 func asm_lightning_bolt( g *gameSpace, player int, direction string
 ```
+
+ADD - adds the given number to the given instruction
+```
+instr1 0
+instr2 0
+add -2 1
+```
+add 1 to instr1 argument, so after running instr1's arg would go from 0->1
+subtract does the opposite
+
+since some args have 2 numbers that they take, like magma, need to have a way to hit both of those numbers
+
+
 
 ## Struct Info
 

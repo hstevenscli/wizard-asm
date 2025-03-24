@@ -557,7 +557,8 @@ Vue.createApp({
             if (response.ok) {
                 let json = await response.json();
                 this.currentReplay = json;
-                console.log(json)
+                console.log(json);
+                console.log("He", this.currentReplay.GameoverInfo);
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
