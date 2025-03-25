@@ -53,6 +53,10 @@ func init_gamespace( size int ) gameSpace {
     }
 	// Init Map
 	g.Pinfo = make(map[int]*pInfo)
+    // Init gameover
+	gameover := gameOver{}
+	g.Gameover = &gameover
+	spawn_players(&g)
     return g
 }
 
@@ -121,9 +125,9 @@ func get_winner_loser_info(g *gameSpace) string {
 		}
         if g.Gameover.Player[0] || (g.Gameover.Player[1] && g.Gameover.Player[2]) {
             fmt.Println("Both players have died.")
-			rstring = "Both players have died."
+            rstring = "Both players have died. Cause: " + g.Gameover.Message[0]
         } else {
-        	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n", loser, g.Gameover.Message[loser])
+        	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n\n", loser, g.Gameover.Message[loser])
             rstring += fmt.Sprintf("Winner is player %v\nLoser is player %v\n", winner, loser)
         }
 	}

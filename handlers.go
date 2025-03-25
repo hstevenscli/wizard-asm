@@ -376,11 +376,9 @@ func cookieHandler(c *gin.Context) {
 func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	var size int = 16
 	var g gameSpace = init_gamespace(size)
-	spawn_players(&g)
-	br := replay{}
-	gameover := gameOver{}
-	g.Gameover = &gameover
+	// spawn_players(&g)
 
+	br := replay{}
 	// Put starting arena state into replay
 	starting_arena := frame{ 
 		ArenaFrame: deep_copy_arena(g.Arena),
@@ -394,10 +392,9 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 
 	game_loop_temp( &g, bp1, bp2, &br)
 	// print_replay( br )
-	get_winner_loser_info(&g)
 	fmt.Println("gameover struct:", g.Gameover)
-	gameover.Conclusion = get_winner_loser_info(&g)
-	br.GameoverInfo = gameover
+	g.Gameover.Conclusion = get_winner_loser_info(&g)
+	br.GameoverInfo = *g.Gameover
 	return br
 }
 

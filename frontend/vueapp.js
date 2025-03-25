@@ -29,6 +29,10 @@ Vue.createApp({
             bugReportMessage: "",
             bugEmail: "",
             showBugNotification: false,
+            currentReplayInfoDisplay: {},
+            notifications: {
+                registration: false,
+            },
         };
     },
     methods: {
@@ -131,6 +135,8 @@ Vue.createApp({
             delete this.errors.username;
         },
         register: async function () {
+            let button = document.getElementById("register-button");
+            button.classList.add("is-loading");
             let username = this.usernameInput;
             let password = this.passwordInput;
             var url = "/users";
@@ -147,9 +153,11 @@ Vue.createApp({
                 this.usernameInput = "";
                 this.passwordInput = "";
                 this.passwordConfirmationInput = "";
-                this.showLoginModal = false;
+                // this.showLoginModal = false;
                 this.loginLayout();
+                this.notifications['registration'] = true;
                 console.log("Response:", json)
+                button.classList.remove("is-loading");
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
@@ -187,7 +195,8 @@ Vue.createApp({
             // if (username.)
         },
         login: async function () {
-            console.log("Logging in");
+            let button = document.getElementById("login-button");
+            button.classList.add("is-loading");
             var url = "/login";
             let jsonbody = JSON.stringify({ username: this.usernameInput, password: this.passwordInput });
             let response = await fetch(url, {
@@ -204,6 +213,7 @@ Vue.createApp({
                 this.usernameInput = "";
                 this.passwordInput = "";
                 this.getSessionInfo();
+                button.classList.remove("is-loading");
             } else {
                 // TODO change this to a more user friendly response
                 alert("HTTP-Error: ", + response.status);
@@ -559,6 +569,10 @@ Vue.createApp({
                 this.currentReplay = json;
                 console.log(json);
                 console.log("He", this.currentReplay.GameoverInfo);
+                // console.log("GAME COUNT REAL:", json.Frames.length)
+                this.currentReplayInfoDisplay = json.GameoverInfo;
+                this.currentReplayInfoDisplay.RealCount = json.Frames.length;
+                console.log("Real count", this.currentReplayInfoDisplay.RealCount);
             } else {
                 alert("HTTP-Error: ", + response.status);
             }

@@ -65,7 +65,8 @@
                 <div class="field">
                     <!-- <label class="label">Username</label> -->
                     <div class="control has-icons-left has-icons-right">
-                    <input v-model="usernameInput" @blur="verify" class="input" type="email" placeholder="Username">
+                    <input v-model="usernameInput" @blur="verify" class="input" type="email" placeholder="Username"
+                        @keyup.enter="!showVerifyPassword ? login(): null">
                     <span class="icon is-small is-left">
                         <i class="fa-solid fa-user"></i>
                     </span>
@@ -76,7 +77,8 @@
                 <div class="field">
                     <!-- <label class="label">Password</label> -->
                     <div class="control has-icons-left">
-                    <input v-model="passwordInput" @input="verify" class="input" type="password" placeholder="Password">
+                    <input v-model="passwordInput" @input="verify" class="input" type="password" placeholder="Password" 
+                        @keyup.enter="!showVerifyPassword ? login(): null">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
@@ -86,7 +88,8 @@
 
                 <div class="field" v-if="showVerifyPassword">
                     <div class="control has-icons-left">
-                    <input v-model="passwordConfirmationInput" @input="verify" class="input" type="password" placeholder="Verify Password">
+                    <input v-model="passwordConfirmationInput" @input="verify" class="input" type="password" placeholder="Verify Password"
+                        @keyup.enter="register">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
@@ -100,16 +103,21 @@
 
                 <div class="field">
                     <p class="control">
-                    <button @click="login" v-if="showLoginButton" class="button is-success">
+                    <button id="login-button" @click="login" v-if="showLoginButton" class="button is-success">
                         Login
                     </button>
-                    <button @click="register" v-if="showRegisterButton" class="button is-info ml-1" :disabled="disabledButton">
+                    <button id="register-button" @click="register" v-if="showRegisterButton" class="button is-info ml-1" :disabled="disabledButton">
                         Register
                     </button>
                     </p>
                 </div>
                 <p v-if="showSignUpText" class="control">Don't have an account? <a @click="signUp">Sign Up</a></p>
                 <p v-if="showLoginText" class="control">Already have an account? <a @click="loginLayout">Login</a></p>
+                <br>
+                <div v-if="notifications['registration']" class="notification is-link">
+                    <button @click="notifications['registration'] = false" class="delete"></button>
+                        Registered successfully. Please login
+                </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; loginLayout()"></button>
         </div>
@@ -461,7 +469,8 @@
             </div>
             <br>
 
-            <div>Gameover {{ currentReplay.GameoverInfo }} </div>
+            <div v-if="currentReplayInfoDisplay !== {}">{{ currentReplayInfoDisplay.Conclusion }}
+                Game ended after {{ currentReplayInfoDisplay.RealCount }} steps</div>
 
             <ul>
 

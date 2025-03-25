@@ -137,7 +137,7 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     player_val, p_hit := check_player(row, col, g) 
     if p_hit && player_val != player {
         fmt.Println("Teleport double death")
-        game_over(g, 0, "Teleportation death")
+        game_over(g, 0, "Teleportation double death")
     }
     // Draw changes to g.Arena
     easy_move_wrapper(g, player, row, col)
@@ -233,10 +233,10 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
 		// if p_hit && g.Pinfo[player_val].Prot == 2 {
 		// 	fmt.Println("Player hit, but they have protection to lightning")
 		// }
-		fmt.Println("1pinfo", g.Pinfo[1].Prot)
-		fmt.Println("2pinfo", g.Pinfo[2].Prot)
+		// fmt.Println("1pinfo", g.Pinfo[1].Prot)
+		// fmt.Println("2pinfo", g.Pinfo[2].Prot)
 
-		fmt.Println("Player val: ", player_val, "PHIT:", p_hit)
+		// fmt.Println("Player val: ", player_val, "PHIT:", p_hit)
 		// if p_hit && g.Pinfo[player_val].Prot == 2 {
 		// 	fmt.Println("hi")
 		// }
@@ -250,7 +250,7 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         }
         // For debugging, remove later
 		// if i == 0 {
-		// 	g.Arena[s_row][s_col] = 7
+        g.Arena[s_row][s_col] = 7
 		// }
     }
     deplete_mana(g, player, 100)
