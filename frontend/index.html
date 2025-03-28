@@ -266,6 +266,10 @@
                     <button @click="getBattleProgram" class="button is-link is-outlined">Load Saved Program</button>
                     <button @click="checkProgram" class="button is-danger">Check Program(Debugging)</button>
                 </div>
+                <div v-show="notifications['saveProgram']" class="notification is-link">
+                    <button @click="notifications['saveProgram'] = false" class="delete"></button>
+                        Saved program successfully
+                </div>
                 <br>
                 <br>
 

@@ -133,6 +133,7 @@ func main() {
 	router.GET("/session", getSession)
     router.GET("/battleprogram/:username", getBattleProgramByUsernameHandler)
 	router.GET("/duels/:username", authorizeMiddleware(), getDuel)
+	router.GET("/duels/random", authorizeMiddleware(), getDuelRandom)
 	router.GET("/duels", func(c *gin.Context){
 		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
 	})

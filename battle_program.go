@@ -99,9 +99,11 @@ func extractIntArg( arg interface{} ) int {
 	}
 }
 
-func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface{}){
+func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface{}, [][2]int){
     // fmt.Println("PLAYER", bp.Player, "TAKING AN ACTION")
     var c_args []interface{}
+    var changed_tiles [][2]int
+    fmt.Println(changed_tiles)
     var instr string
     if bp.Ptr < 0 || bp.Ptr >= len(bp.Instructions) {
         instr = "PTRDEATH"
@@ -126,7 +128,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 		arg1 := extractIntArg( c_args[0])
 		arg2 := extractIntArg( c_args[1])
 		if arg1 != -100 && arg2 != -100 {
-			asm_summon_magma( g, bp.Player, arg1, arg2)
+			changed_tiles = asm_summon_magma( g, bp.Player, arg1, arg2)
 		} else {
 			log.Println("Int not found as argument for Magma")
 		}
@@ -170,7 +172,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 	case "LIGHTNING":
 		dir := extractStringArg( c_args[0])
 		if dir != "" {
-			asm_lightning( g, bp.Player, dir)
+			changed_tiles = asm_lightning( g, bp.Player, dir)
 		} else {
 			log.Println("String not found as argument for Lightning")
 		}
@@ -201,9 +203,8 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 	default:
 		log.Printf("INSTRUCTION NOT RECOGNIZED: %v", bp.Instructions[bp.Ptr].Instruction)
 	}
-	return instr, c_args
-
-
+    fmt.Println(changed_tiles)
+	return instr, c_args, changed_tiles
 }
 
 func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *replay ) {
@@ -216,12 +217,16 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		// TODO
 		// Pass the lightnign locations back to this point
 		// In the form of an array of row,col pairs
-		p1_action, args := execute_instruction( g, &bp1 )
+		p1_action, args, changed_tiles := execute_instruction( g, &bp1 )
+        fmt.Println("In game loop", changed_tiles)
 		bp1.Ptr++
 		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br, bp1.User)
 		if check_gameover(g) {
 			break
 		}
+        if len(changed_tiles) != 0 {
+            cleanup_tiles(g, changed_tiles)
+        }
 		// cleanup_lightning_trail()
 		// After adding the frame to the rplay, which has lihgtning positions drawn to it, 
 		// call a function that will take the lightning locations and remove them from the gamespace
@@ -231,12 +236,15 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
         // fmt.Println("mana in game loop", g.Pinfo[1].Mana)
 
 		//P2 Chunk
-		p2_action, args := execute_instruction( g, &bp2 )
+		p2_action, args, changed_tiles := execute_instruction( g, &bp2 )
 		bp2.Ptr++
 		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br, bp2.User)
 		if check_gameover(g) {
 			break
 		}
+        if len(changed_tiles) != 0 {
+            cleanup_tiles(g, changed_tiles)
+        }
 
 		// Increment game counter
 		count++

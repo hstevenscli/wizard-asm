@@ -27,6 +27,7 @@ Put next item here:
 - [x] Flesh out frontend; Get Login/Register working
 - [x] Hook up backend to mongoDB
 - [ ] Implement add instruction
+- [ ] Make interactive tutorial, people can click on sections and have them expand
 
 ## ASM INSTRUCTIONS
 

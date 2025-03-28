@@ -9,7 +9,7 @@ import (
 // var gameover gameOver
 
 // Summon magma in 3x3 square centered on target row,col
-func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
+func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
 
     var d_row int = row
     var d_col int = col
@@ -26,6 +26,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 
     // Summon Magma in 3x3 square
     // fmt.Printf("Magma Center: [%v, %v]\n", d_row, d_col)
+    var magma_locs [][2]int
     for row := -1; row < 2; row++ {
         for col := -1; col < 2; col++ {
             t_row := d_row + row
@@ -38,11 +39,13 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) {
 					game_over(g, player_val, "Burned in magma")
 				}
 				// FOR DEBUGGING, ERASE LATER
+                magma_locs = append(magma_locs, [2]int{t_row, t_col})
                 g.Arena[t_row][t_col] = 3
             }
         }
     }
     deplete_mana(g, player, 20)
+    return magma_locs
 }
 
 // Summon an acid puddle on target location
@@ -185,7 +188,7 @@ func asm_divination( g *gameSpace, player int, level int ) {
 }
 
 
-func asm_lightning( g *gameSpace, player int, direction string ) {
+func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
 
     dir := strings.ToLower(direction)
 
@@ -222,6 +225,7 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         col_mod = -1
     }
 
+    var lightning_locs [][2]int
     for i := 0; i < g.Size-1; i++ {
         s_row = s_row + row_mod
         s_col = s_col + col_mod
@@ -250,10 +254,13 @@ func asm_lightning( g *gameSpace, player int, direction string ) {
         }
         // For debugging, remove later
 		// if i == 0 {
+
+        lightning_locs = append(lightning_locs, [2]int{s_row, s_col})
         g.Arena[s_row][s_col] = 7
 		// }
     }
     deplete_mana(g, player, 100)
+    return lightning_locs
 }
 
 

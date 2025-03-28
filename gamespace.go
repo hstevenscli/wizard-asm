@@ -100,6 +100,24 @@ func check_player( r int, c int, g *gameSpace ) (int, bool) {
 	return 0, false
 }
 
+func cleanup_tiles( g *gameSpace, locs [][2]int ) {
+    fmt.Println("Before changing tiles")
+    pretty_print(g.Arena)
+    for i, v := range locs {
+        fmt.Printf("Thing: %v at index %d", v, i)
+        row := v[0]
+        col := v[1]
+        fmt.Println("Row:", row)
+        fmt.Println("Col:", col)
+
+
+        g.Arena[row][col] = 0
+    }
+    fmt.Println("after changing tiles")
+    pretty_print(g.Arena)
+
+}
+
 // Check if a player has triggered a gameover state
 func check_gameover(g *gameSpace) bool {
 	if g.Gameover.Player[1] || g.Gameover.Player[2] || g.Gameover.Player[0] {

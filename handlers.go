@@ -293,6 +293,10 @@ func getDuel(c *gin.Context) {
 	c.JSON(200, br)
 }
 
+func getDuelRandom(c *gin.Context) {
+    c.JSON(200, gin.H{"status": "Ready soon"})
+}
+
 // fetches a battleProgram from the database and returns it to the caller
 func getAndLoadBattleProgram(username string, mongoClient *mongo.Client) (battleProgram, error){
     // var userToLookup user

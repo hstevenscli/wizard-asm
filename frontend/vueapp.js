@@ -32,6 +32,7 @@ Vue.createApp({
             currentReplayInfoDisplay: {},
             notifications: {
                 registration: false,
+                saveProgram: false,
             },
         };
     },
@@ -310,7 +311,11 @@ Vue.createApp({
             if (response.ok) {
                 let json = await response.json();
                 button.classList.remove("is-loading");
-                console.log("Response:", json)
+                console.log("Response:", json);
+                this.notifications['saveProgram'] = true;
+                setTimeout(() => {
+                    this.notifications['saveProgram'] = false;
+                }, 2000);
             } else if (response.status === 401){
                 alert("HTTP-Error: " + "Please log in first");
                 button.classList.remove("is-loading");
