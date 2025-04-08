@@ -101,8 +101,8 @@ func check_player( r int, c int, g *gameSpace ) (int, bool) {
 }
 
 func cleanup_tiles( g *gameSpace, locs [][2]int ) {
-    fmt.Println("Before changing tiles")
-    pretty_print(g.Arena)
+    // fmt.Println("Before changing tiles")
+    // pretty_print(g.Arena)
     for i, v := range locs {
         fmt.Printf("Thing: %v at index %d", v, i)
         row := v[0]
@@ -113,8 +113,8 @@ func cleanup_tiles( g *gameSpace, locs [][2]int ) {
 
         g.Arena[row][col] = 0
     }
-    fmt.Println("after changing tiles")
-    pretty_print(g.Arena)
+    // fmt.Println("after changing tiles")
+    // pretty_print(g.Arena)
 
 }
 

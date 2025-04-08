@@ -395,8 +395,8 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	br.Frames = append(br.Frames, starting_arena)
 
 	game_loop_temp( &g, bp1, bp2, &br)
-	// print_replay( br )
-	fmt.Println("gameover struct:", g.Gameover)
+	print_replay( br )
+	// fmt.Println("gameover struct:", g.Gameover)
 	g.Gameover.Conclusion = get_winner_loser_info(&g)
 	br.GameoverInfo = *g.Gameover
 	return br

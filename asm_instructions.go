@@ -29,18 +29,29 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
     var magma_locs [][2]int
     for row := -1; row < 2; row++ {
         for col := -1; col < 2; col++ {
+            var phitprotection bool
             t_row := d_row + row
             t_col := d_col + col
             var valid bool = is_valid_loc(t_row, t_col, g.Size)
             // fmt.Printf("Burning loc: [%v, %v]| Valid loc: %v\n", t_row, t_col, valid)
             if valid {
 				player_val, p_hit := check_player(t_row, t_col, g)
+                if p_hit && g.Pinfo[player_val].Prot == 1 {
+                    fmt.Println("Player hit, but they have protection to magma")
+                    phitprotection = true
+                }
 				if p_hit {
-					game_over(g, player_val, "Burned in magma")
+                    if g.Pinfo[player_val].Prot != 1 {
+                        game_over(g, player_val, "Burned in magma")
+                    }
 				}
 				// FOR DEBUGGING, ERASE LATER
-                magma_locs = append(magma_locs, [2]int{t_row, t_col})
-                g.Arena[t_row][t_col] = 3
+                if phitprotection {
+                    g.Pinfo[player_val].Prot = 0
+                } else {
+                    magma_locs = append(magma_locs, [2]int{t_row, t_col})
+                    g.Arena[t_row][t_col] = 4
+                }
             }
         }
     }
@@ -53,13 +64,24 @@ func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
     var d_row int = row
     var d_col int = col
 	var valid bool = is_valid_loc(d_row, d_col, g.Size)
+    var phitprotection bool
 	if valid {
         player_val, p_hit := check_player(d_row, d_col, g)
-        if p_hit {
-            game_over(g, player_val, "Burned in acid")
+        if p_hit && g.Pinfo[player_val].Prot == 3 {
+            fmt.Println("Player hit, but they have protection to acid")
+            phitprotection = true
         }
-        // Turn the space into acid
-        g.Arena[d_row][d_col] = 3
+        if p_hit {
+            if g.Pinfo[player_val].Prot != 3 {
+                game_over(g, player_val, "Burned in acid")
+            }
+        }
+        if phitprotection {
+            g.Pinfo[player_val].Prot = 0
+        } else {
+            // Turn the space into acid
+            g.Arena[d_row][d_col] = 3
+        }
 	}
     deplete_mana(g, player, 10)
 }
@@ -117,8 +139,13 @@ func asm_move( g *gameSpace, player int, direction string ) {
     // In this case a space is clear if there is not a player there
     if g.Arena[d_row][d_col] != 1 && g.Arena[d_row][d_col] != 2 {
         if g.Arena[d_row][d_col] == 3 {
-            fmt.Printf("You stepped in Acid!! (I think). Player %v stepped in: %v\n", player, g.Arena[d_row][d_col])
-            game_over(g, player, "Stepped in acid")
+            if g.Pinfo[player].Prot != 3 {
+                fmt.Printf("You stepped in Acid!! (I think). Player %v stepped in: %v\n", player, g.Arena[d_row][d_col])
+                game_over(g, player, "Stepped in acid")
+            }
+            if g.Pinfo[player].Prot == 3 {
+                g.Pinfo[player].Prot = 0
+            }
         }
         easy_move_wrapper(g, player, d_row, d_col)
     }
@@ -141,6 +168,16 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     if p_hit && player_val != player {
         fmt.Println("Teleport double death")
         game_over(g, 0, "Teleportation double death")
+    }
+    if g.Arena[row][col] == 3 {
+        if g.Pinfo[player].Prot != 3 {
+            fmt.Printf("You teleported into acid!! (I think). Player %v stepped in: %v\n", player, g.Arena[row][col])
+            game_over(g, player, "Teleported into acid")
+        }
+        if g.Pinfo[player].Prot == 3 {
+            g.Pinfo[player].Prot = 0
+        }
+
     }
     // Draw changes to g.Arena
     easy_move_wrapper(g, player, row, col)
@@ -226,6 +263,7 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
     }
 
     var lightning_locs [][2]int
+    var phitprotection bool
     for i := 0; i < g.Size-1; i++ {
         s_row = s_row + row_mod
         s_col = s_col + col_mod
@@ -234,9 +272,10 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
         }
         player_val, p_hit := check_player(s_row, s_col, g)
 		// fmt.Printf("ASDFFSD: %v", g.Pinfo[player_val].Prot)
-		// if p_hit && g.Pinfo[player_val].Prot == 2 {
-		// 	fmt.Println("Player hit, but they have protection to lightning")
-		// }
+		if p_hit && g.Pinfo[player_val].Prot == 2 {
+			fmt.Println("Player hit, but they have protection to lightning")
+            phitprotection = true
+		}
 		// fmt.Println("1pinfo", g.Pinfo[1].Prot)
 		// fmt.Println("2pinfo", g.Pinfo[2].Prot)
 
@@ -247,7 +286,6 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
 
         if p_hit {
 			if g.Pinfo[player_val].Prot != 2 {
-
             game_over(g, player_val, "Struck by lightning")
 			}
 
@@ -255,6 +293,10 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
         // For debugging, remove later
 		// if i == 0 {
 
+        if phitprotection {
+            g.Pinfo[player_val].Prot = 0
+            break
+        }
         lightning_locs = append(lightning_locs, [2]int{s_row, s_col})
         g.Arena[s_row][s_col] = 7
 		// }
