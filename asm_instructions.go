@@ -10,7 +10,16 @@ import (
 
 // Summon magma in 3x3 square centered on target row,col
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
+    // random location
+    if row <= -1 || col <= -1 {
+        row = rand.Intn(g.Size)
+        col = rand.Intn(g.Size)
 
+    // specified location
+    } else {
+        row = within_valid_range( row, g.Size )
+        col = within_valid_range( col, g.Size )
+    }
     var d_row int = row
     var d_col int = col
     // fmt.Println("Testing for player", player)
@@ -61,6 +70,16 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
 
 // Summon an acid puddle on target location
 func asm_summon_acid ( g *gameSpace, player int, row int, col int ) {
+    // random location
+    if row <= -1 || col <= -1 {
+        row = rand.Intn(g.Size)
+        col = rand.Intn(g.Size)
+
+    // specified location
+    } else {
+        row = within_valid_range( row, g.Size )
+        col = within_valid_range( col, g.Size )
+    }
     var d_row int = row
     var d_col int = col
 	var valid bool = is_valid_loc(d_row, d_col, g.Size)
