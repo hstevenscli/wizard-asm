@@ -28,6 +28,7 @@ Put next item here:
 - [x] Hook up backend to mongoDB
 - [ ] Implement add instruction
 - [ ] Make interactive tutorial, people can click on sections and have them expand
+- [ ] Add a simple leaderboard
 
 ## ASM INSTRUCTIONS
 
@@ -103,3 +104,4 @@ upon submission, run the bp against a few other randomly selected bps and return
 needed implementations
 frontend: make call to backend tourney handler, maybe get(/tournament)
 backend: /tournament handler that will query the db for a number of battleprograms from various users and run the submitted program against all of them.
+

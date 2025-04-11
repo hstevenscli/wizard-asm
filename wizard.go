@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	// "crypto/rand"
-	"encoding/json"
-	"fmt"
+	// "encoding/json"
+	// "fmt"
 	"log"
 	"os"
 
@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"go.mongodb.org/mongo-driver/v2/bson"
+	// "go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -44,27 +44,6 @@ func connectToMongo() *mongo.Client {
 }
 
 
-func getUserByUsername(client *mongo.Client) {
-    var result bson.M
-
-    coll := client.Database("wizardb").Collection("users")
-    username := "Hunter"
-
-    err := coll.FindOne(context.TODO(), bson.D{{"user", username}}).Decode(&result)
-    if err == mongo.ErrNoDocuments {
-        fmt.Printf("No document found with user %s\n", username)
-        return
-    }
-    if err != nil {
-        panic(err)
-    }
-
-    jsonData, err := json.MarshalIndent(result, "", "  ")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Printf("%s\n", jsonData)
-}
 
 
 func mongoMiddleware(client *mongo.Client) gin.HandlerFunc {
@@ -137,6 +116,7 @@ func main() {
 	router.GET("/duels", func(c *gin.Context){
 		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
 	})
+    router.GET("/users/:username", authorizeMiddleware(), getUser)
 
 
     // PUT the stuff in this function into a helper function to authenticate on protected routes

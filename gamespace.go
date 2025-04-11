@@ -103,12 +103,12 @@ func check_player( r int, c int, g *gameSpace ) (int, bool) {
 func cleanup_tiles( g *gameSpace, locs [][2]int ) {
     // fmt.Println("Before changing tiles")
     // pretty_print(g.Arena)
-    for i, v := range locs {
-        fmt.Printf("Thing: %v at index %d", v, i)
+    for _, v := range locs {
+        // fmt.Printf("Thing: %v at index %d", v, i)
         row := v[0]
         col := v[1]
-        fmt.Println("Row:", row)
-        fmt.Println("Col:", col)
+        // fmt.Println("Row:", row)
+        // fmt.Println("Col:", col)
 
 
         g.Arena[row][col] = 0
@@ -127,29 +127,43 @@ func check_gameover(g *gameSpace) bool {
 }
 
 // Determine who won the game and who lost
-func get_winner_loser_info(g *gameSpace) string {
+func get_winner_loser_info(g *gameSpace, p1 string, p2 string) (string, map[int]float64) {
 	var rstring string
+    var winner int
+    var loser int
+    scores := make(map[int]float64)
     if !check_gameover(g) {
 		rstring = fmt.Sprintf("Nobody has lost. No winner or loser to identify\n")
+        scores[1] = 0.5
+        scores[2] = 0.5
     } else {
-		var winner int
-		var loser int
 		if g.Gameover.Player[1] {
 			winner = 2
 			loser = 1
+            scores[1] = -1.0
+            scores[2] = 1.0
 		} else {
 			winner = 1
 			loser = 2
+            scores[1] = 1.0
+            scores[2] = -1.0
 		}
         if g.Gameover.Player[0] || (g.Gameover.Player[1] && g.Gameover.Player[2]) {
             fmt.Println("Both players have died.")
             rstring = "Both players have died. Cause: " + g.Gameover.Message[0]
+            scores[1] = 0.5
+            scores[2] = 0.5
         } else {
         	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n\n", loser, g.Gameover.Message[loser])
-            rstring += fmt.Sprintf("Winner is player %v\nLoser is player %v\n", winner, loser)
+            if winner == 2 {
+                rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p2, p1)
+            } else {
+                // winner == 1
+                rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p1, p2)
+            }
         }
 	}
-	return rstring
+	return rstring, scores
 }
 
 func is_valid_loc( r int, c int, size int)bool {

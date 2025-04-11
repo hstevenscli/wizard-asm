@@ -21,6 +21,7 @@ Vue.createApp({
             errors: {},
             hamburgerEnabled: false,
             whoami: "",
+            score: null,
             duelUserInput: "",
             ploc: {},
             tempProgram: [""],
@@ -33,6 +34,7 @@ Vue.createApp({
             notifications: {
                 registration: false,
                 saveProgram: false,
+                playNow: false,
             },
         };
     },
@@ -64,10 +66,14 @@ Vue.createApp({
                 let json = await response.json();
                 console.log("Response:", json);
                 this.whoami = json.session.Username;
+                this.getScore();
             } else {
                 console.log("Error:", response.status)
             }
         },
+        playNotification: function () {
+            this.notifications.playNow = true;
+        }, 
         buyPremiumSpell: function (event, whichspell) {
             console.log(whichspell);
             let button = event.target;
@@ -237,6 +243,20 @@ Vue.createApp({
         },
         activateReportModal: function () {
             this.showReportModal = true;
+        },
+        getScore: async function () {
+            var url = "/users/" + this.whoami;
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let user = await response.json();
+                console.log("USER OBJ", user);
+                this.score = user.Score;
+            }
         },
         postBugReport: async function () {
             if (this.bugReportMessage === "") {
@@ -578,6 +598,7 @@ Vue.createApp({
                 this.currentReplayInfoDisplay = json.GameoverInfo;
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
                 console.log("Real count", this.currentReplayInfoDisplay.RealCount);
+                this.getScore();
             } else {
                 alert("HTTP-Error: ", + response.status);
             }

@@ -92,6 +92,8 @@ func extractIntArg( arg interface{} ) int {
 	switch v := arg.(type) {
 	case float64:
 		return int(arg.(float64))
+    case int:
+        return v
 	default:
 		fmt.Printf("Not an int: %T\n", v)
 		// Return a number unlikely to be given as an argument
@@ -103,7 +105,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
     // fmt.Println("PLAYER", bp.Player, "TAKING AN ACTION")
     var c_args []interface{}
     var changed_tiles [][2]int
-    fmt.Println(changed_tiles)
+    // fmt.Println(changed_tiles)
     var instr string
     if bp.Ptr < 0 || bp.Ptr >= len(bp.Instructions) {
         instr = "PTRDEATH"
@@ -131,6 +133,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 			changed_tiles = asm_summon_magma( g, bp.Player, arg1, arg2)
 		} else {
 			log.Println("Int not found as argument for Magma")
+            fmt.Printf("Type %T\n", arg1)
 		}
 	case "TELEPORT":
 		arg1 := extractIntArg( c_args[0])
@@ -178,6 +181,27 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 		}
 	// GAME MODIFYING INSTRUCTIONS END
 	// INSTRUCTIONS MODIFYING BATTLEPROGRAM START
+    // Crystal is only safe to use on an instr that takes two arguments
+    case "CRYSTAL":
+        arg1 := extractIntArg( c_args[0] )
+        if arg1 != -100 {
+            // TODO maybe have it so they die if they target a non-existant instruction
+            ptrparg := bp.Ptr + arg1
+            if ptrparg < 0 {
+                ptrparg = 0
+            }
+            if ptrparg > len(bp.Instructions) - 1 {
+                ptrparg = len(bp.Instructions) - 1
+            }
+            crysballrow := g.Pinfo[bp.Player].CrystalBall[0]
+            crysballcol := g.Pinfo[bp.Player].CrystalBall[1]
+            tar_instr := &bp.Instructions[ptrparg]
+
+            tar_instr.Args[0] = crysballrow
+            tar_instr.Args[1] = crysballcol
+        } else {
+            log.Println("Int not found as argument for Crystal Ball")
+        }
 	case "SLOOP":
 		bp.Niterations= extractIntArg( c_args[0]) - 1
 		bp.Lstart= bp.Ptr + 1
@@ -189,9 +213,6 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 	case "JUMP":
 		arg1 := extractIntArg( c_args[0])
 		if arg1 != -100 {
-			// change this into a call to asm_jump
-			// Need logic to see if value passed is valid and it will kill player
-			// when executing
 			bp.Ptr += arg1
             bp.Ptr--
 		} else {
@@ -203,7 +224,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 	default:
 		log.Printf("INSTRUCTION NOT RECOGNIZED: %v", bp.Instructions[bp.Ptr].Instruction)
 	}
-    fmt.Println(changed_tiles)
+    // fmt.Println(changed_tiles)
 	return instr, c_args, changed_tiles
 }
 
@@ -218,7 +239,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		// Pass the lightnign locations back to this point
 		// In the form of an array of row,col pairs
 		p1_action, args, changed_tiles := execute_instruction( g, &bp1 )
-        fmt.Println("In game loop", changed_tiles)
+        // fmt.Println("In game loop", changed_tiles)
 		bp1.Ptr++
 		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br, bp1.User)
 		if check_gameover(g) {

@@ -17,6 +17,7 @@ type user struct {
     Username string `bson:"username"`
     Password string `bson:"password"`
     BP battleProgram `bson:"bp"`
+    Score float64
 }
 
 type report struct {
@@ -289,7 +290,7 @@ func getDuel(c *gin.Context) {
 		}
 	}
 	fmt.Printf("Running a game between Player1: %v and Player2: %v\n", user1, user2)
-	br := runBattle(bp1, bp2)
+	br := runBattle(bp1, bp2, mongoClient)
 	c.JSON(200, br)
 }
 
@@ -323,6 +324,27 @@ func getAndLoadBattleProgram(username string, mongoClient *mongo.Client) (battle
 	return bp, nil
 }
 
+func getUserByUsername(username string, mongoClient *mongo.Client) (user, error) {
+    var queried_user user
+    coll := mongoClient.Database("wizardb").Collection("users")
+    filter := bson.D{{ "username", username }}
+
+    err := coll.FindOne(context.TODO(), filter).Decode(&queried_user)
+
+    return queried_user, err
+}
+
+// Use this to query for a user and update their score based on if they win or lose
+func updateUserScore(username string, modifier float64, mongoClient *mongo.Client) error {
+    coll := mongoClient.Database("wizardb").Collection("users")
+
+    filter := bson.M{"username": username}
+    update := bson.M{"$inc": bson.M{"score": modifier}}
+
+    _, err := coll.UpdateOne(context.TODO(), filter, update)
+    return err
+}
+
 func getBattleProgramByUsernameHandler(c *gin.Context) {
     // var userToLookup user
     username := c.Param("username")
@@ -351,6 +373,19 @@ func getBattleProgramByUsernameHandler(c *gin.Context) {
     c.JSON(200, found.BP)
 }
 
+
+func getUser(c *gin.Context) {
+    username := c.Param("username")
+    mongoClient := getClient(c)
+    user, err := getUserByUsername(username, mongoClient)
+    user.Password = "*"
+    if err != nil {
+        c.JSON(500, gin.H{"status": "server error"})
+        return
+    }
+    c.JSON(200, user)
+}
+
 func getBattlePrograms(c *gin.Context) {
     // mongoClient := getClient(c)
     // coll := mongoClient.Database("wizardb").Collection("users")
@@ -377,7 +412,7 @@ func cookieHandler(c *gin.Context) {
 }
 
 
-func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
+func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) replay {
 	var size int = 16
 	var g gameSpace = init_gamespace(size)
 	// spawn_players(&g)
@@ -397,8 +432,26 @@ func runBattle(bp1 battleProgram, bp2 battleProgram) replay {
 	game_loop_temp( &g, bp1, bp2, &br)
 	print_replay( br )
 	// fmt.Println("gameover struct:", g.Gameover)
-	g.Gameover.Conclusion = get_winner_loser_info(&g)
+    message, scores := get_winner_loser_info(&g, bp1.User, bp2.User)
+    g.Gameover.Conclusion = message
 	br.GameoverInfo = *g.Gameover
+
+    // Update Scores
+    fmt.Println("USERS IN FIGHT", bp1.User, bp2.User)
+    if bp1.User != "bob" && bp2.User != "bob" {
+        updateUserScore(bp1.User, scores[1], mongoClient)
+        updateUserScore(bp2.User, scores[2], mongoClient)
+    }
+
+    // check users scores
+    // user1, err := getUserByUsername(bp1.User, mongoClient)
+    // user2, err := getUserByUsername(bp2.User, mongoClient)
+
+    // fmt.Println("ERROR: ", err)
+
+    // fmt.Println("User 1:", user1)
+    // fmt.Println("User 2:", user2)
+
 	return br
 }
 
@@ -434,6 +487,6 @@ func runGame() {
 
 	game_loop_temp( &g, program, program1, &battleReplay)
 	print_replay( battleReplay )
-	get_winner_loser_info(&g)
+	// get_winner_loser_info(&g)
 }
 

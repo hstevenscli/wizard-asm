@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@
             <div :class="{'is-active': hamburgerEnabled}" class="navbar-menu">
                 <div class="navbar-start">
                     <a @click="showTutorial" class="navbar-item">Home</a>
-                    <a v-show="whoami !== ''" @click="showBattle" class="navbar-item">Battle</a>
+                    <a v-show="whoami !== ''" @click="showBattle" class="navbar-item">Create</a>
                     <a v-show="whoami !== ''" @click="showReplays" class="navbar-item">Replays</a>
                 </div>
                 <div class="navbar-end">
@@ -48,7 +48,22 @@
                     <!--     <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a> -->
                     <!-- </div> -->
                     <div class="navbar-item">
-                        <p><u><b>{{ whoami }}</b></u></p>
+                            <div class="dropdown is-hoverable is-right">
+                                <div class="dropdown-trigger">
+                                    <button>
+                                        <p><u><b> {{ whoami }} </b></u></p>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-content">
+                                        <div class="dropdown-item">
+                                            <p>
+                                                <b>Score: {{ score }}</b>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                     <div class="navbar-item">
                         <a v-if="whoami.length !== 0" @click="logout" class="button is-small is-danger">Logout</a>
@@ -65,7 +80,7 @@
                 <div class="field">
                     <!-- <label class="label">Username</label> -->
                     <div class="control has-icons-left has-icons-right">
-                    <input v-model="usernameInput" @blur="verify" class="input" type="email" placeholder="Username"
+                    <input v-model="usernameInput" @blur="verify" class="input" type="username" placeholder="Username"
                         @keyup.enter="!showVerifyPassword ? login(): null">
                     <span class="icon is-small is-left">
                         <i class="fa-solid fa-user"></i>
@@ -167,7 +182,27 @@
 
         <div v-if="showTutorialPage" class="tutorial m-6 has-text-centered">
             <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
+            <br>
+            <img src="/frontend/photos/sudokuwizards.png" width="32%" height="32%">
+            <br>
+            <br>
             <div class="content has-text-left">
+                <div class="column is-half is-offset-one-quarter">
+                    <button @click="whoami === '' ? showLogin() : playNotification()" class="button is-large is-fullwidth is-rounded is-primary is-outlined">
+                        <span class="icon">
+                            <i style="color:red" class="fa-solid fa-fire-flame-curved"></i>
+                        </span>
+                        <span>Play Now</span>
+                        <span class="icon">
+                            <i style="color:red" class="fa-solid fa-fire-flame-curved"></i>
+                        </span>
+                    </button>
+                    <br>
+                    <div v-if="notifications['playNow']" class="notification is-success">
+                        <button @click="notifications['playNow'] = false" class="delete"></button>
+                        Head over to the create tab to get started
+                    </div>
+                </div>
                 <br>
                 <p class="is-size-4 has-text-centered">Please read the tutorial below to understand how the game works</p>
 
@@ -363,7 +398,15 @@
                         <p>Hone in on the location of the enemy player</p>
                         <p>Arg 1: a number (0-5) to specify the accuracy of the spell</p>
                         <p>0 will give an exact location of the enemy, while each subsequent number will give a location with a margin of error equal to that number</p>
-                        <p style="color: yellow">NOTE! Not currently implemented/working</p>
+                        <p>Divination will save the coordinates (row, column) in your crystal ball, which you can access with the crystal ball instruction</p>
+                        <!-- <p style="color: yellow">NOTE! Not currently implemented/working</p> -->
+                        <p style="color: #3087f7">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
+                        <p>Example Usage:<br></p>
+
+                    </div>
+                    <div class="box">
+                        <h4>Crystal [arg1]</h4>
+                        <p>Hone in on the location of the enemy player</p>
                         <p style="color: #3087f7">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
                         <p>Example Usage:<br></p>
 
