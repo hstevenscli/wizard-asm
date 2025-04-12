@@ -25,6 +25,8 @@ type report struct {
 	Email string `bson:"email,omitempty"`
 }
 
+var ErrEmptyBattleProgram = errors.New("Battle Program is empty")
+
 // For getting the mongo client into each handler function
 // because the mongo client is started in the main func
 func getClient(c *gin.Context) *mongo.Client {
@@ -295,8 +297,52 @@ func getDuel(c *gin.Context) {
 }
 
 func getDuelRandom(c *gin.Context) {
-    c.JSON(200, gin.H{"status": "Ready soon"})
+	var ses session
+    var err error
+	ses = getSessionInfo(c)
+    mongoClient := getClient(c)
+	user1 := ses.Username
+	bp1, err := getAndLoadBattleProgram(user1, mongoClient)
+	// error handling for bp1
+	if err != nil {
+		if err.Error() == "No user found" {
+			c.JSON(409, gin.H{"status": "User1 not found"})
+			fmt.Println("Err:", err)
+			return
+		} else if err.Error() == "Battle Program is empty" {
+			c.JSON(409, gin.H{"status": "Battle program 1 is empty"})
+			fmt.Println("Err:", err)
+			return
+		} else {
+			c.JSON(500, gin.H{"status": "server error"})
+			fmt.Println("Err:", err)
+			return
+		}
+	}
+
+    var bp2 battleProgram
+    for {
+        bp2, err = getAndLoadBattleProgramRandom(mongoClient)
+        if err == nil && bp1.User != bp2.User {
+            break
+        }
+        if err != ErrEmptyBattleProgram && err != nil {
+            // return or handle other types of errors
+            fmt.Println("ERROR:", err)
+            c.JSON(500, gin.H{"status": "server error"})
+            return
+        }
+        // else: err == ErrEmptyBattleProgram — retry
+    }
+    fmt.Println("BP1:", bp1)
+    fmt.Println("BP2:", bp2)
+
+    // Cases to handle: finds an empty BP, user finds their own BP
+
+    br := runBattle(bp1, bp2, mongoClient)
+    c.JSON(200, br)
 }
+
 
 // fetches a battleProgram from the database and returns it to the caller
 func getAndLoadBattleProgram(username string, mongoClient *mongo.Client) (battleProgram, error){
@@ -318,10 +364,42 @@ func getAndLoadBattleProgram(username string, mongoClient *mongo.Client) (battle
 
 	// check if battleprogram is empty
 	if found.BP.User == "" {
-		return bp, errors.New("Battle Program is empty")
+		return bp, ErrEmptyBattleProgram
 	}
 	bp = found.BP
 	return bp, nil
+}
+
+func getAndLoadBattleProgramRandom(mongoClient *mongo.Client) (battleProgram, error) {
+    var bp battleProgram
+
+    coll := mongoClient.Database("wizardb").Collection("users")
+    // Create aggregation pipeline with $sample
+    pipeline := mongo.Pipeline{
+        {{"$sample", bson.D{{"size", 1}}}},
+    }
+
+    cursor, err := coll.Aggregate(context.TODO(), pipeline)
+    if err != nil {
+        return bp, err
+    }
+    defer cursor.Close(context.TODO())
+
+    var results []user
+    if err := cursor.All(context.TODO(), &results); err != nil {
+        return bp, err
+    }
+
+    if len(results) == 0 {
+        return bp, mongo.ErrNoDocuments
+    }
+
+	if results[0].BP.User == "" {
+		return bp, ErrEmptyBattleProgram
+	}
+
+    bp = results[0].BP
+    return bp, err
 }
 
 func getUserByUsername(username string, mongoClient *mongo.Client) (user, error) {
@@ -451,42 +529,41 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
 
     // fmt.Println("User 1:", user1)
     // fmt.Println("User 2:", user2)
-
 	return br
 }
 
 // Deprecated
-func runGame() {
-    // Initialize size 
-    var size int = 16
+// func runGame() {
+//     // Initialize size 
+//     var size int = 16
 
-    // Initialize the gamespace to size = 10
-    var g gameSpace = init_gamespace(size)
+//     // Initialize the gamespace to size = 10
+//     var g gameSpace = init_gamespace(size)
 
-    fmt.Printf("SIZE: %v\n", size)
+//     fmt.Printf("SIZE: %v\n", size)
 
-    // Spawn players in gameSpace
-    spawn_players( &g )
-	battleReplay := replay{}
-	gameover := gameOver{}
-	g.Gameover = &gameover
+//     // Spawn players in gameSpace
+//     spawn_players( &g )
+// 	battleReplay := replay{}
+// 	gameover := gameOver{}
+// 	g.Gameover = &gameover
 
-    program := read_json_to_bp("./program.json")
-	program1 := read_json_to_bp("./program1.json")
+//     program := read_json_to_bp("./program.json")
+// 	program1 := read_json_to_bp("./program1.json")
 
 
-	// Put starting arena state into replay
-	starting_arena := frame{ 
-		ArenaFrame: deep_copy_arena(g.Arena),
-		Player: 0,
-		Action: "Starting State",
-		Mana: 0,
-		Count: -1,
-	}
-	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
+// 	// Put starting arena state into replay
+// 	starting_arena := frame{ 
+// 		ArenaFrame: deep_copy_arena(g.Arena),
+// 		Player: 0,
+// 		Action: "Starting State",
+// 		Mana: 0,
+// 		Count: -1,
+// 	}
+// 	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
 
-	game_loop_temp( &g, program, program1, &battleReplay)
-	print_replay( battleReplay )
-	// get_winner_loser_info(&g)
-}
+// 	game_loop_temp( &g, program, program1, &battleReplay)
+// 	print_replay( battleReplay )
+// 	// get_winner_loser_info(&g)
+// }
 

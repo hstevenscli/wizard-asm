@@ -11,9 +11,29 @@ Vue.createApp({
             showLoginText: false,
             showBattlePage: false,
             showReplaysPage: false,
-            showTutorialPage: true,
+            showTutorialPage: false,
+            showLandingPage: true,
             currentReplay: {},
-            frameToDisplay: false,
+            frameToDisplay: {
+                ArenaFrame: [
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ]
+            },
             usernameInput: "",
             passwordInput: "",
             passwordConfirmationInput: "",
@@ -220,6 +240,7 @@ Vue.createApp({
                 this.usernameInput = "";
                 this.passwordInput = "";
                 this.getSessionInfo();
+                this.showTutorial();
                 button.classList.remove("is-loading");
             } else {
                 // TODO change this to a more user friendly response
@@ -455,16 +476,24 @@ Vue.createApp({
             text.value = instructions.join("\n");
             console.log(instructions);
         },
+        showLanding: function () {
+            this.showLandingPage = true;
+            this.showBattlePage = false;
+            this.showReplaysPage = false;
+            this.showTutorialPage = false;
+        },
         showTutorial: function () {
             this.showBattlePage = false;
             this.showReplaysPage = false;
             this.showTutorialPage = true;
+            this.showLandingPage = false;
 
         },
         showBattle: async function () {
             this.showBattlePage = true;
             this.showReplaysPage = false;
             this.showTutorialPage = false;
+            this.showLandingPage = false;
             this.$nextTick(() =>{
                 let text = document.querySelector(".bptextarea");
                 console.log("Temp Program", this.tempProgram);
@@ -475,7 +504,8 @@ Vue.createApp({
             this.showBattlePage = false;
             this.showReplaysPage = true;
             this.showTutorialPage = false;
-            this.drawBlankCanvas();
+            this.showLandingPage = false;
+            // this.drawBlankCanvas();
         },
         runGame: async function () {
             let button = document.getElementById("gamebutton");
@@ -538,24 +568,6 @@ Vue.createApp({
             }
 
             step();
-
-            // let interval = setInterval(() => {
-            //     this.frameToDisplay = this.currentReplay.Frames[index];
-            //     this.getPlayerLocationsInCurrentFrame();
-            //     this.drawPlayers();
-            //     // console.log(this.frameToDisplay.ArenaFrame)
-            //     index++;
-                
-            //     // clearInterval(interval);
-            //     if (index >= this.currentReplay.Frames.length) {
-            //         // -1 is the last frame to be displayed
-            //         this.frameToDisplay = this.currentReplay.Frames[index - 1];
-            //         clearInterval(interval);
-            //         return;
-            //     }
-            //     waitTime -= 10;
-            //     console.log("Waittime:", waitTime);
-            // }, waitTime);
         },
         getPlayerLocationsInCurrentFrame: function () {
             let ploc = {
@@ -602,7 +614,29 @@ Vue.createApp({
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
-
+        },
+        getDuelRandom: async function () {
+            let url = "/duels/random"; 
+            console.log("hi");
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                this.currentReplay = json;
+                console.log(json);
+                console.log("He", this.currentReplay.GameoverInfo);
+                // console.log("GAME COUNT REAL:", json.Frames.length)
+                this.currentReplayInfoDisplay = json.GameoverInfo;
+                this.currentReplayInfoDisplay.RealCount = json.Frames.length;
+                console.log("Real count", this.currentReplayInfoDisplay.RealCount);
+                this.getScore();
+            } else {
+                alert("HTTP-Error: ", + response.status);
+            }
         },
         drawPlayers: function () {
             const canvas = document.getElementById("myCanvas");

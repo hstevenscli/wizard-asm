@@ -16,7 +16,7 @@
     <body>
     <div id="app">
 
-        <nav class="navbar" role="navigation" aria-label="main navigation">
+        <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <!-- navbar items, navbar burger... -->
                 <a class="navbar-item" href="https://wizard.nothingdangerous.live">
@@ -31,7 +31,8 @@
             </div>
             <div :class="{'is-active': hamburgerEnabled}" class="navbar-menu">
                 <div class="navbar-start">
-                    <a @click="showTutorial" class="navbar-item">Home</a>
+                    <a @click="showLanding" class="navbar-item">Home</a>
+                    <a @click="showTutorial" class="navbar-item">Tutorial</a>
                     <a v-show="whoami !== ''" @click="showBattle" class="navbar-item">Create</a>
                     <a v-show="whoami !== ''" @click="showReplays" class="navbar-item">Replays</a>
                 </div>
@@ -180,15 +181,16 @@
 
         <!-- --> 
 
-        <div v-if="showTutorialPage" class="tutorial m-6 has-text-centered">
+        <div v-if="showLandingPage" class="landing m-6 has-text-centered">
             <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
+            <p class="has-text-weight-bold">The Spell Slinging Programming Battle Game</p>
             <br>
             <img src="/frontend/photos/sudokuwizards.png" width="32%" height="32%">
             <br>
             <br>
             <div class="content has-text-left">
                 <div class="column is-half is-offset-one-quarter">
-                    <button @click="whoami === '' ? showLogin() : playNotification()" class="button is-large is-fullwidth is-rounded is-primary is-outlined">
+                    <button @click="whoami === '' ? showLogin() : showBattle()" class="button is-large is-fullwidth is-rounded is-primary is-outlined">
                         <span class="icon">
                             <i style="color:red" class="fa-solid fa-fire-flame-curved"></i>
                         </span>
@@ -198,13 +200,18 @@
                         </span>
                     </button>
                     <br>
-                    <div v-if="notifications['playNow']" class="notification is-success">
-                        <button @click="notifications['playNow'] = false" class="delete"></button>
-                        Head over to the create tab to get started
-                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div v-if="showTutorialPage" class="tutorial m-6 has-text-left">
+
+            <h1 class="title is-2">Tutorial</h1>
+            <h1 class="subtitle is-4">Please read below to understand the game</h1>
+            <!-- <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold" style="border-bottom: 3px solid">Tutorial</p> -->
+            <div class="content has-text-left">
                 <br>
-                <p class="is-size-4 has-text-centered">Please read the tutorial below to understand how the game works</p>
+                <!-- <p class="is-size-4 has-text-centered">Please read below to understand how the game works</p> -->
 
                 <h3>The Game</h3>
                 <p>Game is in beta.<br><br>Currently only duels are working, meaning you must provide the username of the player you wish to fight</p>
@@ -507,28 +514,51 @@
 
         </div>
 
-        <div v-if="showReplaysPage" class="replayspage">
-            <h1>REPLAYS</h1>
-            <button @click="runGame" class="button" id="gamebutton" disabled>Run Game</button>
-            <button @click="getReplay" class="button" disabled>Get Replay</button>
+        <div v-if="showReplaysPage" class="replayspage m-6">
+            <!-- <button @click="runGame" class="button" id="gamebutton" disabled>Run Game</button> -->
+            <!-- <button @click="getReplay" class="button" disabled>Get Replay</button> -->
+            <!-- <button @click="getPlayerLocationsInCurrentFrame" class="button" disabled>Player Locations</button> -->
+            <h1 class="title is-3">Its time to duel</h1>
+            <h1 class="subtitle is-5">Duel your friend or a random person</h1>
 
-            <button @click="getPlayerLocationsInCurrentFrame" class="button" disabled>Player Locations</button>
-            <button @click="startReplay" class="button">Start Replay</button>
-            <button @click="getDuel" class="button">Duel</button>
-            <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
+
             <br>
-            <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
-            <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p>
-            <p>Duel the user 'titan1' to face a more difficult opponent</p>
 
-            <div v-for="row in frameToDisplay.ArenaFrame">
-                {{ row }}
+            <div class="columns">
+                <div class="column is-offset-1">
+                    <div v-for="row in frameToDisplay.ArenaFrame" class="">
+                        {{ row }}
+                    </div>
+                    <br>
+                    <div id="info">
+                        <div>Player: {{ frameToDisplay.PlayerName }} | #Actions: {{ frameToDisplay.Count }}</div>
+                        <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
+                        <div>Mana: {{ frameToDisplay.Mana }}</div>
+                    </div>
+                    <div class="buttons">
+                        <button @click="startReplay" class="button is-primary" disabled>Start Replay</button>
+                        <button class="button is-danger" disabled>Stop Replay</button>
+                    </div>
+                </div>
+                <div class="column">
+                    <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
+                    <br>
+                    <br>
+                    <div class="buttons">
+                        <button @click="getDuel" class="button is-danger">Duel</button>
+                        <button @click="getDuelRandom" class="button is-danger">Random Duel</button>
+                    </div>
+
+                </div>
             </div>
-            <div v-if="frameToDisplay" id="info">
-                <div>Player: {{ frameToDisplay.PlayerName }} | #Actions: {{ frameToDisplay.Count }}</div>
-                <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
-                <div>Mana: {{ frameToDisplay.Mana }}</div>
-            </div>
+
+                <br>
+
+                <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
+                <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p>
+                <p>Duel the user 'titan1' to face a more difficult opponent</p>
+
+
             <br>
 
             <div v-if="currentReplayInfoDisplay !== {}">{{ currentReplayInfoDisplay.Conclusion }}
@@ -553,8 +583,8 @@
 
             </ul>
 
-            <canvas v-show="true" id="myCanvas" width="610" height="610" style="border:1px solid black;">
-            </canvas>
+            <!-- <canvas v-show="true" id="myCanvas" width="610" height="610" style="border:1px solid black;"> -->
+            <!-- </canvas> -->
         </div>
 
 

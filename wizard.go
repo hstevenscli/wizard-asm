@@ -129,10 +129,10 @@ func main() {
     router.POST("/users", postUsers)
     router.POST("/login", postLogin)
     router.POST("/logout", authorizeMiddleware(), postLogout)
-	router.POST("/game", func(c *gin.Context) {
-		runGame()
-        c.JSON(201, gin.H{"msg": "Game has been run"})
-	})
+	// router.POST("/game", func(c *gin.Context) {
+	// 	runGame()
+        // c.JSON(201, gin.H{"msg": "Game has been run"})
+	// })
 	router.POST("/bugreport", postBugReport)
 
     router.Run("0.0.0.0:"+port)
