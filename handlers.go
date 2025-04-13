@@ -529,6 +529,8 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
 
     // fmt.Println("User 1:", user1)
     // fmt.Println("User 2:", user2)
+	br.Opp = bp2.User
+
 	return br
 }
 

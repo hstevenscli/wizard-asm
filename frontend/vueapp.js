@@ -55,7 +55,11 @@ Vue.createApp({
                 registration: false,
                 saveProgram: false,
                 playNow: false,
+                getDuelInvalidUsername: false,
             },
+            opp: "",
+            setTimeoutId: null,
+            replayRunning: false,
         };
     },
     methods: {
@@ -548,12 +552,20 @@ Vue.createApp({
                 alert("HTTP-Error: ", + response.status);
             }
         },
+        stopReplay: function () {
+            clearTimeout(this.setTimeoutId);
+            this.replayRunning = false;
+        },
         startReplay: function () {
+            this.replayRunning = true;
+            console.log(this.replayRunning);
             var index = 0;
             var waitTime = 1000;
 
+
             const step = () => {
                 if (index >= this.currentReplay.Frames.length) {
+                    this.replayRunning = false;
                     this.frameToDisplay = this.currentReplay.Frames[index - 1];
                     return; 
                 }
@@ -564,7 +576,7 @@ Vue.createApp({
                 index++;
                 waitTime = Math.max(30, waitTime -2*index)
 
-                setTimeout(step, waitTime);
+                this.setTimeoutId = setTimeout(step, waitTime);
             }
 
             step();
@@ -611,6 +623,15 @@ Vue.createApp({
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
                 console.log("Real count", this.currentReplayInfoDisplay.RealCount);
                 this.getScore();
+                this.opp = json.Opp;
+            } else if (response.status == 409) {
+                // Notification for invalid username
+                console.log("USERNAME NOT FOUND");
+                this.notifications["getDuelInvalidUsername"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelInvalidUsername"] = false;
+                }, 3000);
+
             } else {
                 alert("HTTP-Error: ", + response.status);
             }
@@ -634,6 +655,8 @@ Vue.createApp({
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
                 console.log("Real count", this.currentReplayInfoDisplay.RealCount);
                 this.getScore();
+                this.opp = json.Opp;
+                console.log("OPP", this.opp);
             } else {
                 alert("HTTP-Error: ", + response.status);
             }

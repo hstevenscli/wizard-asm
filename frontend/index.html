@@ -184,6 +184,7 @@
         <div v-if="showLandingPage" class="landing m-6 has-text-centered">
             <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold">Welcome to Wizard-ASM</p>
             <p class="has-text-weight-bold">The Spell Slinging Programming Battle Game</p>
+            <p class="">Sign up below to get started</p>
             <br>
             <img src="/frontend/photos/sudokuwizards.png" width="32%" height="32%">
             <br>
@@ -202,6 +203,7 @@
                     <br>
                 </div>
             </div>
+            <p>Game is in pre-alpha</p>
         </div>
 
         <div v-if="showTutorialPage" class="tutorial m-6 has-text-left">
@@ -211,34 +213,37 @@
             <!-- <p class="has-text-primary is-size-2-mobile is-size-1 has-text-weight-bold" style="border-bottom: 3px solid">Tutorial</p> -->
             <div class="content has-text-left">
                 <br>
-                <!-- <p class="is-size-4 has-text-centered">Please read below to understand how the game works</p> -->
 
-                <h3>The Game</h3>
-                <p>Game is in beta.<br><br>Currently only duels are working, meaning you must provide the username of the player you wish to fight</p>
-                <p>Wizard-ASM is wizard themed multiplayer arena battle game meant to get you thinking about problems like a programmer</p>
-                <h3>The Arena</h3>
-                <p>The game takes place in a 16x16 grid where you and your opponent will receive random spawns</p>
-                    <img style="background-color: white;" src="/frontend/photos/wizasmtutorial.png" />
-                    <p>The arena rows and columns start at the top left and end at the bottom right</p>
-                    <p>You will also notice that rows and columns start at zero, not one. Thats because computers in real life start counting at zero</p>
-                    <p>You control a wizard in this arena with access to an arsenal of spells. The game ends when one of you dies
-                    or a game timeout happens (Nobody dies after 2000 game actions)</p>
-                <p>But there's a catch! You need to provide all instructions to your wizard in the form of a battle program before the game actually starts</p>
+                <h2>Wizard-ASM is meant to get you thinking like a programmer</h2>
 
-                <h3>What is a Battle Program</h3>
-                <p>In 'the game' you write what is called a battle program, a list of instructions that your wizard will follow until he slays 
-                    his enemy or is slain himself</p>
-                <p>Many of these spells require a row and column to resolve properly. You need to tell your wizard where exactly to 
-                    summon an acid puddle for example.</p>
-                <p>Most spells also have a mana cost associated with them. You start with 100 mana. Make sure to keep your mana from going below zero or your wizard will die!</p>
+                <h4>Plan ahead</h4>
+                <p>
+                In most games you would control your character in real time, moving out of the way when you see an attack coming at you, or shooting a fireball at your enemy when you
+                see them in the open. However, in Wizard-ASM everything is planned before the battle even starts. Every action, every reaction must be considered before the battle
+                even starts.
+                </p>
 
-                <p>A battle program is just a simple list of instructions (spells or actions to take) and the arguments 
-                needed for that instruction</p>
+                <h4>You must be specific</h4>
+                <p>
+                This is all determined through the battle program.
+                The battle program is the meat of the game. It is a list of instructions that your wizard will follow exactly.
+                This is supposed to mirror programming in real life, a programmer writes a program that a computer will execute exactly as its written. 
+                You are the programmer and the wizard is the computer. Computers (and wizards) will only do exactly as they're told. You have to be extremely specific if you want
+                them to do what you want. If you want your wizard to shoot lightning, you have to tell it which direction. If you want your wizard to teleport, 
+                you have to tell it exactly where to teleport to. 
+                </p>
+
+                <h4>Don't let your wizard run out of instructions</h4>
+                <p>
+                You also can't just let the wizard decide what to do if it runs out of instructions. You must ensure that your
+                battle program loops in some way (you can learn how in the create tab) so that the wizard will always have an instruction from you to follow. Should the wizard run 
+                out of instructions, it will die. This is known as 'PTRDEATH'
+                </p>
 
 
-                <p>Once a battle starts there is no way to change your strategy or adapt to what the enemy is doing. 
-                    Everything you want to do needs to be considered beforehand</p>
 
+                <h3>In the next section</h3>
+                <p>We will walk through a simple battle program</p>
                 <br>
                 <h1 style="border-bottom: 3px solid white;">Battle Program Example Step by Step</h1>
                 <br>
@@ -247,49 +252,68 @@
                 <div class="columns">
                     <div class="column">
                     <h3>Battle Program in Detail</h3>
-                        <p>This simple example program to the right has a few things we should point out</p>
-                        <p>This program recharges 100 mana to top off at 200 (You cant go over 200 or below zero or your wizard will die)
-                        then shoot lightning to the north and south, recharge back up to 200, shoot lightning east and west,
-                        recharge to 200 again and then start again at the first lightning instruction</p>
-                        <p>All instructions and their arguments are explained in detail in the 'Battle' tab</p>
+                        <p>This simple program to the right will shoot lightning in 4 directions and repeat while keeping the right amount of mana (your mana starts at 100)</p>
+                        <p>The text in grey would not be part of an actual battle program</p>
+                        <p>All instructions and their arguments are explained in detail in the 'Create' tab</p>
                     </div>
                     <div class="column is-offset-one-quarter has-text-white">
                         <h3 >Example Program</h3>
                         <li>
-                            RECHARGE 100
+                            RECHARGE 100 <b style="color: grey">&lt;- Recharge 100 mana to get mana to 200</b>
                         </li>
                         <li>
-                            LIGHTNING N
+                            LIGHTNING N <b style="color: grey">&lt;- Shoot lightning north</b>
                         </li>
                         <li>
-                            LIGHTNING S
+                            LIGHTNING S <b style="color: grey">&lt;- Shoot lightning south</b>
                         </li>
                         <li>
-                            RECHARGE 200
+                            RECHARGE 200 <b style="color: grey">&lt;- Recharge 200 mana</b>
                         </li>
                         <li>
-                            LIGHTNING E
+                            LIGHTNING E <b style="color: grey">&lt;- Shoot lightning east</b>
                         </li>
                         <li>
-                            LIGHTNING W
+                            LIGHTNING W <b style="color: grey">&lt;- Shoot lightning west</b>
                         </li>
                         <li>
-                            RECHARGE 200
+                            RECHARGE 200 <b style="color: grey">&lt;- Recharge 200 mana</b>
                         </li>
                         <li>
-                            JUMP -6
+                            JUMP -6 <b style="color: grey">&lt;- Jump back up to the 'LIGHTNING N'</b>
                         </li>
                     </div>
                 </div>
 
+                <section class="section is-small"></section>
+
+                <h3>The Arena</h3>
+                <p>The game takes place in a 16x16 grid where you and your opponent will receive random spawns</p>
+                <p>The arena rows and columns start at the top left and end at the bottom right<br>
+                You will also notice that rows and columns start at zero, not one. Thats because computers in real life start counting at zero</p>
+                <img style="background-color: white;" src="/frontend/photos/wizasmtutorial.png" />
+
+                <h3>TL;DR</h3>
+                <ul>
+                    <li>Eliminate the enemy before they eliminate you</li>
+                    <li>Start at 100 mana</li>
+                    <li>Plan all your spells and actions by making a battle program</li>
+                    <li>Make sure your battle program loops in some way or you will die from 'PTRDEATH'</li>
+                    <li>Manage your mana wisely or you will die from too much or not enough mana</li>
+                    <li>The game will end if nobody dies after 2000 turns</li>
+                </ul>
+
+            <p><a @click="whoami === '' && showLogin()">Log in or register</a>, then head over to the 'Create' tab to learn about the spells available to you</p>
             </div>
 
-                <h3>Get Started Today!</h3>
-                <p>Fret not! For your spells are all you need. With them you can summon lava, shoot lightning, teleport, and magically deduce the location of your opponent. Rely on your spells and you will be a victor in The Arena.</p>
-                <p><a @click="whoami === '' && showLogin()">Log in or register</a>, then head over to the 'Battle' tab to learn about the spells available to you</p>
-                <br>
-
             </div>
+
+            <h3 class="title">Get Started Today!</h3>
+            <h3 class="subtitle">Fret not! For your spells are all you need. With them you can summon lava, shoot lightning, teleport, and magically deduce the location of your opponent. Rely on your spells and you will be a victor in The Arena.</h3>
+            <br>
+
+
+
         </div>
 
 
@@ -304,8 +328,22 @@
                 <h1 class="subtitle is-5">After creating your program, head over to the 'Replays' tab to duel another player</h1>
                 <textarea @blur="saveTempProgram" class="bptextarea textarea" placeholder="magma 0 0"></textarea>
                 <div class="buttons mt-1">
-                    <button @click="submitProgram" class="button is-primary" id="sbutton" >Save Program</button>
-                    <button @click="getBattleProgram" class="button is-link is-outlined">Load Saved Program</button>
+                    <button @click="submitProgram" class="button is-primary" id="sbutton" >
+                        <span class="icon">
+                            <i class="fa-solid fa-upload"></i>
+                        </span>
+                        <span>
+                            Save Program
+                        </span>
+                    </button>
+                    <button @click="getBattleProgram" class="button is-link is-outlined">
+                        <span class="icon">
+                            <i class="fa-solid fa-download"></i>
+                        </span>
+                        <span>
+                            Load Program
+                        </span>
+                    </button>
                     <button @click="checkProgram" class="button is-danger">Check Program(Debugging)</button>
                 </div>
                 <div v-show="notifications['saveProgram']" class="notification is-link">
@@ -328,7 +366,7 @@
                         <p>This is how all following instructions will be structured</p>
                     <div class="box">
                         <h4>Instruction Name [argument 1] [argument 2] ...</h4>
-                        <p>The name of the instruction will be listed, followed by a number of arguments that must be provided. Arguments have been kept simple in most cases, usually a number or a single letter (or two). </p>
+                        <p>The name of the instruction will be listed, followed by a number of arguments that must be provided. Arguments take the form of a number or a single letter (or two). </p>
                         <!-- <p>In the following examples arguments will be denoted in an abbreviated form [arg1] [arg2] ...</p> -->
                         <p style="color: #3087f7">Mana Cost: X</p>
                     </div>
@@ -338,27 +376,48 @@
 
                 <h2 class="has-text-left">Spells and Actions</h2>
                     <div class="box">
-                        <h4>Magma [arg1] [arg2]</h4>
-                        <p>Summons an explosion of magma in a 3x3 square centered on target location chosen by arg1 and arg2</p>
-                        <p>Arg 1: A number (0-15); The row you want to target</p>
-                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-volcano"></i>
+                            </span>
+                            <span>
+                                Magma [arg1] [arg2]
+                            </span>
+                        </h4>
+                        <p>Summons an explosion of magma in a 3x3 square centered on target location</p>
+                        <p class="has-text-white">Arg 1: A number (0-15); The row you want to target</p>
+                        <p class="has-text-white">Arg 2: A number (0-15); The column you want to target</p>
                         <p>Alternatively, you can put -1 for both arguments to target a random location</p>
                         <p style="color: #3087f7">Mana Cost: 20</p>
                         <p>Example Usage:<br>MAGMA 1 5</p>
                     </div>
                     <div class="box">
-                        <h4>Acid [arg1] [arg2]</h4>
-                        <p>Summons a puddle of acid on target location chosen by arg1 and arg2. The puddle stays on the ground indefinitely</p>
-                        <p>Arg 1: A number (0-15); The row you want to target</p>
-                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-biohazard"></i>
+                            </span>
+                            <span>
+                                Acid [arg1] [arg2]
+                            </span>
+                        </h4>
+                        <p>Summons a puddle of acid on target location. The puddle stays on the ground indefinitely</p>
+                        <p class="has-text-white">Arg 1: A number (0-15); The row you want to target</p>
+                        <p class="has-text-white">Arg 2: A number (0-15); The column you want to target</p>
                         <p>Alternatively, you can put -1 for both arguments to target a random location</p>
                         <p style="color: #3087f7">Mana Cost: 10</p>
                         <p>Example Usage:<br>ACID 0 3</p>
                     </div>
                     <div class="box">
-                        <h4>Move [arg1]</h4>
-                        <p>Move a single tile in the direction chosen by arg1</p>
-                        <p>Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-up-down-left-right"></i>
+                            </span>
+                            <span>
+                                Move [arg1]
+                            </span>
+                        </h4>
+                        <p>Move a single tile in the chosen direction</p>
+                        <p class="has-text-white">Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
                                 <figure class="image is-128x128">
                                     <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
                                 </figure>
@@ -366,100 +425,180 @@
                         <p>Example Usage:<br>MOVE NE</p>
                     </div>
                     <div class="box">
-                        <h4>Teleport [arg1] [arg2]</h4>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-arrows-to-dot"></i>
+                            </span>
+                            <span>
+                                Teleport [arg1] [arg2]
+                            </span>
+                        </h4>
                         <p>Teleport to target location</p>
-                        <p>Arg 1: A number (0-15); The row you want to target</p>
-                        <p>Arg 2: A number (0-15); The column you want to target</p>
+                        <p class="has-text-white">Arg 1: A number (0-15); The row you want to target</p>
+                        <p class="has-text-white">Arg 2: A number (0-15); The column you want to target</p>
                         <p>Alternatively, you can put -1 for both arguments to teleport to a random location</p>
                         <p style="color: #3087f7">Mana Cost: 100</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>TELEPORT 5 9</p>
 
                     </div>
                     <div class="box">
-                        <h4>Shield [arg1]</h4>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </span>
+                            <span>
+                                Shield [arg1]
+                            </span>
+                        </h4>
                         <p>Apply a magical shield to protect from certain damage types</p>
-                        <p>Arg 1: A number (1, 2, or 3) 1 to protect against fire, 2 against lightning, 3 against acid</p>
+                        <p class="has-text-white">Arg 1: 1 for fire; 2 for lightning; 3 for acid</p>
                         <!-- <p style="color: yellow">NOTE! Not currently implemented/working</p> -->
                         <p style="color: #3087f7">Mana Cost: 10</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>SHIELD 2</p>
 
                     </div>
                     <div class="box">
-                        <h4>Wait</h4>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-hourglass-start"></i>
+                            </span>
+                            <span>
+                                Wait
+                            </span>
+                        </h4>
                         <p>Simply wait and do nothing</p>
                         <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>WAIT</p>
 
                     </div>
                     <div class="box">
-                        <h4>Recharge [arg1]</h4>
-                        <p>Recharge your mana by the amount given by arg1</p>
-                        <p>Arg 1: A number (0-200)</p>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-battery-full"></i>
+                            </span>
+                            <span>
+                                Recharge [arg1]
+                            </span>
+                        </h4>
+                        <p>Recharge your mana by the chosen amount</p>
+                        <p class="has-text-white">Arg 1: A number (0-200)</p>
                         <p>Running out of mana while trying to cast a spell will result in a loss, however having too much mana will result in a loss due to mana overcharge. Think wisely about how much mana you actually need!</p>
                         <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>RECHARGE 200</p>
 
                     </div>
                     <div class="box">
-                        <h4>Divination [arg1]</h4>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-hat-wizard"></i>
+                            </span>
+                            <span>
+                                Divination [arg1]
+                            </span>
+                        </h4>
                         <p>Hone in on the location of the enemy player</p>
-                        <p>Arg 1: a number (0-5) to specify the accuracy of the spell</p>
+                        <p class="has-text-white">Arg 1: a number (0-5)</p>
                         <p>0 will give an exact location of the enemy, while each subsequent number will give a location with a margin of error equal to that number</p>
-                        <p>Divination will save the coordinates (row, column) in your crystal ball, which you can access with the crystal ball instruction</p>
+                        <p>Divination will save the coordinates (row, column) in your crystal ball, which you can access with the CRYSTAL instruction</p>
                         <!-- <p style="color: yellow">NOTE! Not currently implemented/working</p> -->
                         <p style="color: #3087f7">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
-                        <p>Example Usage:<br></p>
-
+                        <p>Example Usage:<br>DIVINATION 0</p>
                     </div>
                     <div class="box">
-                        <h4>Crystal [arg1]</h4>
-                        <p>Hone in on the location of the enemy player</p>
-                        <p style="color: #3087f7">Mana Cost:<br>200 at level 0<br>190 at level 1<br>180 at level 2<br>...<br> 150 at level 5</p>
-                        <p>Example Usage:<br></p>
-
+                        <h4>
+                            <span class="icon">
+                                <img src="/frontend/photos/crystal-ball-svgrepo-com.svg">
+                            </span>
+                            <span>
+                                Crystal [arg1]
+                            </span>
+                        </h4>
+                        <p>Use on an instruction that takes a row, column coordinates such as MAGMA</p>
+                        <p>Crystal will take the numbers saved in your crystal ball and overwrite the arguments of the instruction that arg1 points to</p>
+                        <p class="has-text-white">Arg 1: a number pointing to the instruction you want to modify</p>
+                        <p style="color: #3087f7">Mana Cost: 0</p>
+                        <p>Example Usage:</p>
+                        <p>Lets say your crystal ball contains: 5, 8 and you have the following battle program:<br><br>MAGMA 0 0<br>CRYSTAL -1</p>
+                        <p>After the CRYSTAL instruction is run, MAGMA will now look like this:<br>MAGMA 5 8</p>
                     </div>
                     <div class="box">
-                        <h4>Lightning [arg1]</h4>
-                        <p>Shoot lightning in a straight line in a specfied direction</p>
-                        <p>Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
+                        <h4>
+                            <span class="icon">
+                                <i class="fa-solid fa-cloud-bolt"></i>
+                            </span>
+                            <span>
+                                Lightning [arg1]
+                            </span>
+                        </h4>
+                        <p>Shoot lightning in a straight line in the chosen direction</p>
+                        <p class="has-text-white">Arg 1: Cardinal directions represented by the following: N  NE  NW  S  SE  SW  E  W</p>
                                 <figure class="image is-128x128">
                                     <img src="https://imgs.search.brave.com/K6Tml8Gn4rhD5nQvqnLecXznvTUfHEHVSoLMpYMQyhE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2VvZ3JhcGh5cmVh/bG0uY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDEzLzA3L2Nv/bXBhc3Mtcm9zcy1j/YXJkaW5hbC1wb2lu/dHMucG5n" />
                                 </figure>
                         <p style="color: #3087f7">Mana Cost: 100</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>LIGHTNING NE</p>
 
                     </div>
 
                 <h2>Logical Instructions</h2>
                 <div class="box">
-                    <h4>Sloop [arg1]</h4>
+                    <h4>
+                        <span class="icon">
+                            <i class="fa-solid fa-circle-play"></i>
+                        </span>
+                        <span>
+                            Sloop [arg1]
+                        </span>
+                    </h4>
                     <p>Start a loop that will run a specified number of times</p>
-                    <p>Arg 1: A number, how many times you want the loop to run</p>
+                    <p class="has-text-white">Arg 1: A number</p>
                     <p style="color: yellow">NOTE! Nested loops using Sloop and Eloop is not currently supported</p>
                     <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>SLOOP 10<br>This will signify the start of a loop that will run 10 times</p>
                 </div>
                 <div class="box">
-                    <h4>Eloop</h4>
+                    <h4>
+                        <span class="icon">
+                            <i class="fa-solid fa-circle-stop"></i>
+                        </span>
+                        <span>
+                            Eloop
+                        </span>
+                    </h4>
                     <p>Paired with an Sloop instruction. This will specify the end of your loop and will signal the program reader to go back up to your Sloop instruction</p>
                     <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
+                        <p>Example Usage:<br>ELOOP</p>
 
                 </div>
                 <div class="box">
-                    <h4>Jump [arg1]</h4>
+                    <h4>
+                        <span class="icon">
+                            <i class="fa-solid fa-arrows-up-down"></i>
+                        </span>
+                        <span>
+                            Jump [arg1]
+                        </span>
+                    </h4>
                     <p>This will tell the program reader to go back or forward a specified number of instructions in your program</p>
-                    <p>Arg 1: A number (positive or negative), the amount of instructions you would like to jump forward or backward</p>
+                    <p class="has-text-white">Arg 1: A number (positive or negative), the amount of instructions you would like to jump forward or backward</p>
                     <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
-
+                        <p>Example Usage:<br>
+                        MAGMA 0 0<br>
+                        RECHARGE 20<br>
+                        JUMP -2<br><br>
+                        `JUMP -2` tells the game to go back up to the MAGMA instruction which is two positions above the JUMP instruction in the battle program
+                        </p>
+                    <p class="has-text-warning">Jump is essential for a successful battle program. If you run out of instructions the game will try to read a non-existant instruction and you will die.<br>
+                    This is know as a PTRDEATH. If you see this in your death messages it means you ran out of instructions to give the game<br>
+                    Use jump to ensure the game doesn't run out of instructions to execute from your program
+                    </p>
                 </div>
-                <div class="box">
-                    <h4>CJump</h4>
-                    <p style="color: yellow">Work in progress</p>
-                    <p style="color: #3087f7">Mana Cost: 0</p>
-                        <p>Example Usage:<br></p>
-                </div>
+                <!-- <div class="box"> -->
+                <!--     <h4>CJump</h4> -->
+                <!--     <p style="color: yellow">Work in progress</p> -->
+                <!--     <p style="color: #3087f7">Mana Cost: 0</p> -->
+                <!--         <p>Example Usage:<br></p> -->
+                <!-- </div> -->
 
             <section class="section is-large"></section>
             <section class="section is-large"></section>
@@ -484,15 +623,6 @@
                         <button @click="premiumSpells['pwk'] = false" class="delete"></button>
                         Thank you for your purchase. Please use this power responsibly.
                     </div>
-                    <!-- <div class="columns"> -->
-                    <!--     <div class="column"> -->
-                    <!--         <button style="color: white" class="button is-warning">Buy Now</button> -->
-                    <!--     </div> -->
-                    <!--     <div class="column"> -->
-                    <!--         <p style="color: white">$9.99</p> -->
-                    <!--     </div> -->
-
-                    <!-- </div> -->
                 </div>
                 <div class="box">
                     <h4>Wish&trade;</h4>
@@ -515,39 +645,90 @@
         </div>
 
         <div v-if="showReplaysPage" class="replayspage m-6">
-            <!-- <button @click="runGame" class="button" id="gamebutton" disabled>Run Game</button> -->
-            <!-- <button @click="getReplay" class="button" disabled>Get Replay</button> -->
-            <!-- <button @click="getPlayerLocationsInCurrentFrame" class="button" disabled>Player Locations</button> -->
+
             <h1 class="title is-3">Its time to duel</h1>
             <h1 class="subtitle is-5">Duel your friend or a random person</h1>
-
 
             <br>
 
             <div class="columns">
-                <div class="column is-offset-1">
-                    <div v-for="row in frameToDisplay.ArenaFrame" class="">
-                        {{ row }}
-                    </div>
-                    <br>
-                    <div id="info">
-                        <div>Player: {{ frameToDisplay.PlayerName }} | #Actions: {{ frameToDisplay.Count }}</div>
-                        <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
-                        <div>Mana: {{ frameToDisplay.Mana }}</div>
+                <div class="column">
+
+                    <div class="box" >
+                        <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
+                            <p class="has-text-white">Match Replay</p>
+                            <p v-if="frameToDisplay" class="is-size-6 has-text-white has-text-right">Turn: {{ frameToDisplay.Count }}</p>
+                        </div>
+                        <h2><b class="has-text-primary">{{ whoami }}</b> vs <b class="has-text-danger">{{ opp }}</b></h2>
+
+                        <br>
+                        <div v-for="row in frameToDisplay.ArenaFrame"  class="has-text-centered">
+                            {{ row }}
+                        </div>
+                        <br>
+                        <div class="has-text-white" id="info">
+                            <div>Player: {{ frameToDisplay.PlayerName }}</div>
+                            <div>Action: {{ frameToDisplay.Action }} {{ frameToDisplay.Args }}</div>
+                            <div style="color: #3087f7">Mana: {{ frameToDisplay.Mana }}</div>
+                        </div>
                     </div>
                     <div class="buttons">
-                        <button @click="startReplay" class="button is-primary" disabled>Start Replay</button>
-                        <button class="button is-danger" disabled>Stop Replay</button>
+                        <button @click="startReplay" class="button is-primary" :disabled="opp==='' || replayRunning">
+                            <span class="icon">
+                                <i class="fa-solid fa-play"></i>
+                            </span>
+                            <span>
+                                Start
+                            </span>
+                        </button>
+                        <button @click="stopReplay" class="button is-danger" :disabled="!replayRunning">
+                            <span class="icon">
+                                <i class="fa-solid fa-stop"></i>
+                            </span>
+                            <span>
+                                Stop
+                            </span>
+                        </button>
                     </div>
+
                 </div>
                 <div class="column">
-                    <input v-model="duelUserInput" class="input" type="text" placeholder="User to duel">
+                    <p>Current Opponent: <span v-if="opp !== '' " class="tag is-medium">{{ opp }}</span></p>
                     <br>
-                    <br>
-                    <div class="buttons">
-                        <button @click="getDuel" class="button is-danger">Duel</button>
-                        <button @click="getDuelRandom" class="button is-danger">Random Duel</button>
+                    <label class="label">User To Duel</label>
+                    <div class="control has-icons-left">
+                        <input v-model="duelUserInput" class="input" type="text" placeholder="bob">
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-hat-wizard"></i>
+                        </span>
                     </div>
+                            <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
+                                <button @click="getDuel" class="button is-link is-outlined">
+                                    <span class="icon">
+                                        <i class="fa-solid fa-wand-sparkles"></i>
+                                    </span>
+                                    <span>
+                                        Duel
+                                    </span>
+                                </button>
+                                <button @click="getDuelRandom" class="button is-danger is-outlined">
+                                    <span class="icon">
+                                        <i class="fa-solid fa-dice"></i>
+                                    </span>
+                                    <span>
+                                        Random
+                                    </span>
+                                </button>
+                            </div>
+                            <div v-if="notifications['getDuelInvalidUsername']" class="notification is-danger">
+                                <button @click="notifications['getDuelInvalidUsername'] = false" class="delete"></button>
+                                <span class="icon">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </span>
+                                <span>
+                                    User not found
+                                </span>
+                            </div>
 
                 </div>
             </div>

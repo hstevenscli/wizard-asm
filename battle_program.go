@@ -33,6 +33,7 @@ type frame struct {
 type replay struct {
     Frames []frame
 	GameoverInfo gameOver
+	Opp string
 }
 
 // var battleReplay replay
