@@ -59,6 +59,10 @@ Vue.createApp({
                 getDuelInvalidUsernameWeird: false,
                 getDuelBp1Empty: false,
                 getDuelBp1Empty: false,
+                invalidUserPassword: false,
+                loginBadRequest: false,
+                loginDatabaseError: false,
+                loginSessionError: false,
             },
             opp: "",
             setTimeoutId: null,
@@ -249,19 +253,56 @@ Vue.createApp({
                 },
                 body: jsonbody
             });
+            let json = await response.json();
             if (response.ok) {
-                let json = await response.json();
                 console.log("Response:", json)
                 this.showLoginModal = false;
                 this.usernameInput = "";
                 this.passwordInput = "";
                 this.getSessionInfo();
                 this.showTutorial();
-                button.classList.remove("is-loading");
+            } else if (response.status == 401 && json.status === "invalid username or password") {
+                console.log(this.notifications["invalidUserPassword"])
+                console.log("INVALID USERNAME OR PASSWORD");
+
+                this.notifications["invalidUserPassword"] = true;
+
+                console.log(this.notifications["invalidUserPassword"])
+                setTimeout(() => {
+                    this.notifications["invalidUserPassword"] = false;
+                }, 10000);
+
+            } else if (response.status == 400 && json.status === "Bad Request") {
+                console.log("Login bad Request");
+
+                this.notifications["loginBadRequest"] = true;
+                setTimeout(() => {
+                    this.notifications["loginBadRequest"] = false;
+                }, 10000);
+
+
+            } else if (response.status == 500) {
+                if (json.status === "server error") {
+                    console.log("DATABASE ERROR");
+
+                    this.notifications["loginDatabaseError"] = true;
+                    setTimeout(() => {
+                        this.notifications["loginDatabaseError"] = false;
+                    }, 10000);
+
+                } else if (json.status === "Internal server error, please try again later") {
+                    console.log("ERROR GENERATING SESSION");
+
+                    this.notifications["loginSessionError"] = true;
+                    setTimeout(() => {
+                        this.notifications["loginSessionError"] = false;
+                    }, 10000);
+
+                }
             } else {
-                // TODO change this to a more user friendly response
-                alert("HTTP-Error: ", + response.status);
+                alert("Unkown error encountered please try again later" + response.status);
             }
+            button.classList.remove("is-loading");
         },
         logout: async function () {
             console.log("Logging out")
@@ -331,6 +372,14 @@ Vue.createApp({
                 alert("Error getting reports");
             }
         },
+        makeMid: function () {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 16; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        },
         postBugReport: async function () {
             if (this.bugReportMessage === "") {
                 return
@@ -338,7 +387,9 @@ Vue.createApp({
             let button = document.getElementById("bugSubmitButton")
             button.classList.add("is-loading");
             var url = "/bugreports";
-            var report = { message: this.bugReportMessage, email: this.bugEmail}
+            var mid = this.makeMid();
+            console.log("MID", mid)
+            var report = { message: this.bugReportMessage, email: this.bugEmail, mid: mid}
             console.log(report)
             let response = await fetch(url, {
                 method: 'POST',
@@ -370,7 +421,7 @@ Vue.createApp({
             if (response.ok) {
                 let json = await response.json()
                 console.log(json);
-                this.getBugReports;
+                this.getBugReports();
             } else {
                 alert("HTTP-Error: ", response.status)
             }

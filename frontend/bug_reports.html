@@ -15,11 +15,34 @@
     </head>
     <body>
     <div id="app" class="m-4">
+        <span class="has-text-primary">
+            <b>Logged In: </b>
+        </span>
+        <span class="tag is-success">
+            <b>{{ whoami }}</b>
+        </span>
+        <br>
+        <br>
         <div class="buttons">
-            <a href="/" class="button is-warning">Go Back</a>
-            <button @click="getBugReports" class="button is-primary">Get Reports</button>
+            <a href="/" class="button is-warning">
+                <span class="icon">
+                    <i class="fa-solid fa-arrow-left"></i> 
+                </span>
+                <span>
+                    Go Back
+                </span>
+            </a>
+            <button @click="getBugReports" class="button is-primary">
+                <span class="icon">
+                    <i class="fa-solid fa-download"></i>
+                </span>
+                <span>
+                    Load Reports
+                </span>
+            </button>
         </div>
         <br>
+        <p v-show="bugreports.length">Reports: {{ bugreports.length }}</p>
         <div class="box has-text-white" v-for="report in bugreports">
             <span class="icon">
                 <i class="fa-solid fa-message"></i>
@@ -27,19 +50,21 @@
             <span>
                 Message: {{ report.Message }}<br>
             </span>
-                <span v-if="report.Email" class="icon">
-                    <i class="fa-solid fa-envelope"></i>
-                </span>
+            <a :href="`https://mail.google.com/mail/?view=cm&fs=1&to=${report.Email}&su=Bug%20Report%20Follow%20Up&body=`" target="_blank">
+                    <span v-if="report.Email" class="icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </span>
+                </a>
                 <span v-if="report.Email">
                     Email: {{ report.Email }}
                 </span>
             <br>
             <br>
-            <button @click="deleteBugReport(report.ID)" class="button is-danger">
+            <button @click="deleteBugReport(report.Mid)" class="button is-danger">
                 <span class="icon">
                     <i class="fa-solid fa-trash"></i>
                 </span>
-                <span>{{ report.ID }}</span>
+                <!-- <span>{{ report.Mid }}</span> -->
             </button>
         </div>
     </div>

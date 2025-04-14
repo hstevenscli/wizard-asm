@@ -130,10 +130,32 @@
                 <p v-if="showSignUpText" class="control">Don't have an account? <a @click="signUp">Sign Up</a></p>
                 <p v-if="showLoginText" class="control">Already have an account? <a @click="loginLayout">Login</a></p>
                 <br>
+
+                <!-- Notifications -->
                 <div v-if="notifications['registration']" class="notification is-link">
                     <button @click="notifications['registration'] = false" class="delete"></button>
                         Registered successfully. Please login
                 </div>
+                <div v-if="notifications['invalidUserPassword']" class="notification is-danger">
+                    <button @click="notifications['invalidUserPassword'] = false" class="delete"></button>
+                    Invalid Username or Password
+                </div>
+                <div v-if="notifications['loginBadRequest']" class="notification is-danger">
+                    <button @click="notifications['loginBadRequest'] = false" class="delete"></button>
+                    Bad login request. Please try again later
+                </div>
+                <div v-if="notifications['loginDatabaseError']" class="notification is-danger">
+                    <button @click="notifications['loginDatabaseError'] = false" class="delete"></button>
+                    Error querying database. Please try again later
+                </div>
+                <div v-if="notifications['loginSessionError']" class="notification is-danger">
+                    <button @click="notifications['loginSessionError'] = false" class="delete"></button>
+                    Error generating session ID. Please try again later
+                </div>
+
+
+
+
             </div>
             <button class="modal-close is-large" aria-label="close" @click="showLoginModal = false; loginLayout()"></button>
         </div>

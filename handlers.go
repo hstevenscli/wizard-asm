@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	// "go.mongodb.org/mongo-driver/bson/primitive"
+    // "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -24,9 +24,10 @@ type user struct {
 
 type report struct {
 	// ID primitive.ObjectID `bson:"_id,omitempty"`
-	ID      interface{} `bson:"_id,omitempty"`
+	// ID      interface{} `bson:"_id"`
 	Message string `bson:"message"`
 	Email string `bson:"email,omitempty"`
+    Mid string `bson:"mid"`
 }
 
 // type report struct {
@@ -126,7 +127,7 @@ func postLogin(c *gin.Context) {
     if err != nil {
         if err == mongo.ErrNoDocuments {
             fmt.Println("user not found")
-            c.JSON(401, gin.H{"status": "unauthorized", "message": "invalid username or password"})
+            c.JSON(401, gin.H{"status": "invalid username or password"})
             return
         }
         c.JSON(500, gin.H{"status": "server error"})
@@ -151,7 +152,7 @@ func postLogin(c *gin.Context) {
         fmt.Println("session store: ", sessionStore)
         c.JSON(200, gin.H{"status": "successfully logged in"})
     } else {
-        c.JSON(401, gin.H{"status": "unauthorized", "message": "invalid username or password"})
+        c.JSON(401, gin.H{"status": "invalid username or password"})
     }
 }
 
@@ -250,8 +251,8 @@ func getBugReports(c *gin.Context) {
             c.JSON(500, gin.H{"status": "Error unpacking cursor into reports", "error": err.Error()})
             return
         }
-		fmt.Printf("Decoded report: ID type=%T, ID value=%v, Message=%s, Email=%s\n", 
-        r.ID, r.ID, r.Message, r.Email)
+		// fmt.Printf("Decoded report: ID type=%T, ID value=%v, Message=%s, Email=%s\n", 
+        // r.ID, r.ID, r.Message, r.Email)
 		reports = append(reports, r)
     }
 
@@ -294,12 +295,40 @@ func postBugReport(c *gin.Context) {
 	c.JSON(201, gin.H{"status": "Report made successfully"})
 }
 
+
 func deleteBugReport(c *gin.Context) {
     id := c.Param("id")
+    // fmt.Println("ID:", id)
     mongoClient := getClient(c)
-    coll := mongoClient.Database("wizardb").Collection("reports")
 
-    // coll.DeleteOne
+    // objectID, err := primitive.ObjectIDFromHex(id)
+    // if err != nil {
+    //     c.JSON(400, gin.H{"status": "Invalid ID format"})
+    //     return
+    // }
+
+
+    // fmt.Printf("ObjectID: %v\n. Type: %t\n", objectID, objectID)
+
+    coll := mongoClient.Database("wizardb").Collection("reports")
+    filter := bson.M{"mid": id}
+
+    fmt.Println("Filter:", filter)
+    result, err := coll.DeleteOne(context.TODO(), filter)
+    fmt.Println("result:", result)
+    if err != nil {
+        c.JSON(500, gin.H{"status": "Error deleting document"})
+        return
+    }
+
+    if result.DeletedCount == 0 {
+        c.JSON(404, gin.H{"status": "Document not found"})
+        return
+    }
+    
+
+    c.JSON(200, result)
+    return
 
 }
 
