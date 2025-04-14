@@ -143,8 +143,7 @@ func main() {
 		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
 	})
     router.GET("/users/:username", authorizeMiddleware(), getUser)
-	router.GET("/bug_reports", authorizeMiddlewareAdmin(), getBugReports)
-	// router.DELETE("/bug_reports:id")
+	router.GET("/bugreports", authorizeMiddlewareAdmin(), getBugReports)
 
 
     // PUT the stuff in this function into a helper function to authenticate on protected routes
@@ -161,7 +160,14 @@ func main() {
 	// 	runGame()
         // c.JSON(201, gin.H{"msg": "Game has been run"})
 	// })
-	router.POST("/bugreport", postBugReport)
+	router.POST("/bugreports", postBugReport)
+
+    // DELETE
+    // router.DELETE("/bugreports/:id", func(c *gin.Context) {
+    //     id := c.Param("id")
+    //     c.JSON(200, gin.H{"status": "Deleted report with id " + id})
+    // })
+    router.DELETE("/bugreports/:id", authorizeMiddlewareAdmin(), deleteBugReport)
 
     router.Run("0.0.0.0:"+port)
 }

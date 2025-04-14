@@ -99,22 +99,6 @@ Vue.createApp({
                 console.log("Error:", response.status)
             }
         },
-        getBugReports: async function () {
-            var url = "/bug_reports";
-            let response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-            });
-            if (response.ok) {
-                let json = await response.json();
-                this.bugreports = json;
-                console.log("Bugs:", this.bugreports);
-            } else {
-                alert("Error getting reports");
-            }
-        },
         playNotification: function () {
             this.notifications.playNow = true;
         }, 
@@ -331,13 +315,29 @@ Vue.createApp({
                 return 'has-text-link';
             }
         },
+        getBugReports: async function () {
+            var url = "/bugreports";
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                this.bugreports = json;
+                console.log("Bugs:", this.bugreports);
+            } else {
+                alert("Error getting reports");
+            }
+        },
         postBugReport: async function () {
             if (this.bugReportMessage === "") {
                 return
             }
             let button = document.getElementById("bugSubmitButton")
             button.classList.add("is-loading");
-            var url = "/bugreport";
+            var url = "/bugreports";
             var report = { message: this.bugReportMessage, email: this.bugEmail}
             console.log(report)
             let response = await fetch(url, {
@@ -357,6 +357,22 @@ Vue.createApp({
             } else {
                 alert("HTTP-Error: ", response.status)
                 button.classList.remove("is-loading");
+            }
+        },
+        deleteBugReport: async function (id) {
+            var url = "/bugreports/" + id;
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json()
+                console.log(json);
+                this.getBugReports;
+            } else {
+                alert("HTTP-Error: ", response.status)
             }
         },
         getTextareaLines: function () {

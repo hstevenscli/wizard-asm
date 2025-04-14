@@ -35,37 +35,6 @@ type report struct {
 // 	Email   string             `bson:"email,omitempty" json:"Email"`
 // }
 
-func getBugReports(c *gin.Context) {
-	var reports []report
-
-    mongoClient := getClient(c)
-    coll := mongoClient.Database("wizardb").Collection("reports")
-
-    cursor, err := coll.Find(context.TODO(), bson.D{})
-    if err != nil {
-        c.JSON(500, gin.H{"status": "Database Error", "error": err.Error()})
-        return
-    }
-    defer cursor.Close(context.TODO())
-
-    for cursor.Next(context.TODO()) {
-        var r report
-        if err := cursor.Decode(&r); err != nil {
-            c.JSON(500, gin.H{"status": "Error unpacking cursor into reports", "error": err.Error()})
-            return
-        }
-		fmt.Printf("Decoded report: ID type=%T, ID value=%v, Message=%s, Email=%s\n", 
-        r.ID, r.ID, r.Message, r.Email)
-		reports = append(reports, r)
-    }
-
-    if err := cursor.Err(); err != nil {
-        c.JSON(500, gin.H{"status": "Cursor error", "error": err.Error()})
-        return
-    }
-
-    c.JSON(200, reports)
-}
 
 var ErrEmptyBattleProgram = errors.New("Battle Program is empty")
 
@@ -262,6 +231,38 @@ func postBattleProgram(c *gin.Context) {
     c.IndentedJSON(201, gin.H{"status": "Program created/saved successfully"})
 }
 
+func getBugReports(c *gin.Context) {
+	var reports []report
+
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("reports")
+
+    cursor, err := coll.Find(context.TODO(), bson.D{})
+    if err != nil {
+        c.JSON(500, gin.H{"status": "Database Error", "error": err.Error()})
+        return
+    }
+    defer cursor.Close(context.TODO())
+
+    for cursor.Next(context.TODO()) {
+        var r report
+        if err := cursor.Decode(&r); err != nil {
+            c.JSON(500, gin.H{"status": "Error unpacking cursor into reports", "error": err.Error()})
+            return
+        }
+		fmt.Printf("Decoded report: ID type=%T, ID value=%v, Message=%s, Email=%s\n", 
+        r.ID, r.ID, r.Message, r.Email)
+		reports = append(reports, r)
+    }
+
+    if err := cursor.Err(); err != nil {
+        c.JSON(500, gin.H{"status": "Cursor error", "error": err.Error()})
+        return
+    }
+
+    c.JSON(200, reports)
+}
+
 func postBugReport(c *gin.Context) {
 	var newBugReport report
 	if err := c.BindJSON(&newBugReport); err != nil {
@@ -291,6 +292,15 @@ func postBugReport(c *gin.Context) {
 	}
 	fmt.Println("Result:", result)
 	c.JSON(201, gin.H{"status": "Report made successfully"})
+}
+
+func deleteBugReport(c *gin.Context) {
+    id := c.Param("id")
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("reports")
+
+    // coll.DeleteOne
+
 }
 
 func getDuel(c *gin.Context) {

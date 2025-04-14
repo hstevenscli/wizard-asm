@@ -14,11 +14,33 @@
         <!-- <script src="script.js" type="module"></script> -->
     </head>
     <body>
-    <div id="app">
-        <button @click="getBugReports" class="button">Get Reports</button>
-        <div class="box" v-for="report in bugreports">
-            {{ report.Message }}
-            {{ report.Email }}
+    <div id="app" class="m-4">
+        <div class="buttons">
+            <a href="/" class="button is-warning">Go Back</a>
+            <button @click="getBugReports" class="button is-primary">Get Reports</button>
+        </div>
+        <br>
+        <div class="box has-text-white" v-for="report in bugreports">
+            <span class="icon">
+                <i class="fa-solid fa-message"></i>
+            </span>
+            <span>
+                Message: {{ report.Message }}<br>
+            </span>
+                <span v-if="report.Email" class="icon">
+                    <i class="fa-solid fa-envelope"></i>
+                </span>
+                <span v-if="report.Email">
+                    Email: {{ report.Email }}
+                </span>
+            <br>
+            <br>
+            <button @click="deleteBugReport(report.ID)" class="button is-danger">
+                <span class="icon">
+                    <i class="fa-solid fa-trash"></i>
+                </span>
+                <span>{{ report.ID }}</span>
+            </button>
         </div>
     </div>
         <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
