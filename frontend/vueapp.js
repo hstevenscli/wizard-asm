@@ -508,45 +508,47 @@ Vue.createApp({
         },
         checkProgram: function () {
             let validInstructions = [
-                "magma", 
-                "lightning", 
-                "acid", 
-                "move", 
-                "shield", 
-                "teleport", 
-                "wait", 
-                "recharge", 
-                "divination", 
-                "sloop",
-                "eloop",
-                "jump",
-                "cjump",
+                "MAGMA", 
+                "LIGHTNING", 
+                "ACID", 
+                "MOVE", 
+                "SHIELD", 
+                "TELEPORT", 
+                "WAIT", 
+                "RECHARGE", 
+                "DIVINATION", 
+                "SLOOP",
+                "ELOOP",
+                "JUMP",
+                "CJUMP",
             ]
             let program = this.getTextareaLines();
             for (let i = 0; i < program.length; i++ ) {
                 let args = [];
                 let line = program[i].split(" ");
-                let instruction = line[0];
+                let instruction = line[0].trim();
                 // Check instruction
                 if (!validInstructions.includes(instruction)) {
                     console.log("Instruction not recognized:", instruction);
+                    console.log("On line ", i+1);
                 }
+                console.log("Instruction check passed!");
                 // make sure that the length of line is equal to what it should be
                 // this is to ensure that theres not extra arguments on something
                 // that shouldnt have arguments
                 //
                 //
                 // if instruction passes now check args
-                let count = this.returnCountOfArgs(instruction);
-                if (count == 2) {
-                    let arg1 = line[1]
-                    let arg2 = line[2]
-                    args.push(arg1, arg2)
-                } else if (count == 1) {
-                    let arg1 = line[1]
-                    args.push(arg1)
-                }
-                console.log("ARGS:", args);
+                // let count = this.returnCountOfArgs(instruction);
+                // if (count == 2) {
+                //     let arg1 = line[1]
+                //     let arg2 = line[2]
+                //     args.push(arg1, arg2)
+                // } else if (count == 1) {
+                //     let arg1 = line[1]
+                //     args.push(arg1)
+                // }
+                // console.log("ARGS:", args);
 
             }
         },
