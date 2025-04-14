@@ -56,10 +56,14 @@ Vue.createApp({
                 saveProgram: false,
                 playNow: false,
                 getDuelInvalidUsername: false,
+                getDuelInvalidUsernameWeird: false,
+                getDuelBp1Empty: false,
+                getDuelBp1Empty: false,
             },
             opp: "",
             setTimeoutId: null,
             replayRunning: false,
+            bugreports: [],
         };
     },
     methods: {
@@ -93,6 +97,22 @@ Vue.createApp({
                 this.getScore();
             } else {
                 console.log("Error:", response.status)
+            }
+        },
+        getBugReports: async function () {
+            var url = "/bug_reports";
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if (response.ok) {
+                let json = await response.json();
+                this.bugreports = json;
+                console.log("Bugs:", this.bugreports);
+            } else {
+                alert("Error getting reports");
             }
         },
         playNotification: function () {
@@ -134,6 +154,14 @@ Vue.createApp({
                 price.appendChild(strikethrough);
             }, 2000);
             console.log("BOUGHT SPELL");
+        },
+        getPlayerColor(name) {
+            if (name === this.whoami) {
+                return 'hsl(171, 100%, 41%)';
+            }
+            if (name === this.opp) {
+                return 'hsl(348, 100%, 61%)'
+            }
         },
         helloThere: function () {
             // console.log("hello");
@@ -281,6 +309,26 @@ Vue.createApp({
                 let user = await response.json();
                 console.log("USER OBJ", user);
                 this.score = user.Score;
+            }
+        },
+        getCellClass(value) {
+            if (value === 1) {
+                return 'has-text-primary';
+            }
+            if (value === 2) {
+                return 'has-text-danger';
+            }
+            if (value === 3) {
+                return 'has-text-primary';
+            }
+            if (value === 4) {
+                return 'has-text-danger';
+            }
+            if (value === 0) {
+                return 'has-text-white';
+            }
+            if (value === 7) {
+                return 'has-text-link';
             }
         },
         postBugReport: async function () {
@@ -613,27 +661,15 @@ Vue.createApp({
                     'Content-Type': 'application/json;charset=utf-8'
                 },
             });
+            let json = await response.json();
             if (response.ok) {
-                let json = await response.json();
                 this.currentReplay = json;
-                console.log(json);
-                console.log("He", this.currentReplay.GameoverInfo);
-                // console.log("GAME COUNT REAL:", json.Frames.length)
                 this.currentReplayInfoDisplay = json.GameoverInfo;
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
-                console.log("Real count", this.currentReplayInfoDisplay.RealCount);
                 this.getScore();
                 this.opp = json.Opp;
-            } else if (response.status == 409) {
-                // Notification for invalid username
-                console.log("USERNAME NOT FOUND");
-                this.notifications["getDuelInvalidUsername"] = true;
-                setTimeout(() => {
-                    this.notifications["getDuelInvalidUsername"] = false;
-                }, 3000);
-
             } else {
-                alert("HTTP-Error: ", + response.status);
+                this.handleErrorResponses(response, json);
             }
         },
         getDuelRandom: async function () {
@@ -645,20 +681,52 @@ Vue.createApp({
                     'Content-Type': 'application/json;charset=utf-8'
                 },
             });
+            let json = await response.json();
             if (response.ok) {
-                let json = await response.json();
                 this.currentReplay = json;
-                console.log(json);
-                console.log("He", this.currentReplay.GameoverInfo);
-                // console.log("GAME COUNT REAL:", json.Frames.length)
                 this.currentReplayInfoDisplay = json.GameoverInfo;
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
-                console.log("Real count", this.currentReplayInfoDisplay.RealCount);
                 this.getScore();
                 this.opp = json.Opp;
-                console.log("OPP", this.opp);
             } else {
-                alert("HTTP-Error: ", + response.status);
+                this.handleErrorResponses(response, json);
+            }
+        },
+        handleErrorResponses: function (response, json) {
+            if (response.status == 409 && json.status === "User2 not found") {
+                console.log("USER 2 NOT FOUND");
+
+                this.notifications["getDuelInvalidUsername"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelInvalidUsername"] = false;
+                }, 3000);
+
+            } else if (response.status == 409 && json.status === "Battle program 2 is empty") {
+                console.log("BATTLE PROGRAM 2 IS EMPTY");
+
+                this.notifications["getDuelBp2Empty"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelBp2Empty"] = false;
+                }, 10000);
+
+
+            } else if (response.status == 409 && json.status === "User1 not found") {
+                console.log("USER 1 NOT FOUND");
+
+                this.notifications["getDuelInvalidUsernameWeird"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelInvalidUsernameWeird"] = false;
+                }, 10000);
+
+            } else if (response.status == 409 && json.status === "Battle program 1 is empty") {
+                console.log("BATTLE PROGRAM 1 IS EMPTY");
+
+                this.notifications["getDuelBp1Empty"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelBp1Empty"] = false;
+                }, 10000);
+            } else {
+                alert("Unknown/Internal Server Error. Please try again later");
             }
         },
         drawPlayers: function () {

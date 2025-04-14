@@ -66,6 +66,28 @@ func authorizeMiddleware() gin.HandlerFunc {
     }
 }
 
+func authorizeMiddlewareAdmin() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        authed := validSession(c)
+        if !authed {
+            c.JSON(401, gin.H{"status": "Session Not Found"})
+            c.Abort()
+            return
+        }
+		sess := getSessionInfo(c)
+		var isAdmin bool
+		if sess.Username == "titan" || sess.Username == "titan1" || sess.Username == "bob" {
+			isAdmin = true
+		}
+		if !isAdmin {
+            c.JSON(401, gin.H{"status": "Requires Admin Priveleges"})
+            c.Abort()
+            return
+		}
+        c.Next()
+    }
+}
+
 func getCookieDomain() string {
 	cookiedomain := os.Getenv("COOKIE_DOMAIN")
 	if cookiedomain == "" {
@@ -105,6 +127,10 @@ func main() {
 		c.File("./frontend/index.html")
 	})
 
+	router.GET("/reports", authorizeMiddlewareAdmin(), func(c *gin.Context) {
+		c.File("./frontend/bug_reports.html")
+	})
+
 
     // GET ROUTES
     router.GET("/cookie", cookieHandler)
@@ -117,6 +143,8 @@ func main() {
 		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
 	})
     router.GET("/users/:username", authorizeMiddleware(), getUser)
+	router.GET("/bug_reports", authorizeMiddlewareAdmin(), getBugReports)
+	// router.DELETE("/bug_reports:id")
 
 
     // PUT the stuff in this function into a helper function to authenticate on protected routes

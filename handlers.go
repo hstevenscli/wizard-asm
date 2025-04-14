@@ -1,16 +1,18 @@
 package main
 
 import (
-    "fmt"
-    // "strconv"
+	"fmt"
+	// "strconv"
+	"context"
 	"errors"
-    "time"
-    "context"
-    "net/http"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
-    "go.mongodb.org/mongo-driver/v2/mongo"
-    "go.mongodb.org/mongo-driver/v2/bson"
-    "golang.org/x/crypto/bcrypt"
+	// "go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type user struct {
@@ -21,8 +23,48 @@ type user struct {
 }
 
 type report struct {
+	// ID primitive.ObjectID `bson:"_id,omitempty"`
+	ID      interface{} `bson:"_id,omitempty"`
 	Message string `bson:"message"`
 	Email string `bson:"email,omitempty"`
+}
+
+// type report struct {
+// 	ID      primitive.ObjectID `bson:"_id,omitempty" json:"ID"`
+// 	Message string             `bson:"message" json:"Message"`
+// 	Email   string             `bson:"email,omitempty" json:"Email"`
+// }
+
+func getBugReports(c *gin.Context) {
+	var reports []report
+
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("reports")
+
+    cursor, err := coll.Find(context.TODO(), bson.D{})
+    if err != nil {
+        c.JSON(500, gin.H{"status": "Database Error", "error": err.Error()})
+        return
+    }
+    defer cursor.Close(context.TODO())
+
+    for cursor.Next(context.TODO()) {
+        var r report
+        if err := cursor.Decode(&r); err != nil {
+            c.JSON(500, gin.H{"status": "Error unpacking cursor into reports", "error": err.Error()})
+            return
+        }
+		fmt.Printf("Decoded report: ID type=%T, ID value=%v, Message=%s, Email=%s\n", 
+        r.ID, r.ID, r.Message, r.Email)
+		reports = append(reports, r)
+    }
+
+    if err := cursor.Err(); err != nil {
+        c.JSON(500, gin.H{"status": "Cursor error", "error": err.Error()})
+        return
+    }
+
+    c.JSON(200, reports)
 }
 
 var ErrEmptyBattleProgram = errors.New("Battle Program is empty")
@@ -228,12 +270,12 @@ func postBugReport(c *gin.Context) {
 	}
 
 	// check length of message
-	if len(newBugReport.Message) > 500 {
+	if len(newBugReport.Message) > 7500 {
 		c.JSON(413, gin.H{"status": "Message too long"})
 		return
 	}
 
-	if len(newBugReport.Email) > 50 {
+	if len(newBugReport.Email) > 100 {
 		c.JSON(413, gin.H{"status": "Email too long"})
 		return
 	}
@@ -475,6 +517,7 @@ func getSubsetOfBattlePrograms(c *gin.Context) {
     // mongoClient := getClient(c)
     return
 }
+
 
 func cookieHandler(c *gin.Context) {
     cookie, err := c.Cookie("My_Cookie")

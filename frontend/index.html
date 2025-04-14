@@ -145,16 +145,19 @@
 
                 <div class="field">
                     <label class="label">Please type your message below!</label>
-                    <p class="help has-text-white">A suggestion, bug you found, other comments...</p>
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
+                        <p class="help has-text-white">A suggestion, bug you found, other comments...</p>
+                        <p class="help">{{ bugReportMessage.length }} / 7500</p>
+                    </div>
                     <div class="control">
-                        <textarea v-model="bugReportMessage" class="textarea" placeholder="" maxlength="500"></textarea>
+                        <textarea v-model="bugReportMessage" class="textarea" placeholder="" maxlength="7500"></textarea>
                     </div>
                 </div>
 
                 <label class="has-text-white">Leave your email if you would like to receive follow up on your bug report or suggestion</label>
                 <div class="field">
                     <div class="control has-icons-left has-icons-right">
-                    <input v-model="bugEmail" class="input" type="email" placeholder="Email">
+                    <input v-model="bugEmail" class="input" type="email" placeholder="Email" maxlength="100">
                     <span class="icon is-small is-left">
                         <i class="fa-solid fa-envelope"></i>
                     </span>
@@ -649,8 +652,11 @@
             <h1 class="title is-3">Its time to duel</h1>
             <h1 class="subtitle is-5">Duel your friend or a random person</h1>
 
-            <br>
+                <!-- <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p> -->
+                <!-- <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p> -->
+                <!-- <p>Duel the user 'titan1' to face a more difficult opponent</p> -->
 
+            <br>
             <div class="columns">
                 <div class="column">
 
@@ -662,9 +668,19 @@
                         <h2><b class="has-text-primary">{{ whoami }}</b> vs <b class="has-text-danger">{{ opp }}</b></h2>
 
                         <br>
-                        <div v-for="row in frameToDisplay.ArenaFrame"  class="has-text-centered">
-                            {{ row }}
+
+                        <div v-for="(row, rowIndex) in frameToDisplay.ArenaFrame" :key="rowIndex" class="has-text-centered">
+                            <span
+                                v-for="(cell, cellIndex) in row"
+                                :key="cellIndex"
+                                :class="getCellClass(cell)"
+                                style="display: inline-block; width: 1em;" 
+                            >
+                                {{ cell }}
+                            </span>
                         </div>
+
+
                         <br>
                         <div class="has-text-white" id="info">
                             <div>Player: {{ frameToDisplay.PlayerName }}</div>
@@ -702,64 +718,145 @@
                             <i class="fa-solid fa-hat-wizard"></i>
                         </span>
                     </div>
-                            <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
-                                <button @click="getDuel" class="button is-link is-outlined">
-                                    <span class="icon">
-                                        <i class="fa-solid fa-wand-sparkles"></i>
-                                    </span>
-                                    <span>
-                                        Duel
-                                    </span>
-                                </button>
-                                <button @click="getDuelRandom" class="button is-danger is-outlined">
-                                    <span class="icon">
-                                        <i class="fa-solid fa-dice"></i>
-                                    </span>
-                                    <span>
-                                        Random
-                                    </span>
-                                </button>
-                            </div>
-                            <div v-if="notifications['getDuelInvalidUsername']" class="notification is-danger">
-                                <button @click="notifications['getDuelInvalidUsername'] = false" class="delete"></button>
-                                <span class="icon">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                </span>
-                                <span>
-                                    User not found
-                                </span>
-                            </div>
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
+                        <button @click="getDuel" class="button is-link is-outlined">
+                            <span class="icon">
+                                <i class="fa-solid fa-wand-sparkles"></i>
+                            </span>
+                            <span>
+                                Duel
+                            </span>
+                        </button>
+                        <button @click="getDuelRandom" class="button is-danger is-outlined">
+                            <span class="icon">
+                                <i class="fa-solid fa-dice"></i>
+                            </span>
+                            <span>
+                                Random
+                            </span>
+                        </button>
+                    </div>
 
+                    <div v-if="notifications['getDuelInvalidUsername']" class="notification is-danger">
+                        <button @click="notifications['getDuelInvalidUsername'] = false" class="delete"></button>
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>
+                            User not found
+                        </span>
+                    </div>
+
+                    <div v-if="notifications['getDuelInvalidUsernameWeird']" class="notification is-danger">
+                        <button @click="notifications['getDuelInvalidUsernameWeird'] = false" class="delete"></button>
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>
+                            Error encountered with your username. Please try signing in again
+                        </span>
+                    </div>
+
+                    <div v-if="notifications['getDuelBp1Empty']" class="notification is-danger">
+                        <button @click="notifications['getDuelBp1Empty'] = false" class="delete"></button>
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>
+                            You have no Battle Program. Please go to the 'Create' tab and make one
+                        </span>
+                    </div>
+
+                    <div v-if="notifications['getDuelBp2Empty']" class="notification is-danger">
+                        <button @click="notifications['getDuelBp2Empty'] = false" class="delete"></button>
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>
+                            Enemy has no Battle Program. Please tell them to make one in the 'Create' tab
+                        </span>
+                    </div>
+
+                    <!-- <div class="column is-half is-offset-1"> -->
+                    <!-- <p class="help">easy = bob<br>medium = titan1<br>hard = ???</p> -->
+                    <br>
+                    <br>
+                    <div class="section is-small"></div>
+                        <label class="label">Duel Information</label>
+                        <div class="box">
+                            <span style="color:gold;" class="icon">
+                                <i class="fa-solid fa-trophy"></i>
+                            </span>
+                            <span style="color:gold;">
+                                Winner: 
+                            </span>
+                            <span :style="{ color: getPlayerColor(currentReplayInfoDisplay.Winner)}">
+                                {{ currentReplayInfoDisplay.Winner }}<br>
+                            </span>
+
+                            <span style="color:#CD7F32" class="icon">
+                                <i class="fa-solid fa-award"></i>
+                            </span>
+                            <span style="color:#CD7F32">
+                                Loser: 
+                            </span>
+                            <span :style="{ color: getPlayerColor(currentReplayInfoDisplay.Loser)}">
+                                {{ currentReplayInfoDisplay.Loser }}<br>
+                            </span>
+                            <span class="icon has-text-white">
+                                <i class="fa-solid fa-skull-crossbones"></i>
+                            </span>
+                            <span class="has-text-white">
+                                Cause of Death: {{ currentReplayInfoDisplay.DeathMsg }}
+                            </span>
+                        </div>
+                    <!-- </div> -->
                 </div>
             </div>
 
                 <br>
 
-                <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p>
-                <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p>
-                <p>Duel the user 'titan1' to face a more difficult opponent</p>
 
 
             <br>
 
-            <div v-if="currentReplayInfoDisplay !== {}">{{ currentReplayInfoDisplay.Conclusion }}
-                Game ended after {{ currentReplayInfoDisplay.RealCount }} steps</div>
+            <!-- <div v-if="currentReplayInfoDisplay !== {}">{{ currentReplayInfoDisplay.Conclusion }} -->
+            <!--     Game ended after {{ currentReplayInfoDisplay.RealCount }} steps</div> -->
 
             <ul>
 
                 <!-- I can do all of this here, or get all of the information out of the currentReplay -->
                 <!-- in a dedicated function and then extract information from that to display here -->
-                <div v-for="frame in currentReplay.Frames">
-                    Player: {{ frame.PlayerName }}
-                    <br>
-                    Action: {{ frame.Action }} {{ frame.Args ? frame.Args.join(" ") : "" }}
-                    <br>
-                    Mana: {{ frame.Mana }}
-                    <br>
-                    Count: {{ frame.Count }}
-                    <br>
-                    <br>
-                    <br>
+                    <div class="section is-large" style="background-image: url('/frontend/photos/wizard_duel.png'); 
+                        background-size: cover; background-position: center 20%; background-repeat: no-repeat; border-radius: 1rem;">
+                        <!-- <img height="50px" width="100%" src="/frontend/photos/wizard_duel.png"> -->
+                        <h1 class="title is-1">Step by Step History</h1>
+                    </div>
+                <br>
+                <div class="box" v-for="frame in currentReplay?.Frames?.slice(1) || []">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
+                        <div>
+                            <span class="has-text-white">
+                                Player: 
+                            </span>
+                            <span :style="{ color: getPlayerColor(frame.PlayerName) }">
+                                {{ frame.PlayerName }}
+                            </span>
+
+                        </div>
+                        <span class="has-text-white">
+                            Turn: {{ frame.Count }}
+                        </span>
+                    </div>
+
+                    <div class="has-text-white">
+                        Action: {{ frame.Action }} {{ frame.Args ? frame.Args.join(" ") : "" }}<br>
+                        Mana:
+                        <span style="color: #3087f7;">
+                             {{ frame.Mana }}
+                        </span>
+                    </div>
+
                 </div>
 
             </ul>

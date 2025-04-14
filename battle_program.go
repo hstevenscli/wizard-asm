@@ -187,6 +187,7 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
         arg1 := extractIntArg( c_args[0] )
         if arg1 != -100 {
             // TODO maybe have it so they die if they target a non-existant instruction
+			// keep the ptrparg within the bounds of the bp
             ptrparg := bp.Ptr + arg1
             if ptrparg < 0 {
                 ptrparg = 0
@@ -194,12 +195,15 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
             if ptrparg > len(bp.Instructions) - 1 {
                 ptrparg = len(bp.Instructions) - 1
             }
-            crysballrow := g.Pinfo[bp.Player].CrystalBall[0]
-            crysballcol := g.Pinfo[bp.Player].CrystalBall[1]
-            tar_instr := &bp.Instructions[ptrparg]
 
-            tar_instr.Args[0] = crysballrow
-            tar_instr.Args[1] = crysballcol
+			// make sure the program doesnt crash if len(args) < 2
+			tar_instr := &bp.Instructions[ptrparg]
+			if len(tar_instr.Args) == 2 {
+				crysballrow := g.Pinfo[bp.Player].CrystalBall[0]
+				crysballcol := g.Pinfo[bp.Player].CrystalBall[1]
+				tar_instr.Args[0] = crysballrow
+				tar_instr.Args[1] = crysballcol
+			}
         } else {
             log.Println("Int not found as argument for Crystal Ball")
         }
@@ -220,6 +224,9 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 			log.Println("Int not found as argument for Jump")
 		}
 	case "CJUMP":
+		fmt.Println("Conditional Jumped")
+	case "ADD":
+	case "SUBTRACT":
     case "PTRDEATH":
         game_over(g, bp.Player, "Died due to Pointer Death")
 	default:

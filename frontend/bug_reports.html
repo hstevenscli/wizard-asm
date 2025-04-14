@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Wizard ASM Battle</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+            >
+        <link rel="stylesheet" href="/frontend/style.css">
+        <script src="https://kit.fontawesome.com/b0903595af.js" crossorigin="anonymous"></script>
+        <!-- <script src="script.js" type="module"></script> -->
+    </head>
+    <body>
+    <div id="app">
+        <button @click="getBugReports" class="button">Get Reports</button>
+        <div class="box" v-for="report in bugreports">
+            {{ report.Message }}
+            {{ report.Email }}
+        </div>
+    </div>
+        <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.13/vue.global.js"></script>
+        <script src="/frontend/vueapp.js"></script>
+    </body>
+</html>
+

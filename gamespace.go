@@ -25,6 +25,9 @@ type gameOver struct {
 	Player [3]bool
 	Message [3]string
 	Conclusion string
+	Winner string
+	Loser string
+	DeathMsg string
 }
 
 // Reduce players mana, player dies if mana goes below zero
@@ -136,6 +139,9 @@ func get_winner_loser_info(g *gameSpace, p1 string, p2 string) (string, map[int]
 		rstring = fmt.Sprintf("Nobody has lost. No winner or loser to identify\n")
         scores[1] = 0.5
         scores[2] = 0.5
+		g.Gameover.Winner = "Nobody"
+		g.Gameover.Loser = "Nobody"
+		g.Gameover.DeathMsg = "The game has ended in a tie"
     } else {
 		if g.Gameover.Player[1] {
 			winner = 2
@@ -153,13 +159,21 @@ func get_winner_loser_info(g *gameSpace, p1 string, p2 string) (string, map[int]
             rstring = "Both players have died. Cause: " + g.Gameover.Message[0]
             scores[1] = 0.5
             scores[2] = 0.5
+			g.Gameover.Winner = "Nobody"
+			g.Gameover.Loser = "Nobody"
+			g.Gameover.DeathMsg = g.Gameover.Message[0]
         } else {
         	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n\n", loser, g.Gameover.Message[loser])
+			g.Gameover.DeathMsg = g.Gameover.Message[loser]
             if winner == 2 {
                 rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p2, p1)
+				g.Gameover.Winner = p2
+				g.Gameover.Loser = p1
             } else {
                 // winner == 1
                 rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p1, p2)
+				g.Gameover.Winner = p1
+				g.Gameover.Loser = p2
             }
         }
 	}
