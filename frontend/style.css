@@ -35,6 +35,15 @@ li {
     border: 2px solid red;
 }
 
+
+button.is-outlined:disabled {
+  background-color: transparent !important;
+  border-color: currentColor;
+  color: currentColor;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* .navbar { */
 /*     background-color: white; */
 /* } */

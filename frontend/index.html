@@ -378,11 +378,11 @@
 
                 <div v-if="notifications['instructionChecker']" class="notification is-danger">
                     <button @click="notifications['instructionChecker'] = false" class="delete"></button>
-                    <span class="icon">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </span>
-                    <span>
-                        {{ instructionCheckerMessage }}
+                    <span v-for="msg in instructionCheckerMessages">
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        {{ msg }}<br>
                     </span>
                 </div>
 
@@ -753,8 +753,8 @@
                             <i class="fa-solid fa-hat-wizard"></i>
                         </span>
                     </div>
-                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-1">
-                        <button @click="getDuel" class="button is-link is-outlined">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-1 mb-1">
+                        <button @click="getDuel" class="button is-link is-outlined" >
                             <span class="icon">
                                 <i class="fa-solid fa-wand-sparkles"></i>
                             </span>
@@ -772,6 +772,16 @@
                         </button>
                     </div>
 
+                    <div v-if="notifications['getDuelPosFeedback']" class="notification is-link">
+                        <button @click="notifications['getDuelPosFeedback'] = false" class="delete"></button>
+                        <!-- <span class="icon"> -->
+                        <!--     <i class="fa-solid fa-triangle-exclamation"></i> -->
+                        <!-- </span> -->
+                        <span>
+                            Duel ran successfully. Press Start to see the match replay
+                        </span>
+                    </div>
+
                     <div v-if="notifications['getDuelInvalidUsername']" class="notification is-danger">
                         <button @click="notifications['getDuelInvalidUsername'] = false" class="delete"></button>
                         <span class="icon">
@@ -779,6 +789,16 @@
                         </span>
                         <span>
                             User not found
+                        </span>
+                    </div>
+
+                    <div v-if="notifications['getDuelNoUsername']" class="notification is-danger">
+                        <button @click="notifications['getDuelNoUsername'] = false" class="delete"></button>
+                        <span class="icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>
+                            No username provided
                         </span>
                     </div>
 

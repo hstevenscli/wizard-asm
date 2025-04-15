@@ -59,13 +59,15 @@ Vue.createApp({
                 getDuelInvalidUsernameWeird: false,
                 getDuelBp1Empty: false,
                 getDuelBp1Empty: false,
+                getDuelNoUsername: false,
                 invalidUserPassword: false,
                 loginBadRequest: false,
                 loginDatabaseError: false,
                 loginSessionError: false,
                 instructionChecker: false,
+                getDuelPosFeedback: false,
             },
-            instructionCheckerMessage: "",
+            instructionCheckerMessages: [],
             opp: "",
             setTimeoutId: null,
             replayRunning: false,
@@ -525,6 +527,7 @@ Vue.createApp({
                 "CJUMP",
             ]
             let program = this.getTextareaLines();
+            this.instructionCheckerMessages = [];
             for (let i = 0; i < program.length; i++ ) {
                 let args = [];
                 let line = program[i].split(" ");
@@ -534,7 +537,7 @@ Vue.createApp({
                     console.log("Instruction not recognized:", instruction);
                     console.log("On line ", i+1);
                     this.notifications['instructionChecker'] = true;
-                    this.instructionCheckerMessage += "Instruction not recognized: " + instruction + " on line " + (i+1) + "\n";
+                    this.instructionCheckerMessages.push("Instruction not recognized: " + instruction + " on line " + (i+1))
                 }
                 console.log("Instruction check passed!");
                 // make sure that the length of line is equal to what it should be
@@ -741,6 +744,11 @@ Vue.createApp({
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
                 this.getScore();
                 this.opp = json.Opp;
+                this.notifications['getDuelPosFeedback'] = true;
+
+                setTimeout(() => {
+                    this.notifications["getDuelPosFeedback"] = false;
+                }, 3000);
             } else {
                 this.handleErrorResponses(response, json);
             }
@@ -761,6 +769,11 @@ Vue.createApp({
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;
                 this.getScore();
                 this.opp = json.Opp;
+                this.notifications['getDuelPosFeedback'] = true;
+
+                setTimeout(() => {
+                    this.notifications["getDuelPosFeedback"] = false;
+                }, 3000);
             } else {
                 this.handleErrorResponses(response, json);
             }
@@ -797,6 +810,13 @@ Vue.createApp({
                 this.notifications["getDuelBp1Empty"] = true;
                 setTimeout(() => {
                     this.notifications["getDuelBp1Empty"] = false;
+                }, 10000);
+            } else if (response.status == 409 && json.status === "No name provided for user to duel") {
+                console.log("NO USERNAME GIVEN");
+
+                this.notifications["getDuelNoUsername"] = true;
+                setTimeout(() => {
+                    this.notifications["getDuelNoUsername"] = false;
                 }, 10000);
             } else {
                 alert("Unknown/Internal Server Error. Please try again later");
