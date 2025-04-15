@@ -375,6 +375,18 @@
                     <button @click="notifications['saveProgram'] = false" class="delete"></button>
                         Saved program successfully
                 </div>
+
+                <div v-if="notifications['instructionChecker']" class="notification is-danger">
+                    <button @click="notifications['instructionChecker'] = false" class="delete"></button>
+                    <span class="icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    <span>
+                        {{ instructionCheckerMessage }}
+                    </span>
+                </div>
+
+
                 <p class="help">Scroll Down For Instructions</p>
                 <br>
                 <br>

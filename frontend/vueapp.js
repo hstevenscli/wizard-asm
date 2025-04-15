@@ -63,7 +63,9 @@ Vue.createApp({
                 loginBadRequest: false,
                 loginDatabaseError: false,
                 loginSessionError: false,
+                instructionChecker: false,
             },
+            instructionCheckerMessage: "",
             opp: "",
             setTimeoutId: null,
             replayRunning: false,
@@ -531,6 +533,8 @@ Vue.createApp({
                 if (!validInstructions.includes(instruction)) {
                     console.log("Instruction not recognized:", instruction);
                     console.log("On line ", i+1);
+                    this.notifications['instructionChecker'] = true;
+                    this.instructionCheckerMessage += "Instruction not recognized: " + instruction + " on line " + (i+1) + "\n";
                 }
                 console.log("Instruction check passed!");
                 // make sure that the length of line is equal to what it should be
