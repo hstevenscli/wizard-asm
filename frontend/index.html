@@ -63,6 +63,13 @@
                                             </p>
                                         </div>
                                     </div>
+                                    <div class="dropdown-content">
+                                        <div class="dropdown-item">
+                                            <p>
+                                                <button class="button is-primary">Scoreboard</button>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                     </div>
@@ -72,6 +79,29 @@
                 </div>
             </div>
         </nav>
+
+        <div class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <h1 class="title is-1">Scoreboard</h1>
+                    <div class="field">
+                        <div v-for="entry in scoreboardEntries" class="box">
+                            <div class="columns">
+                                <div class="column">
+                                    {{ entry }}
+                                </div>
+                                <div class="column has-text-right">
+                                    Score: 100
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click=""></button>
+        </div>
 
         <div class="modal" :class="{'is-active': showLoginModal}">
             <div class="modal-background" @click="showLoginModal = false; loginLayout()"></div>
