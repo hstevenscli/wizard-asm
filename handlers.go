@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	// "strconv"
 	"context"
 	"errors"
@@ -9,9 +10,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-    // "go.mongodb.org/mongo-driver/bson/primitive"
+	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -61,39 +63,24 @@ func authenticatePassword(hashedPassword []byte, password []byte) bool {
     return false
 }
 
-// check if the cookie exists and if it has a valid session id
-func validSession(c *gin.Context) bool {
-    cookie, err := c.Cookie("My_Cookie")
-    if err != nil {
-        fmt.Println("No cookie please login")
-        // c.JSON(403, gin.H{"status": "Cookie not found"})
-        return false
-    }
-    if _, exists := sessionStore[cookie]; !exists {
-        fmt.Println("Session not found please log in")
-        // c.JSON(403, gin.H{"status": "Session not found"})
-        return false
-    }
-    // c.JSON(200, gin.H{"status": "Boobies"})
-    return true
-}
+func getScoreboard(c *gin.Context) {
 
-// ALWAYS MAKE SURE SESSION IS VALID BEFORE USING THIS FUNCTION
-func getSessionInfo(c *gin.Context) session {
-	cookie, _ := c.Cookie("My_Cookie")
-	ses, _ := sessionStore[cookie]
-	return ses
-}
+    mongoClient := getClient(c)
+    coll := mongoClient.Database("wizardb").Collection("users")
 
-func getSession(c *gin.Context) {
-	authed := validSession(c)
-	if !authed {
-		c.JSON(401, gin.H{"status": "Unauthenticated"})
-	} else {
-		ses := getSessionInfo(c)
-		fmt.Println("SESSIONINFO:", ses)
-		c.JSON(200, gin.H{"session": ses})
+    topPlayersCursor, err := coll.Find(
+    context.TODO(),
+    bson.M{},
+    options.Find().
+        SetSort(bson.M{"score": -1}).
+        SetLimit(10).SetProjection(bson.M{"password": 0, "bp": 0}),
+    )
+
+    var results []user
+    if err = topPlayersCursor.All(context.TODO(), &results); err != nil {
+		log.Panic(err)
 	}
+    c.JSON(200, results)
 }
 
 func postLogout(c *gin.Context) {

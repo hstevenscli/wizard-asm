@@ -144,6 +144,7 @@ func main() {
 	})
     router.GET("/users/:username", authorizeMiddleware(), getUser)
 	router.GET("/bugreports", authorizeMiddlewareAdmin(), getBugReports)
+    router.GET("/scoreboard", authorizeMiddleware(), getScoreboard)
 
 
     // PUT the stuff in this function into a helper function to authenticate on protected routes

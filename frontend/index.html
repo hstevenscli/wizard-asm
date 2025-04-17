@@ -38,18 +38,7 @@
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <a @click="activateReportModal" class="button is-small is-warning is-light is-outlined">Bug Report</a>
-                        <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Login</a>
-
-                    </div>
-                    <!-- <div class="navbar-item"> -->
-                    <!--     <a @click="testSession" class="button is-small is-primary">Test Session</a> -->
-                    <!-- </div> -->
-                    <!-- <div class="navbar-item"> -->
-                    <!--     <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a> -->
-                    <!-- </div> -->
-                    <div class="navbar-item">
-                            <div class="dropdown is-hoverable is-right">
+                            <div class="dropdown is-hoverable">
                                 <div class="dropdown-trigger">
                                     <button>
                                         <p><u><b> {{ whoami }} </b></u></p>
@@ -65,13 +54,29 @@
                                     </div>
                                     <div class="dropdown-content">
                                         <div class="dropdown-item">
-                                            <p>
-                                                <button class="button is-primary">Scoreboard</button>
-                                            </p>
+                                            <button class="button is-primary" @click="getScoreboard(); showScoreboard = true; ">
+                                                <span class="icon">
+                                                    <i class="fa-solid fa-ranking-star"></i>
+                                                </span>
+                                                <span>
+                                                    Scoreboard
+                                                </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                    </div>
+                    <!-- <div class="navbar-item"> -->
+                    <!--     <a @click="testSession" class="button is-small is-primary">Test Session</a> -->
+                    <!-- </div> -->
+                    <!-- <div class="navbar-item"> -->
+                    <!--     <a @click="getSessionInfo" class="button is-small is-primary">Get Session</a> -->
+                    <!-- </div> -->
+                    <div class="navbar-item">
+                        <a @click="activateReportModal" class="button is-small is-warning is-light is-outlined">Bug Report</a>
+                        <a v-if="whoami.length === 0" @click="showLogin" class="button is-small is-primary">Login</a>
                     </div>
                     <div class="navbar-item">
                         <a v-if="whoami.length !== 0" @click="logout" class="button is-small is-danger">Logout</a>
@@ -80,19 +85,20 @@
             </div>
         </nav>
 
-        <div class="modal">
-            <div class="modal-background"></div>
+        <!-- SCOREBOARD -->
+        <div class="modal" :class="{ 'is-active': showScoreboard }">
+            <div class="modal-background" @click="showScoreboard = false"></div>
             <div class="modal-content">
                 <div class="box">
                     <h1 class="title is-1">Scoreboard</h1>
                     <div class="field">
-                        <div v-for="entry in scoreboardEntries" class="box">
+                        <div v-for="(entry, i) in scoreboardEntries" :key="i" class="box">
                             <div class="columns">
                                 <div class="column">
-                                    {{ entry }}
+                                    {{ i+1 }} {{ entry.Username }}
                                 </div>
                                 <div class="column has-text-right">
-                                    Score: 100
+                                    Score: {{ entry.Score }}
                                 </div>
 
                             </div>
@@ -100,8 +106,9 @@
                     </div>
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click=""></button>
+            <button class="modal-close is-large" aria-label="close" @click="showScoreboard = false"></button>
         </div>
+        <!-- END SCOREBOARD -->
 
         <div class="modal" :class="{'is-active': showLoginModal}">
             <div class="modal-background" @click="showLoginModal = false; loginLayout()"></div>

@@ -13,6 +13,7 @@ Vue.createApp({
             showReplaysPage: false,
             showTutorialPage: false,
             showLandingPage: true,
+            showScoreboard: false,
             currentReplay: {},
             frameToDisplay: {
                 ArenaFrame: [
@@ -72,28 +73,7 @@ Vue.createApp({
             setTimeoutId: null,
             replayRunning: false,
             bugreports: [],
-            scoreboardEntries: [
-                "Hey",
-                "there",
-                "man",
-                "something",
-                "Hey",
-                "there",
-                "man",
-                "something",
-                "Hey",
-                "there",
-                "man",
-                "something",
-                "Hey",
-                "there",
-                "man",
-                "something",
-                "Hey",
-                "there",
-                "man",
-                "something",
-            ],
+            scoreboardEntries: [],
         };
     },
     methods: {
@@ -125,6 +105,25 @@ Vue.createApp({
                 console.log("Response:", json);
                 this.whoami = json.session.Username;
                 this.getScore();
+            } else {
+                console.log("Error:", response.status)
+            }
+        },
+        getScoreboard: async function () {
+            var url = "/scoreboard";
+            let response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            let json = await response.json();
+            if (response.ok) {
+                console.log("Scoreboard:", json);
+                for (let i = 0; i < json.length; i++) {
+                    this.scoreboardEntries.push(json[i])
+                }
+                console.log("Scoreboard Entries:", this.scoreboardEntries);
             } else {
                 console.log("Error:", response.status)
             }
