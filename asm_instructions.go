@@ -45,6 +45,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
             // fmt.Printf("Burning loc: [%v, %v]| Valid loc: %v\n", t_row, t_col, valid)
             if valid {
 				player_val, p_hit := check_player(t_row, t_col, g)
+                fmt.Println("In Magma player_val:", player_val)
                 if p_hit && g.Pinfo[player_val].Prot == 1 {
                     fmt.Println("Player hit, but they have protection to magma")
                     phitprotection = true

@@ -131,6 +131,7 @@ func check_gameover(g *gameSpace) bool {
 
 // Determine who won the game and who lost
 func get_winner_loser_info(g *gameSpace, p1 string, p2 string) (string, map[int]float64) {
+    // Player values dont match p1 and p2 so wrong user can be declared winner
 	var rstring string
     var winner int
     var loser int
@@ -166,17 +167,26 @@ func get_winner_loser_info(g *gameSpace, p1 string, p2 string) (string, map[int]
         	rstring = fmt.Sprintf("Player %v has died.\nDeath message: %v\n\n", loser, g.Gameover.Message[loser])
 			g.Gameover.DeathMsg = g.Gameover.Message[loser]
             if winner == 2 {
-                rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p2, p1)
-				g.Gameover.Winner = p2
-				g.Gameover.Loser = p1
+                    fmt.Println("Not switched")
+                    rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p2, p1)
+                    g.Gameover.Winner = p2
+                    g.Gameover.Loser = p1
             } else {
                 // winner == 1
-                rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p1, p2)
-				g.Gameover.Winner = p1
-				g.Gameover.Loser = p2
+                    fmt.Println("Not switched")
+                    rstring += fmt.Sprintf("Winner is %v\nLoser is %v\n", p1, p2)
+                    g.Gameover.Winner = p1
+                    g.Gameover.Loser = p2
             }
         }
 	}
+    fmt.Println("p1: ", p1)
+    fmt.Println("p2: ", p2)
+    fmt.Println("winner", winner)
+    fmt.Println("loser", loser)
+    fmt.Println("g.Gameover:", g.Gameover)
+    fmt.Println("g.Gameover.Winner:", g.Gameover.Winner)
+    fmt.Println("g.Gameover.Loser:", g.Gameover.Loser)
 	return rstring, scores
 }
 

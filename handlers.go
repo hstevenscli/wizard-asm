@@ -362,23 +362,9 @@ func getDuel(c *gin.Context) {
 			return
 		}
 	}
-	var bpf battleProgram
-	var bpl battleProgram
-	coin := rand.Intn(2)
-	if coin == 1 {
-		bpf = bp1
-		bpl = bp2
-		bpf.Player = 1
-		bpl.Player = 2
-	} else {
-		bpf = bp2
-		bpl = bp1
-		bpf.Player = 2
-		bpl.Player = 1
-	}
 	fmt.Printf("Running a game between Player1: %v and Player2: %v\n", user1, user2)
-	br := runBattle(bpf, bpl, mongoClient)
-	br.Opp = bp2.User
+	br := runBattle(bp1, bp2, mongoClient)
+    // fmt.Println(br)
 	c.JSON(200, br)
 }
 
@@ -594,15 +580,30 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
 	}
 	br.Frames = append(br.Frames, starting_arena)
 
-	game_loop_temp( &g, bp1, bp2, &br)
-	print_replay( br )
+	var bpf battleProgram
+	var bpl battleProgram
+	coin := rand.Intn(2)
+	if coin == 1 {
+		bpf = bp1
+		bpl = bp2
+		bpf.Player = 1
+		bpl.Player = 2
+	} else {
+		bpf = bp2
+		bpl = bp1
+		bpf.Player = 2
+		bpl.Player = 1
+	}
+	br.Opp = bp2.User
+	game_loop_temp( &g, bpf, bpl, &br)
+	// print_replay( br )
 	// fmt.Println("gameover struct:", g.Gameover)
     message, scores := get_winner_loser_info(&g, bp1.User, bp2.User)
     g.Gameover.Conclusion = message
 	br.GameoverInfo = *g.Gameover
 
     // Update Scores
-    fmt.Println("USERS IN FIGHT", bp1.User, bp2.User)
+    // fmt.Println("USERS IN FIGHT", bp1.User, bp2.User)
     if bp1.User != "bob" && bp2.User != "bob" {
         updateUserScore(bp1.User, scores[1], mongoClient)
         updateUserScore(bp2.User, scores[2], mongoClient)
