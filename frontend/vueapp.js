@@ -110,6 +110,9 @@ Vue.createApp({
             }
         },
         getScoreboard: async function () {
+            if (this.scoreboardEntries.length > 0) {
+                return
+            }
             var url = "/scoreboard";
             let response = await fetch(url, {
                 method: 'GET',
@@ -760,6 +763,7 @@ Vue.createApp({
             });
             let json = await response.json();
             if (response.ok) {
+                console.log("Who is the opp", json);
                 this.currentReplay = json;
                 this.currentReplayInfoDisplay = json.GameoverInfo;
                 this.currentReplayInfoDisplay.RealCount = json.Frames.length;

@@ -1,8 +1,11 @@
 package main
 
 import (
+	// "crypto/rand"
 	"fmt"
 	"log"
+	"math/rand"
+
 	// "strconv"
 	"context"
 	"errors"
@@ -359,8 +362,19 @@ func getDuel(c *gin.Context) {
 			return
 		}
 	}
+	var bpf battleProgram
+	var bpl battleProgram
+	coin := rand.Intn(2)
+	if coin == 1 {
+		bpf = bp1
+		bpl = bp2
+	} else {
+		bpf = bp2
+		bpl = bp1
+	}
 	fmt.Printf("Running a game between Player1: %v and Player2: %v\n", user1, user2)
-	br := runBattle(bp1, bp2, mongoClient)
+	br := runBattle(bpf, bpl, mongoClient)
+	br.Opp = bp2.User
 	c.JSON(200, br)
 }
 
@@ -598,7 +612,6 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
 
     // fmt.Println("User 1:", user1)
     // fmt.Println("User 2:", user2)
-	br.Opp = bp2.User
 
 	return br
 }

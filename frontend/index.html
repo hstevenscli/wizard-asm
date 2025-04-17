@@ -89,20 +89,52 @@
         <div class="modal" :class="{ 'is-active': showScoreboard }">
             <div class="modal-background" @click="showScoreboard = false"></div>
             <div class="modal-content">
-                <div class="box">
-                    <h1 class="title is-1">Scoreboard</h1>
-                    <div class="field">
-                        <div v-for="(entry, i) in scoreboardEntries" :key="i" class="box">
-                            <div class="columns">
-                                <div class="column">
-                                    {{ i+1 }} {{ entry.Username }}
-                                </div>
-                                <div class="column has-text-right">
-                                    Score: {{ entry.Score }}
-                                </div>
+                <!-- <div class="box"> -->
+                <!--     <h1 class="title is-1">Scoreboard</h1> -->
+                <!--     <div class="field"> -->
+                <!--         <div v-for="(entry, i) in scoreboardEntries" :key="i" class="box"> -->
+                <!--             <div class="columns"> -->
+                <!--                 <div class="column"> -->
+                <!--                     {{ i+1 }} {{ entry.Username }} -->
+                <!--                 </div> -->
+                <!--                 <div class="column has-text-right"> -->
+                <!--                     Score: {{ entry.Score }} -->
+                <!--                 </div> -->
 
-                            </div>
-                        </div>
+                <!--             </div> -->
+                <!--         </div> -->
+                <!--     </div> -->
+                <!-- </div> -->
+                <div class="box">
+                    <h1 style="border-bottom: 3px solid white; border-radius: 10px; padding: 5px;" class="title is-size-1 is-size-1-desktop is-size-4-mobile is-size-3-tablet has-text-centered">
+                        <span style="color:gold;" class="icon">
+                            <i class="fa-solid fa-ranking-star"></i>
+                        </span>
+                        <span style="padding-right: 10%; padding-left: 10%;">
+                            Scoreboard
+                        </span>
+                        <span style="color:gold;" class="icon">
+                            <i class="fa-solid fa-ranking-star"></i>
+                        </span>
+                    </h1>
+                    <table class="table is-fullwidth is-striped is-bordered">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(entry, i) in scoreboardEntries" :key="i">
+                                <td>{{ i+1 }}</td>
+                                <td>{{ entry.Username }}</td>
+                                <td>{{ entry.Score }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="is-flex is-justify-content-flex-end">
+                        <button @click="showScoreboard = false" class="button is-danger">Close</button>
                     </div>
                 </div>
             </div>
@@ -276,7 +308,8 @@
             <div class="content has-text-left">
                 <br>
 
-                <h2>Wizard-ASM is meant to get you thinking like a programmer</h2>
+                <h2 style="border-bottom: 3px solid white;">Wizard-ASM is meant to get you thinking like a programmer</h2>
+                <br>
 
                 <h4>Plan ahead</h4>
                 <p>
@@ -304,10 +337,10 @@
 
 
 
-                <h3>In the next section</h3>
-                <p>We will walk through a simple battle program</p>
-                <br>
-                <h1 style="border-bottom: 3px solid white;">Battle Program Example Step by Step</h1>
+                <!-- <h4>In the next section</h4> -->
+                <!-- <p>We will walk through a simple battle program</p> -->
+                <!-- <br> -->
+                <h2 style="border-bottom: 3px solid white;">Battle Program Example Step by Step</h2>
                 <br>
 
             <div class="content">
@@ -349,14 +382,17 @@
 
                 <section class="section is-small"></section>
 
-                <h3>The Arena</h3>
+                <h2 style="border-bottom: 3px solid white;">The Arena</h2>
+                <br>
+                <h4>One Big 16x16 Square</h4>
                 <p>The game takes place in a 16x16 grid where you and your opponent will receive random spawns</p>
                 <p>The arena rows and columns start at the top left and end at the bottom right<br>
                 You will also notice that rows and columns start at zero, not one. Thats because computers in real life start counting at zero</p>
                 <img style="background-color: white;" src="/frontend/photos/wizasmtutorial.png" />
 
-                <h3>TL;DR</h3>
-                <ul>
+                <div class="section is-small"></div>
+                <h1>TL;DR</h1>
+                <ul class="has-text-weight-bold is-size-6">
                     <li>Eliminate the enemy before they eliminate you</li>
                     <li>Start at 100 mana</li>
                     <li>Plan all your spells and actions by making a battle program</li>
