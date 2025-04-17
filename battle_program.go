@@ -237,8 +237,6 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 }
 
 func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *replay ) {
-	bp1.Player = 1
-	bp2.Player = 2
 	var count int
 
 	for i := 0; i <= 1000; i++ {
@@ -249,7 +247,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		p1_action, args, changed_tiles := execute_instruction( g, &bp1 )
         // fmt.Println("In game loop", changed_tiles)
 		bp1.Ptr++
-		add_frame_to_replay( g.Arena, 1, *g.Pinfo[1], count, p1_action, args, br, bp1.User)
+		add_frame_to_replay( g.Arena, bp1.Player, *g.Pinfo[1], count, p1_action, args, br, bp1.User)
 		if check_gameover(g) {
 			break
 		}
@@ -267,7 +265,7 @@ func game_loop_temp( g *gameSpace, bp1 battleProgram, bp2 battleProgram, br *rep
 		//P2 Chunk
 		p2_action, args, changed_tiles := execute_instruction( g, &bp2 )
 		bp2.Ptr++
-		add_frame_to_replay( g.Arena, 2, *g.Pinfo[2], count, p2_action, args, br, bp2.User)
+		add_frame_to_replay( g.Arena, bp2.Player, *g.Pinfo[2], count, p2_action, args, br, bp2.User)
 		if check_gameover(g) {
 			break
 		}

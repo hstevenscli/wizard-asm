@@ -368,9 +368,13 @@ func getDuel(c *gin.Context) {
 	if coin == 1 {
 		bpf = bp1
 		bpl = bp2
+		bpf.Player = 1
+		bpl.Player = 2
 	} else {
 		bpf = bp2
 		bpl = bp1
+		bpf.Player = 2
+		bpl.Player = 1
 	}
 	fmt.Printf("Running a game between Player1: %v and Player2: %v\n", user1, user2)
 	br := runBattle(bpf, bpl, mongoClient)
