@@ -466,8 +466,6 @@
                 <br>
 
 
-                <!-- <p class="is-warning help">You start with 100 mana, keep mana usage in mind as not having enough or using too much will result in a loss</p> -->
-                <!-- <h1 style="border-bottom: 3px solid white;"></h1> -->
             </div>
                 <br>
 
@@ -761,10 +759,6 @@
             <h1 class="title is-3">Its time to duel</h1>
             <h1 class="subtitle is-5">Duel your friend or a random person</h1>
 
-                <!-- <p>Enter the name of your opponent, hit the 'Duel' button and then 'Start Replay' to see the results</p> -->
-                <!-- <p>Duel the user 'bob' if you want an easy opponent for testing your own strategy</p> -->
-                <!-- <p>Duel the user 'titan1' to face a more difficult opponent</p> -->
-
             <br>
             <div class="columns">
                 <div class="column">
@@ -848,9 +842,6 @@
 
                     <div v-if="notifications['getDuelPosFeedback']" class="notification is-link">
                         <button @click="notifications['getDuelPosFeedback'] = false" class="delete"></button>
-                        <!-- <span class="icon"> -->
-                        <!--     <i class="fa-solid fa-triangle-exclamation"></i> -->
-                        <!-- </span> -->
                         <span>
                             Duel ran successfully. Press Start to see the match replay
                         </span>
@@ -906,8 +897,6 @@
                         </span>
                     </div>
 
-                    <!-- <div class="column is-half is-offset-1"> -->
-                    <!-- <p class="help">easy = bob<br>medium = titan1<br>hard = ???</p> -->
                     <br>
                     <br>
                     <div class="section is-small"></div>
@@ -939,18 +928,11 @@
                                 Cause of Death: {{ currentReplayInfoDisplay.DeathMsg }}
                             </span>
                         </div>
-                    <!-- </div> -->
                 </div>
             </div>
 
                 <br>
-
-
-
             <br>
-
-            <!-- <div v-if="currentReplayInfoDisplay !== {}">{{ currentReplayInfoDisplay.Conclusion }} -->
-            <!--     Game ended after {{ currentReplayInfoDisplay.RealCount }} steps</div> -->
 
             <ul>
 
@@ -993,11 +975,6 @@
             <!-- <canvas v-show="true" id="myCanvas" width="610" height="610" style="border:1px solid black;"> -->
             <!-- </canvas> -->
         </div>
-
-
-
-
-
 
     </div>
         <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
