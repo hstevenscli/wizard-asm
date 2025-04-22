@@ -518,6 +518,7 @@ Vue.createApp({
             console.log(this.tempProgram);
         },
         checkProgram: function () {
+            this.notifications['instructionChecker'] = false;
             let validInstructions = [
                 "MAGMA", 
                 "LIGHTNING", 
@@ -532,6 +533,7 @@ Vue.createApp({
                 "ELOOP",
                 "JUMP",
                 "CJUMP",
+                "CRYSTAL",
             ]
             let program = this.getTextareaLines();
             this.instructionCheckerMessages = [];
@@ -539,6 +541,7 @@ Vue.createApp({
                 let args = [];
                 let line = program[i].split(" ");
                 let instruction = line[0].trim();
+                instruction = instruction.toUpperCase();
                 // Check instruction
                 if (!validInstructions.includes(instruction)) {
                     console.log("Instruction not recognized:", instruction);

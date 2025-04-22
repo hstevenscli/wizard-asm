@@ -77,9 +77,18 @@ func authorizeMiddlewareAdmin() gin.HandlerFunc {
         }
 		sess := getSessionInfo(c)
 		var isAdmin bool
-		if sess.Username == "titan" || sess.Username == "titan1" || sess.Username == "bob" {
+		var adminUsers = map[string]struct{}{
+			"titan": {},
+			"titan1": {},
+			"bob": {},
+			"admintest": {},
+		}
+		if _, exists := adminUsers[sess.Username]; exists {
 			isAdmin = true
 		}
+		// if sess.Username == "titan" || sess.Username == "titan1" || sess.Username == "bob" || sess.Username == "admintest" {
+		// 	isAdmin = true
+		// }
 		if !isAdmin {
             c.JSON(401, gin.H{"status": "Requires Admin Priveleges"})
             c.Abort()
