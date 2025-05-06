@@ -105,11 +105,14 @@ Vue.createApp({
             });
             let json = await response.json();
             if (response.ok) {
+                let temparray = [];
                 console.log("Scoreboard:", json);
                 for (let i = 0; i < json.length; i++) {
-                    this.scoreboardEntries.push(json[i])
+                    temparray.push(json[i]);
                 }
-                console.log("Scoreboard Entries:", this.scoreboardEntries);
+                temparray = temparray.sort((a, b) => b.Score - a.Score);
+                console.log("After sorting: ", temparray)
+                this.scoreboardEntries = temparray;
             } else {
                 console.log("Error:", response.status)
             }
@@ -644,27 +647,6 @@ Vue.createApp({
             this.showTutorialPage = false;
             this.showLandingPage = false;
             // this.drawBlankCanvas();
-        },
-        runGame: async function () {
-            let button = document.getElementById("gamebutton");
-            button.classList.add("is-loading");
-            var url = "/game"
-            let response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-            });
-            if (response.ok) {
-                let json = await response.json();
-                button.classList.remove("is-loading");
-                console.log("Response:", json)
-            } else {
-                alert("HTTP-Error: " + response.status);
-                button.classList.remove("is-loading");
-            }
-            button.classList.remove("is-loading");
-
         },
         getReplay: async function () {
             let url = "/battlereplay" 
