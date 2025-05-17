@@ -226,7 +226,9 @@ func execute_instruction( g *gameSpace, bp *battleProgram ) (string, []interface
 	case "CJUMP":
 		fmt.Println("Conditional Jumped")
 	case "ADD":
+		fmt.Println("Used Add")
 	case "SUBTRACT":
+		fmt.Println("Used Subtract")
     case "PTRDEATH":
         game_over(g, bp.Player, "Died due to Pointer Death")
 	default:

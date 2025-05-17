@@ -156,28 +156,14 @@ func main() {
 	router.GET("/bugreports", authorizeMiddlewareAdmin(), getBugReports)
     router.GET("/scoreboard", authorizeMiddleware(), getScoreboard)
 
-
-    // PUT the stuff in this function into a helper function to authenticate on protected routes
-    router.GET("/testsession", authorizeMiddleware(), func(c *gin.Context) {
-            c.JSON(200, gin.H{"status": "Boobies"})
-    })
-
     // POST ROUTES
 	router.POST("/battleprogram", authorizeMiddleware(), postBattleProgram)
     router.POST("/users", postUsers)
     router.POST("/login", postLogin)
     router.POST("/logout", authorizeMiddleware(), postLogout)
-	// router.POST("/game", func(c *gin.Context) {
-	// 	runGame()
-        // c.JSON(201, gin.H{"msg": "Game has been run"})
-	// })
 	router.POST("/bugreports", postBugReport)
 
-    // DELETE
-    // router.DELETE("/bugreports/:id", func(c *gin.Context) {
-    //     id := c.Param("id")
-    //     c.JSON(200, gin.H{"status": "Deleted report with id " + id})
-    // })
+    // DELETE ROUTES
     router.DELETE("/bugreports/:id", authorizeMiddlewareAdmin(), deleteBugReport)
 
     router.Run("0.0.0.0:"+port)
