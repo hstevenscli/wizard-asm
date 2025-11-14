@@ -86,7 +86,7 @@ func authorizeMiddlewareAdmin() gin.HandlerFunc {
 func getCookieDomain() string {
 	cookiedomain := os.Getenv("COOKIE_DOMAIN")
 	if cookiedomain == "" {
-		cookiedomain = "wizard.nothingdangerous.live"
+		cookiedomain = "wizard.nadabyte.net"
 	}
 	return cookiedomain
 }
