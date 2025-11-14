@@ -6,8 +6,6 @@ import (
     "strings"
 )
 
-// var gameover gameOver
-
 // Summon magma in 3x3 square centered on target row,col
 func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
     // random location
@@ -55,7 +53,7 @@ func asm_summon_magma( g *gameSpace, player int, row int, col int ) [][2]int {
                         game_over(g, player_val, "Burned in magma")
                     }
 				}
-				// FOR DEBUGGING, ERASE LATER
+
                 if phitprotection {
                     g.Pinfo[player_val].Prot = 0
                 } else {
@@ -177,12 +175,12 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
     if row <= -1 || col <= -1 {
         row = rand.Intn(g.Size)
         col = rand.Intn(g.Size)
-
     // Teleport to specified location
     } else {
         row = within_valid_range( row, g.Size )
         col = within_valid_range( col, g.Size )
     }
+
     // Check for a player collision
     player_val, p_hit := check_player(row, col, g) 
     if p_hit && player_val != player {
@@ -205,8 +203,6 @@ func asm_teleport( g *gameSpace, player int, row int, col int ) {
 }
 
 // Apply a protection to g.PX_prot, valid values: 1 fire, 2 lightning, 3 acid
-// @TODO Need to implement checks in necessary places for protections
-// At minimum in asm_summon_magma/acid/lightning asm_move/teleport
 func asm_shield( g *gameSpace, player int, d_type int ) {
 	fmt.Println("Player put up a shield fo type:", d_type)
 	g.Pinfo[player].Prot = d_type
@@ -291,18 +287,10 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
             break
         }
         player_val, p_hit := check_player(s_row, s_col, g)
-		// fmt.Printf("ASDFFSD: %v", g.Pinfo[player_val].Prot)
 		if p_hit && g.Pinfo[player_val].Prot == 2 {
 			fmt.Println("Player hit, but they have protection to lightning")
             phitprotection = true
 		}
-		// fmt.Println("1pinfo", g.Pinfo[1].Prot)
-		// fmt.Println("2pinfo", g.Pinfo[2].Prot)
-
-		// fmt.Println("Player val: ", player_val, "PHIT:", p_hit)
-		// if p_hit && g.Pinfo[player_val].Prot == 2 {
-		// 	fmt.Println("hi")
-		// }
 
         if p_hit {
 			if g.Pinfo[player_val].Prot != 2 {
@@ -310,8 +298,6 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
 			}
 
         }
-        // For debugging, remove later
-		// if i == 0 {
 
         if phitprotection {
             g.Pinfo[player_val].Prot = 0
@@ -319,7 +305,6 @@ func asm_lightning( g *gameSpace, player int, direction string ) [][2]int {
         }
         lightning_locs = append(lightning_locs, [2]int{s_row, s_col})
         g.Arena[s_row][s_col] = 7
-		// }
     }
     deplete_mana(g, player, 100)
     return lightning_locs

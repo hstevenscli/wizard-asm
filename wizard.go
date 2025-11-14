@@ -2,28 +2,21 @@ package main
 
 import (
 	"context"
-	// "crypto/rand"
-	// "encoding/json"
-	// "fmt"
 	"log"
 	"os"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-
-	// "go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-
 func connectToMongo() *mongo.Client {
     // load env variable
     err := godotenv.Load()
-	
     if err != nil {
         log.Fatal("Error loading .env file")
+		log.Println(".env file not found, countinuing with enviornment variables")
     }
     // get mongo uri
     uri := os.Getenv("MONGODB_URI")
@@ -40,12 +33,8 @@ func connectToMongo() *mongo.Client {
         log.Fatal("Error connecting to Mongodb", err)
 	}
 
-
     return client
 }
-
-
-
 
 func mongoMiddleware(client *mongo.Client) gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -86,9 +75,6 @@ func authorizeMiddlewareAdmin() gin.HandlerFunc {
 		if _, exists := adminUsers[sess.Username]; exists {
 			isAdmin = true
 		}
-		// if sess.Username == "titan" || sess.Username == "titan1" || sess.Username == "bob" || sess.Username == "admintest" {
-		// 	isAdmin = true
-		// }
 		if !isAdmin {
             c.JSON(401, gin.H{"status": "Requires Admin Priveleges"})
             c.Abort()
@@ -124,7 +110,6 @@ func main() {
 
 	router := gin.Default()
 	router.Static("/frontend", "./frontend")
-
     router.Use(mongoMiddleware(client))
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081", "http://127.0.0.1:8080", "http://127.0.0.1:8081"}, // Change to match your frontend URL
@@ -133,28 +118,23 @@ func main() {
         AllowCredentials: true,
     }))
 
+    // FILE GET ROUTES
 	router.GET("/", func(c *gin.Context) {
 		c.File("./frontend/index.html")
 	})
-
 	router.GET("/reports", authorizeMiddlewareAdmin(), func(c *gin.Context) {
 		c.File("./frontend/bug_reports.html")
 	})
 
-
     // GET ROUTES
     router.GET("/cookie", cookieHandler)
-	router.GET("/battlereplay", getBattleReplay)
 	router.GET("/session", getSession)
     router.GET("/battleprogram/:username", getBattleProgramByUsernameHandler)
-	router.GET("/duels/:username", authorizeMiddleware(), getDuel)
-	router.GET("/duels/random", authorizeMiddleware(), getDuelRandom)
-	router.GET("/duels", func(c *gin.Context){
-		c.JSON(409, gin.H{"status": "No name provided for user to duel"})
-	})
     router.GET("/users/:username", authorizeMiddleware(), getUser)
 	router.GET("/bugreports", authorizeMiddlewareAdmin(), getBugReports)
     router.GET("/scoreboard", authorizeMiddleware(), getScoreboard)
+	router.GET("/duels/:username", authorizeMiddleware(), getDuel)
+	router.GET("/duels/random", authorizeMiddleware(), getDuelRandom)
 
     // POST ROUTES
 	router.POST("/battleprogram", authorizeMiddleware(), postBattleProgram)

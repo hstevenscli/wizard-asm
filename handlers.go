@@ -1,22 +1,17 @@
 package main
 
 import (
-	// "crypto/rand"
 	"fmt"
 	"log"
 	"math/rand"
-
-	// "strconv"
 	"context"
 	"errors"
 	"net/http"
 	"time"
-
 	"github.com/gin-gonic/gin"
-	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	// "go.mongodb.org/mongo-driver/v2/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,22 +20,16 @@ type user struct {
     Password string `bson:"password"`
     BP battleProgram `bson:"bp"`
     Score float64
+    Wins int
+    Losses int
+    Ties int
 }
 
 type report struct {
-	// ID primitive.ObjectID `bson:"_id,omitempty"`
-	// ID      interface{} `bson:"_id"`
 	Message string `bson:"message"`
 	Email string `bson:"email,omitempty"`
     Mid string `bson:"mid"`
 }
-
-// type report struct {
-// 	ID      primitive.ObjectID `bson:"_id,omitempty" json:"ID"`
-// 	Message string             `bson:"message" json:"Message"`
-// 	Email   string             `bson:"email,omitempty" json:"Email"`
-// }
-
 
 var ErrEmptyBattleProgram = errors.New("Battle Program is empty")
 
@@ -53,7 +42,6 @@ func getClient(c *gin.Context) *mongo.Client {
     }
     mongoClient := client.(*mongo.Client)
     return mongoClient
-
 }
 
 func authenticatePassword(hashedPassword []byte, password []byte) bool {
@@ -67,22 +55,25 @@ func authenticatePassword(hashedPassword []byte, password []byte) bool {
 }
 
 func getScoreboard(c *gin.Context) {
-
     mongoClient := getClient(c)
     coll := mongoClient.Database("wizardb").Collection("users")
 
     topPlayersCursor, err := coll.Find(
     context.TODO(),
     bson.M{},
-    options.Find().
-        SetSort(bson.M{"score": -1}).
-        SetLimit(10).SetProjection(bson.M{"password": 0, "bp": 0}),
+    // options.Find().
+    //     SetSort(bson.M{"score": -1}).
+    //     SetLimit(25).SetProjection(bson.M{"password": 0, "bp": 0}),
     )
 
     var results []user
     if err = topPlayersCursor.All(context.TODO(), &results); err != nil {
 		log.Panic(err)
 	}
+    for i := range results {
+        passwd := "*"
+        results[i].Password = passwd
+    }
     c.JSON(200, results)
 }
 
@@ -110,7 +101,6 @@ func postLogin(c *gin.Context) {
     coll := client.Database("wizardb").Collection("users")
 
     filter := bson.D{{ "username", loginUser.Username }}
-
 
     // find appropriate user
     err := coll.FindOne(context.TODO(), filter).Decode(&result)
@@ -147,6 +137,7 @@ func postLogin(c *gin.Context) {
 }
 
 func postUsers(c *gin.Context) {
+
     // capture username and password of user that is about to be created
     var newUser user
     mongoClient := getClient(c)
@@ -190,10 +181,6 @@ func postUsers(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"status": "User created successfully"})
 }
 
-func getBattleReplay(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "This version of replay has deprecated"})
-}
-
 func postBattleProgram(c *gin.Context) {
 	var newBattleProgram battleProgram
 
@@ -215,9 +202,6 @@ func postBattleProgram(c *gin.Context) {
         c.JSON(500, gin.H{"status": "server error"})
         return
     }
-
-    // fmt.Println("Matched Count:", updresult.MatchedCount)
-    // fmt.Println("Modified Count:", updresult.ModifiedCount)
 
     c.IndentedJSON(201, gin.H{"status": "Program created/saved successfully"})
 }
@@ -261,7 +245,6 @@ func postBugReport(c *gin.Context) {
 		return
 	}
 
-	// check length of message
 	if len(newBugReport.Message) > 7500 {
 		c.JSON(413, gin.H{"status": "Message too long"})
 		return
@@ -291,15 +274,6 @@ func deleteBugReport(c *gin.Context) {
     // fmt.Println("ID:", id)
     mongoClient := getClient(c)
 
-    // objectID, err := primitive.ObjectIDFromHex(id)
-    // if err != nil {
-    //     c.JSON(400, gin.H{"status": "Invalid ID format"})
-    //     return
-    // }
-
-
-    // fmt.Printf("ObjectID: %v\n. Type: %t\n", objectID, objectID)
-
     coll := mongoClient.Database("wizardb").Collection("reports")
     filter := bson.M{"mid": id}
 
@@ -315,11 +289,9 @@ func deleteBugReport(c *gin.Context) {
         c.JSON(404, gin.H{"status": "Document not found"})
         return
     }
-    
 
     c.JSON(200, result)
     return
-
 }
 
 func getDuel(c *gin.Context) {
@@ -406,9 +378,6 @@ func getDuelRandom(c *gin.Context) {
         }
         // else: err == ErrEmptyBattleProgram — retry
     }
-    fmt.Println("BP1:", bp1)
-    fmt.Println("BP2:", bp2)
-
     // Cases to handle: finds an empty BP, user finds their own BP
 
     br := runBattle(bp1, bp2, mongoClient)
@@ -496,15 +465,10 @@ func updateUserScore(username string, modifier float64, mongoClient *mongo.Clien
 }
 
 func getBattleProgramByUsernameHandler(c *gin.Context) {
-    // var userToLookup user
     username := c.Param("username")
     fmt.Println("USername:", username)
     var found user
 
-    // if err := c.BindJSON(&userToLookup); err != nil {
-    //     c.JSON(400, gin.H{"status": "bad request"})
-    //     return
-    // }
     mongoClient := getClient(c)
     coll := mongoClient.Database("wizardb").Collection("users")
     filter := bson.D{{ "username", username }}
@@ -536,6 +500,7 @@ func getUser(c *gin.Context) {
     c.JSON(200, user)
 }
 
+// Use this in the future for tournament??
 func getBattlePrograms(c *gin.Context) {
     // mongoClient := getClient(c)
     // coll := mongoClient.Database("wizardb").Collection("users")
@@ -543,12 +508,15 @@ func getBattlePrograms(c *gin.Context) {
     // err := coll.Find
 }
 
+// Use this in the future for tournament??
 func getSubsetOfBattlePrograms(c *gin.Context) {
     // mongoClient := getClient(c)
     return
 }
 
 
+// Used for testing cookies. Not used anymore??
+// @TODO DELETE THIS
 func cookieHandler(c *gin.Context) {
     cookie, err := c.Cookie("My_Cookie")
     if err != nil {
@@ -558,10 +526,8 @@ func cookieHandler(c *gin.Context) {
         cookie = "notset"
         c.SetCookie("My_Cookie", sessionID, 3600, "/",  getCookieDomain(), false, false)
     }
-
     fmt.Printf("Cookie Value: %s\n", cookie)
 }
-
 
 func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) replay {
 	var size int = 16
@@ -597,7 +563,6 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
 	br.Opp = bp2.User
 	game_loop_temp( &g, bpf, bpl, &br)
 	// print_replay( br )
-	// fmt.Println("gameover struct:", g.Gameover)
     message, scores := get_winner_loser_info(&g, bp1.User, bp2.User)
     g.Gameover.Conclusion = message
 	br.GameoverInfo = *g.Gameover
@@ -609,50 +574,5 @@ func runBattle(bp1 battleProgram, bp2 battleProgram, mongoClient *mongo.Client) 
         updateUserScore(bp2.User, scores[2], mongoClient)
     }
 
-    // check users scores
-    // user1, err := getUserByUsername(bp1.User, mongoClient)
-    // user2, err := getUserByUsername(bp2.User, mongoClient)
-
-    // fmt.Println("ERROR: ", err)
-
-    // fmt.Println("User 1:", user1)
-    // fmt.Println("User 2:", user2)
-
 	return br
 }
-
-// Deprecated
-// func runGame() {
-//     // Initialize size 
-//     var size int = 16
-
-//     // Initialize the gamespace to size = 10
-//     var g gameSpace = init_gamespace(size)
-
-//     fmt.Printf("SIZE: %v\n", size)
-
-//     // Spawn players in gameSpace
-//     spawn_players( &g )
-// 	battleReplay := replay{}
-// 	gameover := gameOver{}
-// 	g.Gameover = &gameover
-
-//     program := read_json_to_bp("./program.json")
-// 	program1 := read_json_to_bp("./program1.json")
-
-
-// 	// Put starting arena state into replay
-// 	starting_arena := frame{ 
-// 		ArenaFrame: deep_copy_arena(g.Arena),
-// 		Player: 0,
-// 		Action: "Starting State",
-// 		Mana: 0,
-// 		Count: -1,
-// 	}
-// 	battleReplay.Frames = append(battleReplay.Frames, starting_arena)
-
-// 	game_loop_temp( &g, program, program1, &battleReplay)
-// 	print_replay( battleReplay )
-// 	// get_winner_loser_info(&g)
-// }
-
