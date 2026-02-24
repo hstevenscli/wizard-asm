@@ -10,7 +10,7 @@ The game instructions allow players to move, teleport, summon fire and lightning
 
 Build a program, much like you would using a real programming language, and see if you come out on top.<br>
 
-Play it today: [https://wizard.nothingdangerous.live](https://wizard.nothingdangerous.live)
+Play it today: [https://wizard.nadabyte.net](https://wizard.nadabyte.net)
 
 
 ## Technical Details
